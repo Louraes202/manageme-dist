@@ -1,10 +1,12 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useFonts } from 'expo-font';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import * as SplashScreen from 'expo-splash-screen';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import HomeScreen from './../src/screens/HomeScreen';
+import StartScreen from '../src/screens/StartScreen';
+import styles from '.././src/styles/styles'; // Importar estilos globais
 
 const LoadingScreen = ({ styles }) => (
   <View style={styles.container}>
@@ -13,24 +15,6 @@ const LoadingScreen = ({ styles }) => (
   </View>
 );
 
-const MainScreen = ({ styles, navigation }) => (
-  <View style={{ flex: 1 }}>
-    <View style={styles.container}>
-      <Image source={require('../img/mylogo.png')} style={styles.mainlogo}/>
-      <Text style={styles.maintext}>Welcome to Manage Me!</Text>
-      <StatusBar style="auto" />
-    </View>
-  </View>
-);
-
-const Home = ({styles, navigation}) => {
-  return ( 
-    <View>
-      <Text>Home!</Text>
-    </View>
-   );
-}
- 
 
 const Drawer = createDrawerNavigator();
 
@@ -72,39 +56,16 @@ const App = () => {
     <NavigationContainer>
       {/*<MainScreen styles={styles} />*/}
       <Drawer.Navigator initialRouteName="MainScreen" screenOptions={{drawerStyle: {backgroundColor: '#c6cbef'}, headerStyle: {backgroundColor: '#c6cbef'}} }>
-        <Drawer.Screen name="MainScreen">
-          {() => <MainScreen styles={styles} />}
+        <Drawer.Screen name="StartScreen">
+          {() => <StartScreen styles={styles} />}
         </Drawer.Screen>        
-        <Drawer.Screen name="Home">
-          {() => <Home styles={styles} />}
+        <Drawer.Screen name="HomeScreen">
+          {() => <HomeScreen styles={styles} />}
         </Drawer.Screen>
       </Drawer.Navigator>
     </NavigationContainer>
 
   );
 };
-
-const { width, height } = Dimensions.get('window');
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1c73ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  maintext: {
-    fontFamily: 'Kode Mono',
-    fontSize: 24,
-    color: '#ffffff',
-  },
-
-  mainlogo: {
-    width: width * 0.5, 
-    height: height * 0.2, 
-    marginBottom: 30,
-  },
-});
 
 export default App;
