@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import AuthScreen from './../src/screens/AuthScreen';
 import HomeScreen from './../src/screens/HomeScreen';
 import StartScreen from '../src/screens/StartScreen';
 import styles from '.././src/styles/styles'; // Importar estilos globais
@@ -51,20 +52,8 @@ const App = () => {
     return <LoadingScreen styles={styles} />;
   }
 
-  return ( 
-
-    <NavigationContainer>
-      {/*<MainScreen styles={styles} />*/}
-      <Drawer.Navigator initialRouteName="MainScreen" screenOptions={{drawerStyle: {backgroundColor: '#c6cbef'}, headerStyle: {backgroundColor: '#c6cbef'}} }>
-        <Drawer.Screen name="StartScreen">
-          {() => <StartScreen styles={styles} />}
-        </Drawer.Screen>        
-        <Drawer.Screen name="HomeScreen">
-          {() => <HomeScreen styles={styles} />}
-        </Drawer.Screen>
-      </Drawer.Navigator>
-    </NavigationContainer>
-
+  return  (
+    <AuthScreen styles={styles}/>
   );
 };
 
