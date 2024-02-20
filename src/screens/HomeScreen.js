@@ -3,6 +3,7 @@ import { View } from "react-native";
 const HomeScreen = () => {
     return ( 
         <View>
+            <Text>Home</Text>
         </View>
      )
 }
