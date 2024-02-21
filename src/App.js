@@ -19,7 +19,6 @@ const LoadingScreen = ({ styles }) => (
 
 const Drawer = createDrawerNavigator();
 
-// Componente App que organiza os outros componentes
 const App = () => {
   const [appIsReady, setAppIsReady] = useState(false);
 

@@ -21,6 +21,33 @@ const styles = StyleSheet.create({
         height: height * 0.2, 
         marginBottom: 30,
     },
-    });
+
+    input: {
+        width: width * 0.7,
+        marginVertical: 15,
+    },
+
+    button: {
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 15,
+        marginVertical: 10,
+        alignItems: 'center',
+        width: width * 0.7, // Use 100% da largura disponível
+        borderRadius: 20,
+    },
+
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+    },
+
+    authmaintext: {
+        fontFamily: 'Kode Mono',
+        fontSize: 24,
+        color: '#ffffff',
+        marginTop: 20,
+    },
+});
 
 export default styles;
