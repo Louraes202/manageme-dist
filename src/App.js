@@ -12,7 +12,7 @@ import styles from '.././src/styles/styles'; // Importar estilos globais
 const LoadingScreen = ({ styles }) => (
   <View style={styles.container}>
     <Image source={require('../img/mylogo.png')} style={styles.mainlogo}/>
-    <Text style={styles.maintext}>Loading...</Text>
+    <Text style={styles.maintext}>Welcome to Manage Me!</Text>
   </View>
 );
 
