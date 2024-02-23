@@ -16,14 +16,11 @@ const LoadingScreen = ({ styles }) => (
   </View>
 );
 
-
-const Drawer = createDrawerNavigator();
-
 const App = () => {
   const [appIsReady, setAppIsReady] = useState(false);
 
   const [fontsLoaded] = useFonts({
-    'Kode Mono': require('../assets/fonts/Kode_Mono/KodeMono-VariableFont_wght.ttf'),
+    'Kode Mono': require('../assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf'),
     'Roboto': require('../assets/fonts/Roboto/Roboto-Light.ttf'),
   });
 
