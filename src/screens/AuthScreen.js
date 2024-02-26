@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import styles from '../styles/styles'; // Import global styles
 import { initializeApp } from "firebase/app";
@@ -24,14 +24,18 @@ const LoginScreen = ({ navigation }) => {
   const db = firebaseApp.firestore();
   const auth = firebase.auth();
 
+  const [isLoading, setLoading] = useState(false);
 
 
   const handleLogin = async () => {
     try {
+      setLoading(true);
       await auth.signInWithEmailAndPassword(email, password);
+      setLoading(false);
       Alert.alert('Success', 'Login successful');
       return true;
     } catch (error) {
+      setLoading(false);
       console.error('Erro ao autenticar:', error.message);
       Alert.alert('Error', 'Login failed. Check your credentials.');
       return false;
@@ -40,10 +44,13 @@ const LoginScreen = ({ navigation }) => {
 
   const handleSignUp = async () => {
     try {
+      setLoading(true);
       await auth.createUserWithEmailAndPassword(email, password);
+      setLoading(false);
       Alert.alert('Success', 'Registration successful');
       return true;
     } catch (error) {
+      setLoading(false);
       console.error('Error creating account:', error.message);
       Alert.alert('Error', 'Registration failed. Check your credentials and try again.');
       return false;
@@ -54,6 +61,7 @@ const LoginScreen = ({ navigation }) => {
     const success = isRegistering ? await handleSignUp() : await handleLogin();
     if (success) {
       console.log('Autenticação feita com sucesso.');
+      navigation.navigate('Home');
     }
   };
 
@@ -77,16 +85,20 @@ const LoginScreen = ({ navigation }) => {
       />
 
 
-        {/* Button for login or registration */}
-        <TouchableOpacity onPress={handleAction} style={styles.button}>
-          <Text>{isRegistering ? 'Register' : 'Login'}</Text>
-        </TouchableOpacity>
-        {/* Button to switch between Login and Register */}
-        <TouchableOpacity onPress={() => setRegistering(!isRegistering)} style={styles.button}>
-          <Text>
-            {isRegistering ? 'Switch to Login' : 'Switch to Register'}
-          </Text>
-        </TouchableOpacity>
+      
+      {/* Button for login or registration */}
+
+      <TouchableOpacity onPress={handleAction} style={styles.button}>
+        <Text>{isRegistering ? 'Register' : 'Login'}</Text>
+      </TouchableOpacity>
+      {/* Button to switch between Login and Register */}
+      <TouchableOpacity onPress={() => setRegistering(!isRegistering)} style={styles.button}>
+        <Text>
+          {isRegistering ? 'Switch to Login' : 'Switch to Register'}
+        </Text>
+      </TouchableOpacity>
+
+      {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
 
     </View>
   );

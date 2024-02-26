@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useFonts } from 'expo-font';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import AuthScreen from './../src/screens/AuthScreen';
 import HomeScreen from './../src/screens/HomeScreen';
@@ -48,8 +49,16 @@ const App = () => {
     return <LoadingScreen styles={styles} />;
   }
 
+  const Stack = createNativeStackNavigator();
+
   return  (
-    <AuthScreen styles={styles}/>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Auth">
+        <Stack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+
   );
 };
 
