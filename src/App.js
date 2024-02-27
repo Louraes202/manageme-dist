@@ -7,8 +7,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import AuthScreen from './../src/screens/AuthScreen';
 import HomeScreen from './../src/screens/HomeScreen';
-import StartScreen from '../src/screens/StartScreen';
+import TasksScreen from '../src/screens/Tasks/TasksScreen';
 import styles from '.././src/styles/styles'; // Importar estilos globais
+import 'react-native-gesture-handler';
 
 const LoadingScreen = ({ styles }) => (
   <View style={styles.container}>
@@ -28,7 +29,7 @@ const App = () => {
   useEffect(() => {
     async function prepare() {
       try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 0)); // alterar para 2000
       } catch (e) {
         console.warn(e);
       } finally {
@@ -50,13 +51,16 @@ const App = () => {
   }
 
   const Stack = createNativeStackNavigator();
+  const Drawer = createDrawerNavigator();
 
   return  (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Auth">
-        <Stack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
-      </Stack.Navigator>
+    <NavigationContainer> {/* Meter auth dentro do drawer no fim do desenvolvimento */}
+      <Stack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false, drawerItemStyle: { height: 0 } }}/>
+      
+      <Drawer.Navigator initialRouteName="Auth" screenOptions={{headerStyle: {backgroundColor: '#0062ff', borderBottomColor: '#0062ff'}, headerTintColor: '#fff', drawerStyle: {backgroundColor: '#0062ff'}, drawerActiveTintColor:  '#fff', drawerInactiveTintColor: '#fff'}}>
+        <Drawer.Screen name="Home" component={HomeScreen} options={{}}/>
+        <Drawer.Screen name="Tasks" component={TasksScreen} options={{}}/>
+      </Drawer.Navigator>
     </NavigationContainer>
 
   );

@@ -2583,6 +2583,15 @@
     invariant "^2.2.4"
     nullthrows "^1.1.1"
 
+"@react-navigation/bottom-tabs@^6.5.14":
+  version "6.5.14"
+  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-6.5.14.tgz#8e09c30c66cc9adb0cc281b4db7313a1197b1f79"
+  integrity sha512-3gDVwuaPQIxkJm3PI5vATDr9Un3Z0tplfkzM/TWL2igE0Kd/hymWz0jZppBJbuKi+Q25i/74b+3VOVKuiE43AQ==
+  dependencies:
+    "@react-navigation/elements" "^1.3.24"
+    color "^4.2.3"
+    warn-once "^0.1.0"
+
 "@react-navigation/core@^6.4.11":
   version "6.4.11"
   resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-6.4.11.tgz#481274aff0684757545bf6eb874260af7e8b27d1"
@@ -6218,6 +6227,11 @@ react-is@^18.0.0:
   resolved "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
+react-lifecycles-compat@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
+  integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
 react-native-gesture-handler@~2.14.0:
   version "2.14.1"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.14.1.tgz"
@@ -6228,6 +6242,11 @@ react-native-gesture-handler@~2.14.0:
     invariant "^2.2.4"
     lodash "^4.17.21"
     prop-types "^15.7.2"
+
+react-native-iphone-x-helper@^1.3.0:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz#20c603e9a0e765fd6f97396638bdeb0e5a60b010"
+  integrity sha512-HOf0jzRnq2/aFUcdCJ9w9JGzN3gdEg0zFE4FyYlp4jtidqU03D5X7ZegGKfT1EWteR0gPBGp9ye5T5FvSWi9Yg==
 
 react-native-paper@^5.12.3:
   version "5.12.3"
@@ -6277,6 +6296,11 @@ react-native-splash-screen@^3.3.0:
   version "3.3.0"
   resolved "https://registry.npmjs.org/react-native-splash-screen/-/react-native-splash-screen-3.3.0.tgz"
   integrity sha512-rGjt6HkoSXxMqH4SQUJ1gnPQlPJV8+J47+4yhgTIan4bVvAwJhEeJH7wWt9hXSdH4+VfwTS0GTaflj1Tw83IhA==
+
+react-native-tab-view@^2.15.2:
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-2.16.0.tgz#cae72c7084394bd328fac5fefb86cd966df37a86"
+  integrity sha512-ac2DmT7+l13wzIFqtbfXn4wwfgtPoKzWjjZyrK1t+T8sdemuUvD4zIt+UImg03fu3s3VD8Wh/fBrIdcqQyZJWg==
 
 react-native-web@^0.19.10:
   version "0.19.10"
@@ -6335,6 +6359,16 @@ react-native@0.73.4:
     whatwg-fetch "^3.0.0"
     ws "^6.2.2"
     yargs "^17.6.2"
+
+react-navigation-tabs@^2.11.2:
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/react-navigation-tabs/-/react-navigation-tabs-2.11.2.tgz#20030ac2e14a0f883b9bfad24aea115966e6de43"
+  integrity sha512-8w/fiX+gGIyxYWBUT6Fg/26DTggjzK4lPfnLTP1pR7DUfYGLf2/f/aJWqiIJt6U4k/19tzpr4sXQqG7fX6PLjg==
+  dependencies:
+    hoist-non-react-statics "^3.3.2"
+    react-lifecycles-compat "^3.0.4"
+    react-native-iphone-x-helper "^1.3.0"
+    react-native-tab-view "^2.15.2"
 
 react-refresh@0.14.0, react-refresh@^0.14.0:
   version "0.14.0"
