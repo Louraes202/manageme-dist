@@ -5,7 +5,7 @@ import styles from '../../../styles/styles'; // Importar estilos globais
 
 const TasksTab = () => {
     return (
-      <View style={styles.container}>
+      <View style={styles.screen}>
         <Text style={styles.maintext}>Tasks Screen</Text>
       </View>
     )

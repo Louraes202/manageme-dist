@@ -47,6 +47,12 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         marginTop: 20,
     },
+
+    screen: {
+        flex: 1,
+        backgroundColor: '#1c73ff',
+        padding: 10
+    },
 });
 
 export default styles;
