@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.manageme"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,10 +31,11 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts"]
+          "fonts": [
+            "./assets/fonts"
+          ]
         }
       ]
-
     ]
   }
 }
