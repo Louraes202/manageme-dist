@@ -35,7 +35,8 @@
             "./assets/fonts"
           ]
         }
-      ]
+      ],
+      "expo-build-properties"
     ]
   }
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import styles from '../../../styles/styles'; // Importar estilos globais
-import * as SQLite from 'expo-sqlite';
 
 
 const TasksTab = () => {

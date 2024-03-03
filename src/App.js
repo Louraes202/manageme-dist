@@ -56,7 +56,6 @@ const App = () => {
   return  (
     <NavigationContainer>      
       <Stack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false, drawerItemStyle: { height: 0 } }}/>
-    
       <Drawer.Navigator initialRouteName="Auth" screenOptions={{headerStyle: {backgroundColor: '#0062ff', borderBottomColor: '#0062ff'}, headerTintColor: '#fff', drawerStyle: {backgroundColor: '#0062ff'}, drawerActiveTintColor:  '#fff', drawerInactiveTintColor: '#fff'}}>
         <Drawer.Screen name="Home" component={HomeScreen} options={{}}/>
         <Drawer.Screen name="Tasks" component={TasksScreen} options={{}}/>
