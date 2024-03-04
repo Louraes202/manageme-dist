@@ -10,6 +10,8 @@ import HomeScreen from './../src/screens/HomeScreen';
 import TasksScreen from '../src/screens/Tasks/TasksScreen';
 import styles from '.././src/styles/styles'; // Importar estilos globais
 import 'react-native-gesture-handler';
+import * as SQLite from "expo-sqlite";
+import { databaseSchema } from './services/SQLite/databaseSchema';
 
 const LoadingScreen = ({ styles }) => (
   <View style={styles.container}>
@@ -17,6 +19,8 @@ const LoadingScreen = ({ styles }) => (
     <Text style={styles.maintext}>Welcome to Manage Me!</Text>
   </View>
 );
+
+const db = SQLite.openDatabase('manageme');
 
 const App = () => {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -26,9 +30,16 @@ const App = () => {
     'Roboto': require('../assets/fonts/Roboto/Roboto-Light.ttf'),
   });
 
+
+
   useEffect(() => {
     async function prepare() {
       try {
+        await db.transactionAsync(async tx => {
+          const result = await tx.executeSqlAsync("DROP TABLE IF EXISTS Dias_Mes;", []);
+          console.log(result);
+        }, false);
+
         await new Promise(resolve => setTimeout(resolve, 0)); // alterar para 2000
       } catch (e) {
         console.warn(e);
