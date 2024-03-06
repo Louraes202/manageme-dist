@@ -13,6 +13,33 @@ import "react-native-gesture-handler";
 import * as SQLite from "expo-sqlite";
 import { databaseSchema } from "./services/SQLite/databaseSchema";
 import Colors from "../assets/utils/pallete.json";
+import { NativeBaseProvider, extendTheme } from "native-base";
+
+const theme = extendTheme({
+  colors: {
+    // Add new color
+    primary: {
+      50: '#E3F2F9',
+      100: '#C5E4F3',
+      200: '#A2D4EC',
+      300: '#7AC1E4',
+      400: '#47A9DA',
+      500: '#0088CC',
+      600: '#007AB8',
+      700: '#006BA1',
+      800: '#005885',
+      900: '#003F5E',
+    },
+    // Redefining only one shade, rest of the color will remain same.
+    amber: {
+      400: '#d97706',
+    },
+  },
+  config: {
+    // Changing initialColorMode to 'dark'
+    initialColorMode: 'dark',
+  },
+});
 
 const LoadingScreen = ({ styles }) => (
   <View style={styles.container}>
@@ -68,34 +95,36 @@ const App = () => {
   const Drawer = createDrawerNavigator();
 
   return (
-    <NavigationContainer>
-      <Stack.Screen
-        name="Auth"
-        component={AuthScreen}
-        options={{ headerShown: false, drawerItemStyle: { height: 0 } }}
-      />
-      <Drawer.Navigator
-        style={{ backgroundColor: Colors.mainbg }}
-        initialRouteName="Auth"
-        screenOptions={{
-          sceneContainerStyle: { backgroundColor: Colors.mainbg },
-          headerBackgroundContainerStyle: { backgroundColor: Colors.mainbg },
-          headerStyle: {
-            backgroundColor: Colors.navblue,
-            borderBottomColor: "transparent",
-            borderBottomRightRadius: 25,
-            borderBottomLeftRadius: 25,
-          },
-          headerTintColor: "#fff",
-          drawerStyle: { backgroundColor: Colors.navblue },
-          drawerActiveTintColor: "#fff",
-          drawerInactiveTintColor: "#fff",
-        }}
-      >
-        <Drawer.Screen name="Home" component={HomeScreen} options={{}} />
-        <Drawer.Screen name="Tasks" component={TasksScreen} options={{}} />
-      </Drawer.Navigator>
-    </NavigationContainer>
+    <NativeBaseProvider theme={theme}>
+      <NavigationContainer>
+        <Stack.Screen
+          name="Auth"
+          component={AuthScreen}
+          options={{ headerShown: false, drawerItemStyle: { height: 0 } }}
+        />
+        <Drawer.Navigator
+          style={{ backgroundColor: Colors.mainbg }}
+          initialRouteName="Auth"
+          screenOptions={{
+            sceneContainerStyle: { backgroundColor: Colors.mainbg },
+            headerBackgroundContainerStyle: { backgroundColor: Colors.mainbg },
+            headerStyle: {
+              backgroundColor: Colors.navblue,
+              borderBottomColor: "transparent",
+              borderBottomRightRadius: 25,
+              borderBottomLeftRadius: 25,
+            },
+            headerTintColor: "#fff",
+            drawerStyle: { backgroundColor: Colors.navblue },
+            drawerActiveTintColor: "#fff",
+            drawerInactiveTintColor: "#fff",
+          }}
+        >
+          <Drawer.Screen name="Home" component={HomeScreen} options={{}} />
+          <Drawer.Screen name="Tasks" component={TasksScreen} options={{}} />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    </NativeBaseProvider>
   );
 };
 
