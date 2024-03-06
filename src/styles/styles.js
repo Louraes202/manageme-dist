@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     },
 
     maintext: {
-        fontFamily: 'Kode Mono',
+        fontFamily: 'Poppins',
         fontSize: 24,
         color: '#ffffff',
     },

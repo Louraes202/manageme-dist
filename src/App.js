@@ -28,6 +28,7 @@ const App = () => {
   const [fontsLoaded] = useFonts({
     'Kode Mono': require('../assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf'),
     'Roboto': require('../assets/fonts/Roboto/Roboto-Light.ttf'),
+    'Poppins': require('../assets/fonts/Poppins/Poppins-Light.ttf'),
   });
 
 
@@ -36,7 +37,7 @@ const App = () => {
     async function prepare() {
       try {
         await db.transactionAsync(async tx => {
-          const result = await tx.executeSqlAsync("DROP TABLE IF EXISTS Dias_Mes;", []);
+          const result = await tx.executeSqlAsync("CREATE ", []);
           console.log(result);
         }, false);
 
