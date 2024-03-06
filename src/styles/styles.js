@@ -1,10 +1,12 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import Colors from '../../assets/utils/pallete.json';
+
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1c73ff',
+        backgroundColor: Colors.mainbg,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -50,7 +52,7 @@ const styles = StyleSheet.create({
 
     screen: {
         flex: 1,
-        backgroundColor: '#1c73ff',
+        backgroundColor: Colors.mainbg,
         padding: 10
     },
 });
