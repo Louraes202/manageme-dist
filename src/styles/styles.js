@@ -55,6 +55,14 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.mainbg,
         padding: 10
     },
+
+    /*New styles*/
+
+    title_text : {
+        fontFamily: 'Poppins',
+        fontSize: 24,
+        color: '#ffffff',
+    }
 });
 
 export default styles;

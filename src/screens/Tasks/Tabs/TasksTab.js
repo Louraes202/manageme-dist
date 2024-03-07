@@ -2,32 +2,23 @@ import React from "react";
 import { useState } from "react";
 import { View, Text } from "react-native";
 import styles from "../../../styles/styles"; // Importar estilos globais
-import {
-  NativeBaseProvider,
-  Container,
-  Content,
-  Footer,
-  Button,
-  Spacer,
-  Center,
-  Modal,
-  FormControl,
-  Input,
-
-
-} from "native-base";
+import { Fab, Center } from "native-base";
+import { FontAwesome5 } from "@expo/vector-icons";
+import Colors from '../../../../assets/utils/pallete.json';
 
 const TasksTab = () => {
   return (
     <View style={styles.screen}>
-      <Text style={styles.maintext}>Tasks Screen</Text>
-
+      <Text style={styles.title_text}>Tasks Screen</Text>
 
       {/* Footer button */}
       <View style={{ position: "absolute", left: 0, right: 0, bottom: 5 }}>
-        <Button style={{ borderRadius: 25, backgroundColor: "#22d3ee" }}>
-          <Text style={{ color: "#fff", fontSize: 18 }}>Adicionar tarefa</Text>
-        </Button>
+        <Fab
+          renderInPortal={false}
+          shadow={2}
+          size="sm"
+          icon={<FontAwesome5 name="plus" color={"white"} size={24} underlayColor={Colors.navblue}/>}
+        />
       </View>
     </View>
   );

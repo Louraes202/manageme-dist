@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import styles from '../styles/styles'; // Importar estilos globais
+import React from "react";
+import { View, Text } from "react-native";
+import styles from "../styles/styles"; // Importar estilos globais
 
 const Home = ({ navigation }) => {
   return (
