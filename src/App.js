@@ -14,6 +14,7 @@ import * as SQLite from "expo-sqlite";
 import { databaseSchema } from "./services/SQLite/databaseSchema";
 import Colors from "../assets/utils/pallete.json";
 import { NativeBaseProvider, extendTheme } from "native-base";
+import TasksTab from "./screens/Tasks/Tabs/TasksTab";
 
 const theme = extendTheme({
   colors: {
@@ -121,7 +122,8 @@ const App = () => {
           }}
         >
           <Drawer.Screen name="Home" component={HomeScreen} options={{}} />
-          <Drawer.Screen name="Tasks" component={TasksScreen} options={{}} />
+          <Drawer.Screen name="Tasks" component={TasksScreen} options={{}}/>
+        
         </Drawer.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>

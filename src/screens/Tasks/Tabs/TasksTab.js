@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { View, Text } from "react-native";
 import styles from "../../../styles/styles"; // Importar estilos globais
+import { Dimensions } from "react-native";
 import {
   Fab,
   Center,
@@ -17,7 +18,10 @@ import Colors from "../../../../assets/utils/pallete.json";
 import Task from "../components/Task";
 import { ScrollView } from "react-native-gesture-handler";
 
-const TasksTab = () => {
+const { width, height } = Dimensions.get("window");
+
+
+const TasksTab = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <Text style={styles.title_text}>Tasks Screen</Text>
@@ -51,18 +55,18 @@ const TasksTab = () => {
                     underlayColor={Colors.navblue}
                   />
                 }
-                style={{marginBottom: 50}}
+                style={{ marginBottom: height * 0.09 }}
               ></Fab>
             );
           }}
         >
-          <Menu.Item>New task</Menu.Item>
+          <Menu.Item onPress={() => navigation.navigate()}>New task</Menu.Item>
           <Menu.Item>New group</Menu.Item>
           <Menu.Item>New category</Menu.Item>
         </Menu>
       </Box>
     </View>
   );
-};
+}
 
 export default TasksTab;
