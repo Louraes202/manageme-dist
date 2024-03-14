@@ -13,13 +13,7 @@ import Colors from "../../../assets/utils/pallete.json";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const NewTask = ({ navigation }) => {
-  return (
-    <Text>Teste</Text>
-  );
-}
-
-const Tasks = () => {
+const Tasks = ({ navigation }) => {
   return (
       <Tab.Navigator
         screenOptions={{
@@ -64,10 +58,7 @@ const Tasks = () => {
               <FontAwesome5 name="list-ol" color={"white"} size={24} />
             ),
           }}
-        />
-        <Stack.Navigator name="NewTask" component={NewTask}>
-          <View></View>
-        </Stack.Navigator>
+        />  
       </Tab.Navigator>
 
 

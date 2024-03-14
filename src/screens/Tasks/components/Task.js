@@ -1,4 +1,13 @@
-import { Box, Pressable, HStack, Badge, Text, Flex, Spacer } from "native-base";
+import {
+  Box,
+  Pressable,
+  HStack,
+  Badge,
+  Text,
+  Flex,
+  Spacer,
+  Button,
+} from "native-base";
 import { useState, useffect } from "react";
 import * as SQLite from "expo-sqlite";
 
@@ -37,9 +46,14 @@ const Task = ({ name, desc, group, category, date }) => {
           <Text color="coolGray.800" mt="3" fontWeight="medium" fontSize="xl">
             {name}
           </Text>
-          <Text mt="2" fontSize="sm" color="coolGray.700">
-            {desc}
-          </Text>
+          <HStack alignItems="center">
+            <Text mt="2" fontSize="sm" color="coolGray.700">
+              {desc}
+            </Text>
+            <Spacer />
+            <Button style={{backgroundColor: 'blue', borderBottomEndRadius: 0, borderTopEndRadius: 0}} _icon={{}}/>
+            <Button style={{backgroundColor: 'red', borderBottomStartRadius: 0, borderTopStartRadius: 0}} _icon={{}}/>
+          </HStack>
         </Box>
       </Pressable>
     </Box>

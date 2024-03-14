@@ -14,7 +14,8 @@ import * as SQLite from "expo-sqlite";
 import { databaseSchema } from "./services/SQLite/databaseSchema";
 import Colors from "../assets/utils/pallete.json";
 import { NativeBaseProvider, extendTheme } from "native-base";
-import TasksTab from "./screens/Tasks/Tabs/TasksTab";
+import createTablesQuery from "./services/SQLite/createQuery";
+
 
 const theme = extendTheme({
   colors: {
@@ -65,7 +66,7 @@ const App = () => {
       try {
         await db.transactionAsync(async (tx) => {
           const result = await tx.executeSqlAsync(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='Tarefas';",
+            "SELECT * FROM TAREFAS",
             []
           );
           console.log(result);
@@ -122,8 +123,7 @@ const App = () => {
           }}
         >
           <Drawer.Screen name="Home" component={HomeScreen} options={{}} />
-          <Drawer.Screen name="Tasks" component={TasksScreen} options={{}}/>
-        
+          <Drawer.Screen name="Tasks Screen" component={TasksScreen} options={{drawerLabel: "Tasks", headerTitle: "Tasks"}} />
         </Drawer.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
