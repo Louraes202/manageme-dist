@@ -69,10 +69,10 @@ const App = () => {
             "SELECT * FROM TAREFAS",
             []
           );
-          console.log(result);
+          console.log(result.rows);
         }, false);
 
-        await new Promise((resolve) => setTimeout(resolve, 0)); // alterar para 2000
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // alterar para 2000
       } catch (e) {
         console.warn(e);
       } finally {
@@ -122,6 +122,7 @@ const App = () => {
             drawerInactiveTintColor: "#fff",
           }}
         >
+
           <Drawer.Screen name="Home" component={HomeScreen} options={{}} />
           <Drawer.Screen name="Tasks Screen" component={TasksScreen} options={{drawerLabel: "Tasks", headerTitle: "Tasks"}} />
         </Drawer.Navigator>

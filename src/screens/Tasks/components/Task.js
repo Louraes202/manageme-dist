@@ -7,11 +7,29 @@ import {
   Flex,
   Spacer,
   Button,
+  IconButton
 } from "native-base";
-import { useState, useffect } from "react";
+import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
+import { FaCheckCircle } from "react-icons/fa";
+import { FontAwesome } from "@expo/vector-icons";
 
-const Task = ({ name, desc, group, category, date }) => {
+const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task, update, setUpdate }) => {
+  const [done, setDone] = useState(false);
+  const [dodelete, setDelete] = useState(false);
+
+  useEffect(() => {
+    if (dodelete) {
+      deleteTask(task);
+    }
+  }, [dodelete]);
+
+  useEffect(() => {
+    if (done) {
+      doTask(task);
+    }
+  }, [done]);
+
   return (
     <Box alignItems="center" marginY={2}>
       <Pressable
@@ -34,7 +52,7 @@ const Task = ({ name, desc, group, category, date }) => {
                 color: "white",
               }}
               variant="solid"
-              rounded="4"
+              rounded="30"
             >
               {group}
             </Badge>
@@ -51,8 +69,8 @@ const Task = ({ name, desc, group, category, date }) => {
               {desc}
             </Text>
             <Spacer />
-            <Button style={{backgroundColor: 'blue', borderBottomEndRadius: 0, borderTopEndRadius: 0}} _icon={{}}/>
-            <Button style={{backgroundColor: 'red', borderBottomStartRadius: 0, borderTopStartRadius: 0}} _icon={{}}/>
+            <IconButton style={{backgroundColor: 'blue', borderBottomEndRadius: 0, borderTopEndRadius: 0, width: 30, height: 25}} _icon={{as: FontAwesome, name: "check", color: "white"}} onPress={() => {setDone(true); setUpdate(true)}}/>
+            <IconButton style={{backgroundColor: 'red', borderBottomStartRadius: 0, borderTopStartRadius: 0, width: 30, height: 25}} _icon={{as: FontAwesome, name: "trash", color: "white"}} onPress={() => {setDelete(true); setUpdate(true)}}/>
           </HStack>
         </Box>
       </Pressable>

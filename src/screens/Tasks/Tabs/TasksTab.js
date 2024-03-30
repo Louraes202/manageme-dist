@@ -21,6 +21,7 @@ import Colors from "../../../../assets/utils/pallete.json";
 import Task from "../components/Task";
 import { ScrollView } from "react-native-gesture-handler";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useIsFocused } from "@react-navigation/native";
 import * as SQLite from "expo-sqlite";
 import createTablesQuery from "../../../services/SQLite/createQuery";
 
@@ -38,7 +39,8 @@ const fetchTasksFromDatabase = () => {
           const tasks = [];
           for (let i = 0; i < len; i++) {
             const task = results.rows.item(i);
-            const taskId = task.idTarefa; // Acessa o campo idTarefa
+            const taskId = task.key; // Acessa o campo idTarefa
+            console.log(taskId);
             const taskName = task.nome; // Acessa o campo nome
             const taskDescription = task.descricao; // Acessa o campo descricao
             tasks.push(task);
@@ -54,6 +56,27 @@ const fetchTasksFromDatabase = () => {
   });
 };
 
+const doTask = (task) => {
+  const db = SQLite.openDatabase("manageme");
+  db.transaction((tx) => {tx.executeSql(""), [], (error) => {console.error("Error doing task (" + {task} + "). :", error); reject(error);}})
+};
+
+const deleteTask = (task) => {
+  const db = SQLite.openDatabase("manageme");
+  db.transaction((tx) => {
+    tx.executeSql(
+      "DELETE FROM TAREFAS WHERE idTarefa = ?",
+      [task.idTarefa],
+      () => {
+        console.log("Task deleted successfully.");
+      },
+      (error) => {
+        console.error("Error deleting task:", error);
+      }
+    );
+  });
+};
+
 const TasksStack = createNativeStackNavigator();
 
 const SeeTasks = ({ navigation }) => {
@@ -65,11 +88,16 @@ const SeeTasks = ({ navigation }) => {
     setOpen(true);
   };
 
+
   useEffect(() => {
     fetchTasksFromDatabase()
-      .then((tasks) => {setTasks(tasks), setUpdate(false)})
+      .then((tasks) => {
+        setTasks(tasks), setUpdate(false);
+      })
       .catch((error) => console.error("Error fetching tasks:", error));
   }, [update]);
+
+  const isFocused = useIsFocused();
 
   return (
     <View style={styles.screen}>
@@ -87,21 +115,26 @@ const SeeTasks = ({ navigation }) => {
           <Flex direction="column">
             {tasks.map((task) => (
               <Task
+                task={task}
                 key={task["idTarefa"]}
                 name={task["nome"]}
                 desc={task["descricao"]}
                 group={task["grupo"]}
+                doTask={() => doTask(task)} 
+                deleteTask={() => deleteTask(task)} 
+                update = {update}
+                setUpdate = {setUpdate}
               />
             ))}
           </Flex>
         </VStack>
       </ScrollView>
 
-      {/* Footer button */}
       <Box>
         <Menu
           w="190"
           trigger={(triggerProps) => {
+            if (isFocused) {
             return (
               <Fab
                 accessibilityLabel="More options menu"
@@ -117,6 +150,7 @@ const SeeTasks = ({ navigation }) => {
                 style={{ marginBottom: height * 0.09 }}
               ></Fab>
             );
+            }
           }}
         >
           <Menu.Item onPress={() => openModal()}>New task</Menu.Item>
