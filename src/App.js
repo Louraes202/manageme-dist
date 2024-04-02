@@ -64,25 +64,30 @@ const App = () => {
   useEffect(() => {
     async function prepare() {
       try {
-        await db.transactionAsync(async (tx) => {
-          const result = await tx.executeSqlAsync(
-            "SELECT * FROM TAREFAS",
-            []
-          );
-          console.log(result.rows);
-        }, false);
-
-        await new Promise((resolve) => setTimeout(resolve, 2000)); // alterar para 2000
+        const queries = createTablesQuery.trim().split(';').filter(query => query.length > 0);
+  
+        db.transaction(tx => {
+          queries.forEach(query => {
+            tx.executeSql(
+              query,
+              [],
+              (_, result) => console.log("Tabela criada ou já existe"),
+              (_, error) => console.log("Erro ao criar tabela", error)
+            );
+          });
+        });
+        
+        // Espera artificial, ajuste conforme necessário
+        await new Promise(resolve => setTimeout(resolve, 2000)); 
       } catch (e) {
         console.warn(e);
       } finally {
         setAppIsReady(true);
       }
     }
-
+  
     prepare();
   }, []);
-
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();
