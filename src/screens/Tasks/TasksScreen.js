@@ -15,25 +15,27 @@ const Stack = createNativeStackNavigator();
 
 const Tasks = ({ navigation }) => {
   return (
+    <View style={{flex: 1, backgroundColor: '#fff'}}>
       <Tab.Navigator
         screenOptions={{
           header: () => null,
           tabBarStyle: {
             backgroundColor: Colors.navblue,
             borderTopColor: "#0062ff",
-            borderTopRightRadius: 25,
-            borderTopLeftRadius: 25
+            borderTopRightRadius: 10,
+            borderTopLeftRadius: 10
           },
+          
           tabBarActiveTintColor: "#fff",
           tabBarInactiveTintColor: "#dddddd",
           tabBarActiveBackgroundColor: Colors.activeitem,
           tabBarInactiveBackgroundColor: "transparent",
-          tabBarItemStyle: {borderTopStartRadius: 25, borderTopEndRadius: 25},
+          tabBarItemStyle: {borderTopStartRadius: 10, borderTopEndRadius: 10},
           tabBarBadgeStyle: {},
         }}
       >
         <Tab.Screen
-          name="Tasks"
+          name="Home"
           component={TasksTab}
           options={{
             tabBarIcon: ({ color, size }) => (
@@ -42,7 +44,7 @@ const Tasks = ({ navigation }) => {
           }}
         />
         <Tab.Screen
-          name="Groups"
+          name="Projects"
           component={GroupsTab}
           options={{
             tabBarIcon: ({ color, size }) => (
@@ -61,7 +63,7 @@ const Tasks = ({ navigation }) => {
         />  
       </Tab.Navigator>
 
-
+    </View>
   );
 };
 

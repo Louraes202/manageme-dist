@@ -17,36 +17,10 @@ import { NativeBaseProvider, extendTheme } from "native-base";
 import createTablesQuery from "./services/SQLite/createQuery";
 
 
-const theme = extendTheme({
-  colors: {
-    // Add new color
-    primary: {
-      50: "#E3F2F9",
-      100: "#C5E4F3",
-      200: "#A2D4EC",
-      300: "#7AC1E4",
-      400: "#47A9DA",
-      500: "#0088CC",
-      600: "#007AB8",
-      700: "#006BA1",
-      800: "#005885",
-      900: "#003F5E",
-    },
-    // Redefining only one shade, rest of the color will remain same.
-    amber: {
-      400: "#d97706",
-    },
-  },
-  config: {
-    // Changing initialColorMode to 'dark'
-    initialColorMode: "dark",
-  },
-});
-
 const LoadingScreen = ({ styles }) => (
-  <View style={styles.container}>
+  <View style={styles.splash_container}>
     <Image source={require("../img/mylogo.png")} style={styles.mainlogo} />
-    <Text style={styles.maintext}>Welcome to Manage Me!</Text>
+    <Text style={styles.splash_maintext}>Welcome to Manage Me!</Text>
   </View>
 );
 
@@ -102,7 +76,7 @@ const App = () => {
   const Drawer = createDrawerNavigator();
 
   return (
-    <NativeBaseProvider theme={theme}>
+    <NativeBaseProvider>
       <NavigationContainer>
         <Stack.Screen
           name="Auth"
@@ -114,12 +88,12 @@ const App = () => {
           initialRouteName="Auth"
           screenOptions={{
             sceneContainerStyle: { backgroundColor: Colors.mainbg },
-            headerBackgroundContainerStyle: { backgroundColor: Colors.mainbg },
+            headerBackgroundContainerStyle: { backgroundColor: "#fff" },
             headerStyle: {
               backgroundColor: Colors.navblue,
               borderBottomColor: "transparent",
-              borderBottomRightRadius: 25,
-              borderBottomLeftRadius: 25,
+              borderBottomRightRadius: 10,
+              borderBottomLeftRadius: 10,
             },
             headerTintColor: "#fff",
             drawerStyle: { backgroundColor: Colors.navblue },
