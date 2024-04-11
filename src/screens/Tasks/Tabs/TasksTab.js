@@ -133,25 +133,7 @@ const SeeTasks = ({ navigation }) => {
       <Box>
         <Menu
           w="190"
-          trigger={(triggerProps) => {
-            if (isFocused) {
-            return (
-              <Fab
-                accessibilityLabel="More options menu"
-                {...triggerProps}
-                icon={
-                  <FontAwesome5
-                    name="plus"
-                    color={"white"}
-                    size={24}
-                    underlayColor={Colors.navblue}
-                  />
-                }
-                style={{ marginBottom: height * 0.09 }}
-              ></Fab>
-            );
-            }
-          }}
+          trigger={(triggerProps) => {}}
         >
           <Menu.Item onPress={() => openModal()}>New task</Menu.Item>
           <Menu.Item>New group</Menu.Item>

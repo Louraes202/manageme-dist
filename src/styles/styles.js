@@ -4,9 +4,22 @@ import Colors from '../../assets/utils/pallete.json';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+    container_loading: {
+        flex: 1,
+        backgroundColor: Colors.navblue,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    maintext_loading: {
+        fontFamily: 'Poppins',
+        fontSize: 24,
+        color: '#ffffff',
+    },
+
     container: {
         flex: 1,
-        backgroundColor: Colors.mainbg,
+        backgroundColor: "#ffffff",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -14,7 +27,7 @@ const styles = StyleSheet.create({
     maintext: {
         fontFamily: 'Poppins',
         fontSize: 24,
-        color: '#ffffff',
+        color: '#000000',
     },
 
     mainlogo: {
@@ -52,7 +65,7 @@ const styles = StyleSheet.create({
 
     screen: {
         flex: 1,
-        backgroundColor: Colors.mainbg,
+        backgroundColor: "#ffffff",
         padding: 10
     },
 
@@ -61,7 +74,7 @@ const styles = StyleSheet.create({
     title_text : {
         fontFamily: 'Poppins',
         fontSize: 24,
-        color: '#ffffff',
+        color: '#000000',
     }
 });
 
