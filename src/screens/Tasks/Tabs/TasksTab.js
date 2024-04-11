@@ -15,6 +15,7 @@ import {
   FormControl,
   Button,
   Checkbox,
+  Header
 } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Colors from "../../../../assets/utils/pallete.json";
@@ -101,6 +102,7 @@ const SeeTasks = ({ navigation }) => {
 
   return (
     <View style={styles.screen}>
+      
       <NewTask
         open={open}
         setOpen={setOpen}

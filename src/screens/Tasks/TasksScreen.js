@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -9,60 +9,33 @@ import GroupsTab from "./Tabs/GroupsTab";
 import CategoriesTab from "./Tabs/CategoriesTab";
 import Colors from "../../../assets/utils/pallete.json";
 
-
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const { width, height } = Dimensions.get('window');
+
+const bottomTab = StyleSheet.create({
+  bottomTab: {
+    display: "flex",
+    backgroundColor: "#CCCCFF",
+    width: width * 0.8,
+    height: height * 0.07,
+    borderRadius: 15,
+
+    position: "fixed",
+    bottom: 0,
+  }
+})
 
 const Tasks = ({ navigation }) => {
   return (
-      <Tab.Navigator
-        screenOptions={{
-          header: () => null,
-          tabBarStyle: {
-            backgroundColor: Colors.navblue,
-            borderTopColor: "#0062ff",
-            borderTopRightRadius: 25,
-            borderTopLeftRadius: 25
-          },
-          tabBarActiveTintColor: "#fff",
-          tabBarInactiveTintColor: "#dddddd",
-          tabBarActiveBackgroundColor: Colors.activeitem,
-          tabBarInactiveBackgroundColor: "transparent",
-          tabBarItemStyle: {borderTopStartRadius: 25, borderTopEndRadius: 25},
-          tabBarBadgeStyle: {},
-        }}
-      >
-        <Tab.Screen
-          name="Tasks"
-          component={TasksTab}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome5 name="check" color={"white"} size={24} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Groups"
-          component={GroupsTab}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome5 name="layer-group" color={"white"} size={24} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Categories"
-          component={CategoriesTab}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome5 name="list-ol" color={"white"} size={24} />
-            ),
-          }}
-        />  
-      </Tab.Navigator>
+    <View style={{height: "100%", height: height}}>
+      <Text style={styles.maintext}>Tasks</Text>
+      
+      <Text style={styles.maintext}>Tasks</Text>
 
-
-  );
+      <View style={{display: "flex", alignItems: "center", width: width, height: height}}><View style={bottomTab.bottomTab}></View></View>
+    </View>
+  )
 };
 
 export default Tasks;

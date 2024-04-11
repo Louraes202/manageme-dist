@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     maintext: {
         fontFamily: 'Poppins',
         fontSize: 24,
-        color: '#ffffff',
+        color: '#000000',
     },
 
     mainlogo: {
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     title_text : {
         fontFamily: 'Poppins',
         fontSize: 24,
-        color: '#ffffff',
+        color: '#000000',
     }
 });
 
