@@ -29,7 +29,7 @@ const CustomTabBarButton = ({ children, onPress }) => (
         width: 60,
         height: 60,
         borderRadius: 30,
-        backgroundColor: "blue",
+        backgroundColor: Colors.navblue,
         // Estilize seu FAB aqui
       }}
     >
@@ -46,7 +46,8 @@ const Tasks = ({ navigation }) => {
         tabBarStyle: {
           backgroundColor: Colors.navblue,
           borderTopColor: "#0062ff",
-
+          borderRadius: 25,
+          
           marginBottom: 30,
           marginHorizontal: 10,
           height: 50,
@@ -57,6 +58,7 @@ const Tasks = ({ navigation }) => {
         tabBarInactiveBackgroundColor: "transparent",
         tabBarItemStyle: {
           height: 50,
+          borderRadius: 25,
         },
         tabBarShowLabel: false,
         tabBarBadgeStyle: {},
@@ -69,9 +71,9 @@ const Tasks = ({ navigation }) => {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="check" color={"white"} size={24} />
           ),
-          tabBar
+   
+  
         }}
-        
       />
       <Tab.Screen
         name="FAB"
@@ -81,6 +83,7 @@ const Tasks = ({ navigation }) => {
             <FontAwesome5 name="plus" color={"white"} size={24} />
           ),
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          
         }}
       />
       <Tab.Screen

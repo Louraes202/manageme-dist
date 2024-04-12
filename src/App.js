@@ -59,6 +59,8 @@ const App = () => {
     "Kode Mono": require("../assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"),
     Roboto: require("../assets/fonts/Roboto/Roboto-Light.ttf"),
     Poppins: require("../assets/fonts/Poppins/Poppins-Light.ttf"),
+    Poppins_Bold: require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
+    Poppins_Medium: require("../assets/fonts/Poppins/Poppins-Medium.ttf")
   });
 
   useEffect(() => {
@@ -118,8 +120,7 @@ const App = () => {
             headerStyle: {
               backgroundColor: Colors.navblue,
               borderBottomColor: "transparent",
-              borderBottomRightRadius: 25,
-              borderBottomLeftRadius: 25,
+
               
 
             },

@@ -72,9 +72,13 @@ const styles = StyleSheet.create({
     /*New styles*/
 
     title_text : {
+        fontFamily: 'Poppins_Medium',
+        fontSize: 24,
+    },
+
+    title_textscreen : {
         fontFamily: 'Poppins',
         fontSize: 24,
-        color: '#000000',
     }
 });
 

@@ -15,6 +15,9 @@ import {
   FormControl,
   Button,
   Checkbox,
+  Divider,
+  Heading,
+  Icon
 } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Colors from "../../../../assets/utils/pallete.json";
@@ -99,6 +102,14 @@ const SeeTasks = ({ navigation }) => {
 
   const isFocused = useIsFocused();
 
+  const SearchBar = () => {
+    return (
+        <VStack w="100%" my={2} alignSelf="center">
+          <Input placeholder="Search People & Places" width="100%" borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<FontAwesome5 name="search" />} />} InputRightElement={<Icon m="2" mr="3" size="6" color="gray.400" as={<FontAwesome5 name="mic" />} />} />
+        </VStack>
+    )
+  }
+
   return (
     <View style={styles.screen}>
       <NewTask
@@ -109,7 +120,13 @@ const SeeTasks = ({ navigation }) => {
         update={update}
         setUpdate={setUpdate}
       />
-      <Text style={styles.title_text}>Tasks Screen</Text>
+
+      
+      <Text style={styles.title_text}>What's next?</Text>
+      <SearchBar/>
+
+      <Text style={styles.title_textscreen} my={2}>Projects</Text>
+
       <ScrollView>
         <VStack py="">
           <Flex direction="column">
