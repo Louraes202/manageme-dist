@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
-import { Menu, Fab } from "native-base";
+import { View, Text } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -9,6 +8,7 @@ import TasksTab from "./Tabs/TasksTab";
 import GroupsTab from "./Tabs/GroupsTab";
 import CategoriesTab from "./Tabs/CategoriesTab";
 import Colors from "../../../assets/utils/pallete.json";
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -96,6 +96,7 @@ const Tasks = ({ navigation }) => {
         }}
       />
     </Tab.Navigator>
+
   );
 };
 

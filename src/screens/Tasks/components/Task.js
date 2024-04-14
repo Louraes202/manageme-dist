@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
 import { FaCheckCircle } from "react-icons/fa";
 import { FontAwesome } from "@expo/vector-icons";
+import Colors from "../../../../assets/utils/pallete.json"
 
 const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task, update, setUpdate }) => {
   const [done, setDone] = useState(false);
