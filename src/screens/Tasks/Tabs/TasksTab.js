@@ -258,21 +258,7 @@ const SeeTasks = ({ navigation }) => {
           </Flex>
         </VStack>
       </ScrollView>
-<<<<<<< HEAD
       {*/}
-=======
-
-      <Box>
-        <Menu
-          w="190"
-          trigger={(triggerProps) => {}}
-        >
-          <Menu.Item onPress={() => openModal()}>New task</Menu.Item>
-          <Menu.Item>New group</Menu.Item>
-          <Menu.Item>New category</Menu.Item>
-        </Menu>
-      </Box>
->>>>>>> a6acfee2d726d61d7d3b325669c146d9fac91e13
     </View>
   );
 };

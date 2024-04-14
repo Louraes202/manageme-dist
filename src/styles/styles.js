@@ -4,26 +4,9 @@ import Colors from '../../assets/utils/pallete.json';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-<<<<<<< HEAD
     splash_container: {
-=======
-    container_loading: {
         flex: 1,
-        backgroundColor: Colors.navblue,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-
-    maintext_loading: {
-        fontFamily: 'Poppins',
-        fontSize: 24,
-        color: '#ffffff',
-    },
-
-    container: {
->>>>>>> a6acfee2d726d61d7d3b325669c146d9fac91e13
-        flex: 1,
-        backgroundColor: "#ffffff",
+        backgroundColor: Colors.mainbg,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -44,11 +27,7 @@ const styles = StyleSheet.create({
     maintext: {
         fontFamily: 'Poppins',
         fontSize: 24,
-<<<<<<< HEAD
         color: '#000',
-=======
-        color: '#000000',
->>>>>>> a6acfee2d726d61d7d3b325669c146d9fac91e13
     },
 
     mainlogo: {
@@ -86,11 +65,7 @@ const styles = StyleSheet.create({
 
     screen: {
         flex: 1,
-<<<<<<< HEAD
         backgroundColor: "#fff",
-=======
-        backgroundColor: "#ffffff",
->>>>>>> a6acfee2d726d61d7d3b325669c146d9fac91e13
         padding: 10
     },
 
@@ -99,11 +74,7 @@ const styles = StyleSheet.create({
     title_text : {
         fontFamily: 'Poppins',
         fontSize: 24,
-<<<<<<< HEAD
         color: '#000',
-=======
-        color: '#000000',
->>>>>>> a6acfee2d726d61d7d3b325669c146d9fac91e13
     }
 });
 
