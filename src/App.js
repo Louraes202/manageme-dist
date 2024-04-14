@@ -18,9 +18,15 @@ import createTablesQuery from "./services/SQLite/createQuery";
 
 
 const LoadingScreen = ({ styles }) => (
+<<<<<<< HEAD
   <View style={styles.splash_container}>
     <Image source={require("../img/mylogo.png")} style={styles.mainlogo} />
     <Text style={styles.splash_maintext}>Welcome to Manage Me!</Text>
+=======
+  <View style={styles.container_loading}>
+    <Image source={require("../img/mylogo.png")} style={styles.mainlogo} />
+    <Text style={styles.maintext_loading}>Welcome to Manage Me!</Text>
+>>>>>>> a6acfee2d726d61d7d3b325669c146d9fac91e13
   </View>
 );
 
@@ -88,12 +94,23 @@ const App = () => {
           initialRouteName="Auth"
           screenOptions={{
             sceneContainerStyle: { backgroundColor: Colors.mainbg },
+<<<<<<< HEAD
             headerBackgroundContainerStyle: { backgroundColor: "#fff" },
             headerStyle: {
               backgroundColor: Colors.navblue,
               borderBottomColor: "transparent",
               borderBottomRightRadius: 10,
               borderBottomLeftRadius: 10,
+=======
+            headerBackgroundContainerStyle: { backgroundColor: '#ffffff' },
+            headerStyle: {
+              backgroundColor: Colors.navblue,
+              borderBottomColor: "transparent",
+              borderBottomRightRadius: 25,
+              borderBottomLeftRadius: 25,
+              
+
+>>>>>>> a6acfee2d726d61d7d3b325669c146d9fac91e13
             },
             headerTintColor: "#fff",
             drawerStyle: { backgroundColor: Colors.navblue },
