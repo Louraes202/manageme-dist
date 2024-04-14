@@ -40,6 +40,7 @@ const CustomTabBarButton = ({ children, onPress }) => (
 
 const Tasks = ({ navigation }) => {
   return (
+<<<<<<< HEAD
     <Tab.Navigator
       screenOptions={{
         header: () => null,
@@ -47,6 +48,66 @@ const Tasks = ({ navigation }) => {
           backgroundColor: Colors.navblue,
           borderTopColor: "#0062ff",
 
+=======
+<<<<<<< HEAD
+    <View style={{flex: 1, backgroundColor: '#fff'}}>
+      <Tab.Navigator
+        screenOptions={{
+          header: () => null,
+          tabBarStyle: {
+            backgroundColor: Colors.navblue,
+            borderTopColor: "#0062ff",
+            borderTopRightRadius: 10,
+            borderTopLeftRadius: 10
+          },
+          
+          tabBarActiveTintColor: "#fff",
+          tabBarInactiveTintColor: "#dddddd",
+          tabBarActiveBackgroundColor: Colors.activeitem,
+          tabBarInactiveBackgroundColor: "transparent",
+          tabBarItemStyle: {borderTopStartRadius: 10, borderTopEndRadius: 10},
+          tabBarBadgeStyle: {},
+        }}
+      >
+        <Tab.Screen
+          name="Home"
+          component={TasksTab}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome5 name="check" color={"white"} size={24} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Projects"
+          component={GroupsTab}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome5 name="layer-group" color={"white"} size={24} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Categories"
+          component={CategoriesTab}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome5 name="list-ol" color={"white"} size={24} />
+            ),
+          }}
+        />  
+      </Tab.Navigator>
+
+    </View>
+=======
+    <Tab.Navigator
+      screenOptions={{
+        header: () => null,
+        tabBarStyle: {
+          backgroundColor: Colors.navblue,
+          borderTopColor: "#0062ff",
+
+>>>>>>> a24e2ad (Merge branch 'testing' of https://github.com/Louraes202/manageme-dist into testing)
           marginBottom: 30,
           marginHorizontal: 10,
           height: 50,
@@ -93,6 +154,10 @@ const Tasks = ({ navigation }) => {
         }}
       />
     </Tab.Navigator>
+<<<<<<< HEAD
+=======
+>>>>>>> a6acfee2d726d61d7d3b325669c146d9fac91e13
+>>>>>>> a24e2ad (Merge branch 'testing' of https://github.com/Louraes202/manageme-dist into testing)
   );
 };
 

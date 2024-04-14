@@ -44,9 +44,9 @@ const theme = extendTheme({
 });
 
 const LoadingScreen = ({ styles }) => (
-  <View style={styles.container_loading}>
+  <View style={styles.splash_container}>
     <Image source={require("../img/mylogo.png")} style={styles.mainlogo} />
-    <Text style={styles.maintext_loading}>Welcome to Manage Me!</Text>
+    <Text style={styles.splash_maintext}>Welcome to Manage Me!</Text>
   </View>
 );
 
@@ -114,14 +114,12 @@ const App = () => {
           initialRouteName="Auth"
           screenOptions={{
             sceneContainerStyle: { backgroundColor: Colors.mainbg },
-            headerBackgroundContainerStyle: { backgroundColor: '#ffffff' },
+            headerBackgroundContainerStyle: { backgroundColor: "#fff" },
             headerStyle: {
               backgroundColor: Colors.navblue,
               borderBottomColor: "transparent",
-              borderBottomRightRadius: 25,
-              borderBottomLeftRadius: 25,
-              
-
+              borderBottomRightRadius: 10,
+              borderBottomLeftRadius: 10,
             },
             headerTintColor: "#fff",
             drawerStyle: { backgroundColor: Colors.navblue },
