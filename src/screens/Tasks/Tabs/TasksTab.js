@@ -129,12 +129,6 @@ const SeeTasks = ({ navigation }) => {
           </Flex>
         </VStack>
       </ScrollView>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-      {*/}
-=======
->>>>>>> a24e2ad (Merge branch 'testing' of https://github.com/Louraes202/manageme-dist into testing)
 
       <Box>
         <Menu
@@ -146,10 +140,6 @@ const SeeTasks = ({ navigation }) => {
           <Menu.Item>New category</Menu.Item>
         </Menu>
       </Box>
-<<<<<<< HEAD
-=======
->>>>>>> a6acfee2d726d61d7d3b325669c146d9fac91e13
->>>>>>> a24e2ad (Merge branch 'testing' of https://github.com/Louraes202/manageme-dist into testing)
     </View>
   );
 };
