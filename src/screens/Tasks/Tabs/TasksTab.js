@@ -1,20 +1,26 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { View, TextInput, Text } from "react-native";
 import styles from "../../../styles/styles"; // Importar estilos globais
 import { Dimensions } from "react-native";
 import {
   Fab,
+  Heading,
   Center,
   Flex,
   VStack,
+  Icon,
   Menu,
-  Box,
   Input,
+  Stack,
+  Box,
+  Button,
   Modal,
   FormControl,
-  Button,
+  Image,
+  AspectRatio,
   Checkbox,
+  HStack,
 } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Colors from "../../../../assets/utils/pallete.json";
@@ -58,7 +64,14 @@ const fetchTasksFromDatabase = () => {
 
 const doTask = (task) => {
   const db = SQLite.openDatabase("manageme");
-  db.transaction((tx) => {tx.executeSql(""), [], (error) => {console.error("Error doing task (" + {task} + "). :", error); reject(error);}})
+  db.transaction((tx) => {
+    tx.executeSql(""),
+      [],
+      (error) => {
+        console.error("Error doing task (" + { task } + "). :", error);
+        reject(error);
+      };
+  });
 };
 
 const deleteTask = (task) => {
@@ -88,7 +101,6 @@ const SeeTasks = ({ navigation }) => {
     setOpen(true);
   };
 
-
   useEffect(() => {
     fetchTasksFromDatabase()
       .then((tasks) => {
@@ -109,8 +121,125 @@ const SeeTasks = ({ navigation }) => {
         update={update}
         setUpdate={setUpdate}
       />
-      <Text style={styles.title_text}>Tasks Screen</Text>
+      <VStack w="100%" space={5} alignSelf="center">
+        <Input
+          placeholder="Search Tasks & Projects"
+          width="100%"
+          borderRadius="20"
+          py="3"
+          px="1"
+          fontSize="14"
+          InputLeftElement={
+            <Icon
+              m="2"
+              ml="3"
+              size="6"
+              color="gray.400"
+              as={<FontAwesome5 name="search" />}
+            />
+          }
+        />
+      </VStack>
+
       <ScrollView>
+        <Flex marginY={5}>
+          <HStack justifyContent={"space-between"}>
+            <Heading>Projects</Heading>
+            <Button
+              borderRadius={25}
+              colorScheme={"blue"}
+              leftIcon={<FontAwesome5 name="plus" color="white" />}
+            >
+              Add
+            </Button>
+          </HStack>
+          <Text>You have {} projects</Text>
+          <ScrollView horizontal>
+            <Box alignItems="" my={2}>
+              <Box
+                maxW="80"
+                rounded="lg"
+                overflow="hidden"
+                borderColor="coolGray.200"
+                borderWidth="1"
+                _dark={{
+                  borderColor: "coolGray.600",
+                  backgroundColor: "gray.700",
+                }}
+                _web={{
+                  shadow: 2,
+                  borderWidth: 0,
+                }}
+                _light={{
+                  backgroundColor: "gray.50",
+                }}
+              >
+                <Box>
+                  <AspectRatio w="100%" ratio={16 / 9}>
+                    <Image
+                      source={{
+                        uri: "https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg",
+                      }}
+                      alt="image"
+                    />
+                  </AspectRatio>
+                  <Center
+                    bg="violet.500"
+                    _dark={{
+                      bg: "violet.400",
+                    }}
+                    _text={{
+                      color: "warmGray.50",
+                      fontWeight: "700",
+                      fontSize: "xs",
+                    }}
+                    position="absolute"
+                    bottom="0"
+                    px="3"
+                    py="1.5"
+                  >
+                    Category
+                  </Center>
+                </Box>
+                <Stack p="4" space={3}>
+                  <Stack space={2}>
+                    <Heading size="md" ml="-1">
+                      Project Example
+                    </Heading>
+                    <Text
+                      fontSize="xs"
+                    >Productivity app.
+                    </Text>
+                  </Stack>
+                  <HStack
+                    alignItems="center"
+                    space={4}
+                    justifyContent="space-between"
+                  >
+                    <HStack alignItems="center">
+                      <Text
+                        color="coolGray.600"
+                        _dark={{
+                          color: "warmGray.200",
+                        }}
+                        fontWeight="400"
+                      >
+                        6 mins ago
+                      </Text>
+                    </HStack>
+                  </HStack>
+                </Stack>
+              </Box>
+            </Box>
+          </ScrollView>
+        </Flex>
+
+        <Flex marginY={5}>
+          <Heading>Today's Tasks</Heading>
+        </Flex>
+      </ScrollView>
+
+      {/*}<ScrollView>
         <VStack py="">
           <Flex direction="column">
             {tasks.map((task) => (
@@ -129,17 +258,7 @@ const SeeTasks = ({ navigation }) => {
           </Flex>
         </VStack>
       </ScrollView>
-
-      <Box>
-        <Menu
-          w="190"
-          trigger={(triggerProps) => {}}
-        >
-          <Menu.Item onPress={() => openModal()}>New task</Menu.Item>
-          <Menu.Item>New group</Menu.Item>
-          <Menu.Item>New category</Menu.Item>
-        </Menu>
-      </Box>
+      {*/}
     </View>
   );
 };
