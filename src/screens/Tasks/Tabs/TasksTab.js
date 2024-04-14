@@ -8,6 +8,7 @@ import {
   Center,
   Flex,
   VStack,
+  HStack,
   Menu,
   Box,
   Input,
@@ -17,7 +18,8 @@ import {
   Checkbox,
   Divider,
   Heading,
-  Icon
+  Spacer,
+  Icon,
 } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Colors from "../../../../assets/utils/pallete.json";
@@ -61,7 +63,14 @@ const fetchTasksFromDatabase = () => {
 
 const doTask = (task) => {
   const db = SQLite.openDatabase("manageme");
-  db.transaction((tx) => {tx.executeSql(""), [], (error) => {console.error("Error doing task (" + {task} + "). :", error); reject(error);}})
+  db.transaction((tx) => {
+    tx.executeSql(""),
+      [],
+      (error) => {
+        console.error("Error doing task (" + { task } + "). :", error);
+        reject(error);
+      };
+  });
 };
 
 const deleteTask = (task) => {
@@ -91,7 +100,6 @@ const SeeTasks = ({ navigation }) => {
     setOpen(true);
   };
 
-
   useEffect(() => {
     fetchTasksFromDatabase()
       .then((tasks) => {
@@ -104,11 +112,36 @@ const SeeTasks = ({ navigation }) => {
 
   const SearchBar = () => {
     return (
-        <VStack w="100%" my={2} alignSelf="center">
-          <Input placeholder="Search People & Places" width="100%" borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<FontAwesome5 name="search" />} />} InputRightElement={<Icon m="2" mr="3" size="6" color="gray.400" as={<FontAwesome5 name="mic" />} />} />
-        </VStack>
-    )
-  }
+      <VStack w="100%" my={2} alignSelf="center">
+        <Input
+          placeholder="Search People & Places"
+          width="100%"
+          borderRadius="4"
+          py="3"
+          px="1"
+          fontSize="14"
+          InputLeftElement={
+            <Icon
+              m="2"
+              ml="3"
+              size="6"
+              color="gray.400"
+              as={<FontAwesome5 name="search" />}
+            />
+          }
+          InputRightElement={
+            <Icon
+              m="2"
+              mr="3"
+              size="6"
+              color="gray.400"
+              as={<FontAwesome5 name="mic" />}
+            />
+          }
+        />
+      </VStack>
+    );
+  };
 
   return (
     <View style={styles.screen}>
@@ -121,12 +154,26 @@ const SeeTasks = ({ navigation }) => {
         setUpdate={setUpdate}
       />
 
-      
+      {/* Início */}
       <Text style={styles.title_text}>What's next?</Text>
-      <SearchBar/>
 
-      <Text style={styles.title_textscreen} my={2}>Projects</Text>
+      {/* Zona de pesquisa */}
+      <SearchBar />
 
+      {/* Zona dos projetos */}
+      <VStack my={2}>
+        <HStack alignItems={'center'} >
+          <Text style={styles.title_textscreen}>Projects</Text>
+          <Spacer/>
+          <Text>See all</Text>
+        </HStack>
+
+        <ScrollView horizontal={true}>
+          
+        </ScrollView>
+      </VStack>
+
+      {/* Zona das tarefas */}
       <ScrollView>
         <VStack py="">
           <Flex direction="column">
@@ -137,10 +184,10 @@ const SeeTasks = ({ navigation }) => {
                 name={task["nome"]}
                 desc={task["descricao"]}
                 group={task["grupo"]}
-                doTask={() => doTask(task)} 
-                deleteTask={() => deleteTask(task)} 
-                update = {update}
-                setUpdate = {setUpdate}
+                doTask={() => doTask(task)}
+                deleteTask={() => deleteTask(task)}
+                update={update}
+                setUpdate={setUpdate}
               />
             ))}
           </Flex>
@@ -148,10 +195,7 @@ const SeeTasks = ({ navigation }) => {
       </ScrollView>
 
       <Box>
-        <Menu
-          w="190"
-          trigger={(triggerProps) => {}}
-        >
+        <Menu w="190" trigger={(triggerProps) => {}}>
           <Menu.Item onPress={() => openModal()}>New task</Menu.Item>
           <Menu.Item>New group</Menu.Item>
           <Menu.Item>New category</Menu.Item>
