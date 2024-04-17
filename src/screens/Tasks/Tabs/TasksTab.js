@@ -1,4 +1,5 @@
 import React from "react";
+import AddProject from "../crud/AddProject";
 import { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import styles from "../../../styles/styles"; // Importar estilos globais
@@ -20,6 +21,7 @@ import {
   Heading,
   Spacer,
   Icon,
+  Pressable,
 } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Colors from "../../../../assets/utils/pallete.json";
@@ -29,6 +31,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useIsFocused } from "@react-navigation/native";
 import * as SQLite from "expo-sqlite";
 import createTablesQuery from "../../../services/SQLite/createQuery";
+import ProjectCard from "../components/ProjectCard";
+import ProjectDetail from "../crud/ProjectDetail";
+import AddTask from "../crud/AddTask";
 
 const { width, height } = Dimensions.get("window");
 
@@ -54,6 +59,31 @@ const fetchTasksFromDatabase = () => {
         },
         (error) => {
           console.error("Error fetching tasks from database.", error);
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+const fetchProjectsFromDatabase = () => {
+  return new Promise((resolve, reject) => {
+    const db = SQLite.openDatabase("manageme");
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM Grupos",
+        [],
+        (tx, results) => {
+          const len = results.rows.length;
+          const projects = [];
+          for (let i = 0; i < len; i++) {
+            const project = results.rows.item(i);
+            projects.push(project);
+          }
+          resolve(projects);
+        },
+        (error) => {
+          console.error("Error fetching projects from database.", error);
           reject(error);
         }
       );
@@ -91,22 +121,52 @@ const deleteTask = (task) => {
 
 const TasksStack = createNativeStackNavigator();
 
-const SeeTasks = ({ navigation }) => {
+const SeeTasks = ({
+  navigation,
+  updateProjects,
+  setUpdateProjects,
+  updateTasks,
+  setUpdateTasks,
+}) => {
   const [tasks, setTasks] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [update, setUpdate] = useState(false);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
 
-  const openModal = (placement) => {
-    setOpen(true);
-  };
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    fetchProjectsFromDatabase().then((data) => {
+      setProjects(data);
+      setUpdateProjects(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (updateProjects) {
+      fetchProjectsFromDatabase().then((data) => {
+        setProjects(data);
+        setUpdateProjects(false);
+      });
+    }
+  }, [updateProjects]);
+
+  useEffect(() => {
+    if (updateTasks) {
+      fetchTasksFromDatabase()
+        .then((tasks) => {
+          setTasks(tasks), setUpdateTasks(false);
+        })
+        .catch((error) => console.error("Error fetching tasks:", error));
+    }
+  }, []);
 
   useEffect(() => {
     fetchTasksFromDatabase()
       .then((tasks) => {
-        setTasks(tasks), setUpdate(false);
+        setTasks(tasks), setUpdateTasks(false);
       })
       .catch((error) => console.error("Error fetching tasks:", error));
-  }, [update]);
+  }, [updateTasks]);
 
   const isFocused = useIsFocused();
 
@@ -135,7 +195,7 @@ const SeeTasks = ({ navigation }) => {
               mr="3"
               size="6"
               color="gray.400"
-              as={<FontAwesome5 name="mic" />}
+              as={<FontAwesome5 name="" />}
             />
           }
         />
@@ -143,76 +203,134 @@ const SeeTasks = ({ navigation }) => {
     );
   };
 
+  const AddButton = ({ color, onPress, paddingX, paddingY }) => {
+    return (
+      <Box alignItems="center">
+        <Pressable maxW="96" onPress={onPress}>
+          {({ isHovered, isFocused, isPressed }) => {
+            return (
+              <Box
+                bg={
+                  isPressed
+                    ? "coolGray.200"
+                    : isHovered
+                    ? "coolGray.200"
+                    : color
+                }
+                style={{
+                  transform: [
+                    {
+                      scale: isPressed ? 0.96 : 1,
+                    },
+                  ],
+                }}
+                px={paddingX}
+                py={paddingY}
+                rounded="8"
+                shadow={3}
+                borderWidth="1"
+                borderColor="coolGray.300"
+              >
+                <FontAwesome5 name="plus" size="30" color="white" />
+                <Text style={{ color: "white" }}>New</Text>
+              </Box>
+            );
+          }}
+        </Pressable>
+      </Box>
+    );
+  };
+
   return (
     <View style={styles.screen}>
-      <NewTask
-        open={open}
-        setOpen={setOpen}
-        tasks={tasks}
-        setTasks={setTasks}
-        update={update}
-        setUpdate={setUpdate}
-      />
-
-      {/* Início */}
-      <Text style={styles.title_text}>What's next?</Text>
-
-      {/* Zona de pesquisa */}
-      <SearchBar />
-
-      {/* Zona dos projetos */}
-      <VStack my={2}>
-        <HStack alignItems={'center'} >
-          <Text style={styles.title_textscreen}>Projects</Text>
-          <Spacer/>
-          <Text>See all</Text>
-        </HStack>
-
-        <ScrollView horizontal={true}>
-          
-        </ScrollView>
-      </VStack>
-
-      {/* Zona das tarefas */}
       <ScrollView>
-        <VStack py="">
-          <Flex direction="column">
-            {tasks.map((task) => (
-              <Task
-                task={task}
-                key={task["idTarefa"]}
-                name={task["nome"]}
-                desc={task["descricao"]}
-                group={task["grupo"]}
-                doTask={() => doTask(task)}
-                deleteTask={() => deleteTask(task)}
-                update={update}
-                setUpdate={setUpdate}
+        {/* Início */}
+        {/* Zona de pesquisa */}
+        <SearchBar />
+        {/* Zona dos projetos */}
+        <VStack>
+          <HStack alignItems={"center"}>
+            <Text style={styles.title_textscreen}>Projects</Text>
+            <Spacer />
+            <Text>See all</Text>
+          </HStack>
+          <VStack my={2}>
+            <ScrollView style={{ paddingBottom: 20 }} horizontal={true}>
+              {projects.map((project) => (
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("Project Detail", { project })
+                  }
+                >
+                  <ProjectCard key={project.id} project={project} />
+                </Pressable>
+              ))}
+              <AddButton
+                color="#5983FC"
+                paddingX={8}
+                paddingY={8}
+                onPress={() => navigation.navigate("Add Group")}
               />
-            ))}
-          </Flex>
+            </ScrollView>
+          </VStack>
         </VStack>
-      </ScrollView>
 
-      <Box>
-        <Menu w="190" trigger={(triggerProps) => {}}>
-          <Menu.Item onPress={() => openModal()}>New task</Menu.Item>
-          <Menu.Item>New group</Menu.Item>
-          <Menu.Item>New category</Menu.Item>
-        </Menu>
-      </Box>
+        {/* Zona das tarefas */}
+        <VStack my={2}>
+          <HStack alignItems={"center"}>
+            <Text style={styles.title_textscreen}>Tasks</Text>
+            <Spacer />
+            <Text>See all</Text>
+          </HStack>
+        </VStack>
+        <ScrollView>
+          <VStack py="">
+            <Flex direction="column">
+              {tasks.map((task) => (
+                <Task
+                  task={task}
+                  key={task["idTarefa"]}
+                  name={task["nome"]}
+                  desc={task["descricao"]}
+                  group={task["grupo"]}
+                  doTask={() => doTask(task)}
+                  deleteTask={() => deleteTask(task)}
+                  updatetasks={updateTasks}
+                  setUpdateTasks={setUpdateTasks}
+                />
+              ))}
+            </Flex>
+          </VStack>
+          <AddButton
+            color="#5983FC"
+            paddingX={168}
+            paddingY={4}
+            onPress={() => navigation.navigate("Add Task")}
+          ></AddButton>
+        </ScrollView>
+
+        <Box>
+          <Menu w="190" trigger={(triggerProps) => {}}>
+            <Menu.Item onPress={() => openModal()}>New task</Menu.Item>
+            <Menu.Item>New task</Menu.Item>
+            <Menu.Item>New project</Menu.Item>
+          </Menu>
+        </Box>
+      </ScrollView>
     </View>
   );
 };
 
-const NewTask = ({ open, setOpen, tasks, setTasks, update, setUpdate }) => {
+{
+  /*}
+const NewTask = ({ open, setOpen, tasks, setTasks, updateTasks, setUpdateTasks }) => {
   const addNewTask = (name, description) => {
     const db = SQLite.openDatabase("manageme");
     db.transaction((tx) => {
       tx.executeSql(
         "INSERT INTO TAREFAS (nome, descricao) VALUES (?, ?)",
         [name, description],
-        setUpdate(true),
+        setUpdateTasks(true),
 
         (error) => {
           console.error("Error adding new task:", error);
@@ -220,76 +338,43 @@ const NewTask = ({ open, setOpen, tasks, setTasks, update, setUpdate }) => {
       );
     });
   };
-
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-
-  return (
-    <Modal isOpen={open} onClose={() => setOpen(false)} safeAreaTop={true}>
-      <Modal.Content maxWidth="350" center>
-        <Modal.CloseButton />
-        <Modal.Header>New Task</Modal.Header>
-        <Modal.Body>
-          <FormControl nativeID="newTaskForm">
-            <FormControl.Label>Name</FormControl.Label>
-            <Input
-              value={name}
-              onChangeText={(value) => {
-                setName(value);
-              }}
-            />
-          </FormControl>
-          <FormControl mt="3">
-            <FormControl.Label>Description</FormControl.Label>
-            <Input
-              value={description}
-              onChangeText={(value) => {
-                setDescription(value);
-              }}
-            />
-          </FormControl>
-          <FormControl mt="3" flexDirection="row" alignItems="center">
-            <FormControl.Label mr="2">Notify</FormControl.Label>
-            <Checkbox aria-label="Notify" />
-          </FormControl>
-          <FormControl mt="3" flexDirection="row" alignItems="center">
-            <FormControl.Label mr="2">Repeat</FormControl.Label>
-            <Checkbox aria-label="Repeat" />
-          </FormControl>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button.Group space={2}>
-            <Button
-              variant="ghost"
-              colorScheme="blueGray"
-              onPress={() => {
-                setOpen(false);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onPress={() => {
-                addNewTask(name, description);
-                setOpen(false);
-              }}
-            >
-              Add
-            </Button>
-          </Button.Group>
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal>
-  );
 };
+{*/
+}
 
 const TasksTab = ({ navigation }) => {
+  const [updateProjects, setUpdateProjects] = useState(false);
+  const [updateTasks, setUpdateTasks] = useState(false);
+
   return (
     <TasksStack.Navigator
       initialRouteName="Tasks Screen"
       screenOptions={{ header: () => null }}
     >
-      <TasksStack.Screen name="Tasks Screen" component={SeeTasks} />
+      <TasksStack.Screen name="Tasks Screen">
+        {(props) => (
+          <SeeTasks
+            {...props}
+            updateProjects={updateProjects}
+            setUpdateProjects={setUpdateProjects}
+            updateTAsks={updateTasks}
+            setUpdateTasks={setUpdateTasks}
+          />
+        )}
+      </TasksStack.Screen>
+      <TasksStack.Screen name="Add Group">
+        {(props) => (
+          <AddProject {...props} setUpdateProjects={setUpdateProjects} />
+        )}
+      </TasksStack.Screen>
+      <TasksStack.Screen name="Project Detail">
+        {(props) => (
+          <ProjectDetail {...props} setUpdateProjects={setUpdateProjects} />
+        )}
+      </TasksStack.Screen>
+      <TasksStack.Screen name="Add Task">
+        {(props) => <AddTask {...props} setUpdateTasks={setUpdateTasks} />}
+      </TasksStack.Screen>
     </TasksStack.Navigator>
   );
 };

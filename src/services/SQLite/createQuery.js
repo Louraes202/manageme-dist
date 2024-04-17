@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS Grupos (
     idGrupo INTEGER PRIMARY KEY AUTOINCREMENT,
     nome NVARCHAR(100) NOT NULL,
     descricao NVARCHAR(255),
-    icone NVARCHAR(),
+    icone NVARCHAR(255),
     idTarefa INTEGER,
     idPerfil INTEGER,
     FOREIGN KEY (idTarefa) REFERENCES Tarefas(idTarefa),

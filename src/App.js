@@ -16,7 +16,6 @@ import Colors from "../assets/utils/pallete.json";
 import { NativeBaseProvider, extendTheme } from "native-base";
 import createTablesQuery from "./services/SQLite/createQuery";
 
-
 const theme = extendTheme({
   colors: {
     // Add new color
@@ -39,7 +38,7 @@ const theme = extendTheme({
   },
   config: {
     // Changing initialColorMode to 'dark'
-    initialColorMode: "dark",
+    initialColorMode: "white",
   },
 });
 
@@ -60,34 +59,45 @@ const App = () => {
     Roboto: require("../assets/fonts/Roboto/Roboto-Light.ttf"),
     Poppins: require("../assets/fonts/Poppins/Poppins-Light.ttf"),
     Poppins_Bold: require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
-    Poppins_Medium: require("../assets/fonts/Poppins/Poppins-Medium.ttf")
+    Poppins_Medium: require("../assets/fonts/Poppins/Poppins-Medium.ttf"),
   });
 
   useEffect(() => {
     async function prepare() {
       try {
-        const queries = createTablesQuery.trim().split(';').filter(query => query.length > 0);
-  
-        db.transaction(tx => {
-          queries.forEach(query => {
+        const queries = createTablesQuery
+          .trim()
+          .split(";")
+          .filter((query) => query.length > 0);
+
+        db.transaction((tx) => {
+          queries.forEach((query) => {
             tx.executeSql(
               query,
               [],
-              (_, result) => console.log("Tabela criada ou já existe"),
+              (_, result) => console.log("Tabela criada ou já existe", result),
               (_, error) => console.log("Erro ao criar tabela", error)
             );
           });
+
+          {/*} tx.executeSql(
+            "ALTER TABLE Grupos ADD COLUMN imageUri TEXT;",
+            [],
+            (_, result) => console.log("Tabela criada ou já existe", result),
+            (_, error) => console.log("Erro ao criar tabela", error)
+          ); {*/}
+
         });
-        
+
         // Espera artificial, ajuste conforme necessário
-        await new Promise(resolve => setTimeout(resolve, 2000)); 
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
       } finally {
         setAppIsReady(true);
       }
     }
-  
+
     prepare();
   }, []);
   const onLayoutRootView = useCallback(async () => {
@@ -116,13 +126,10 @@ const App = () => {
           initialRouteName="Auth"
           screenOptions={{
             sceneContainerStyle: { backgroundColor: Colors.mainbg },
-            headerBackgroundContainerStyle: { backgroundColor: '#ffffff' },
+            headerBackgroundContainerStyle: { backgroundColor: "#ffffff" },
             headerStyle: {
               backgroundColor: Colors.navblue,
               borderBottomColor: "transparent",
-
-              
-
             },
             headerTintColor: "#fff",
             drawerStyle: { backgroundColor: Colors.navblue },
@@ -130,9 +137,12 @@ const App = () => {
             drawerInactiveTintColor: "#fff",
           }}
         >
-
           <Drawer.Screen name="Home" component={HomeScreen} options={{}} />
-          <Drawer.Screen name="Tasks Screen" component={TasksScreen} options={{drawerLabel: "Tasks", headerTitle: "Tasks"}} />
+          <Drawer.Screen
+            name="Tasks Screen"
+            component={TasksScreen}
+            options={{ drawerLabel: "Tasks", headerTitle: "Tasks" }}
+          />
         </Drawer.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
