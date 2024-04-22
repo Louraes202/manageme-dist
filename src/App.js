@@ -8,7 +8,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import AuthScreen from "./../src/screens/AuthScreen";
 import HomeScreen from "./../src/screens/HomeScreen";
 import TasksScreen from "../src/screens/Tasks/TasksScreen";
-import WeekPlannerScreen from "../src/screens/Weekplanner/WeekPlannerScreen"
+import WeekPlannerScreen from "../src/screens/Weekplanner/WeekPlannerScreen";
 import styles from ".././src/styles/styles"; // Importar estilos globais
 import "react-native-gesture-handler";
 import * as SQLite from "expo-sqlite";
@@ -16,7 +16,7 @@ import { databaseSchema } from "./services/SQLite/databaseSchema";
 import Colors from "../assets/utils/pallete.json";
 import { NativeBaseProvider, extendTheme } from "native-base";
 import createTablesQuery from "./services/SQLite/createQuery";
-
+import Icon from "react-native-vector-icons/Ionicons";
 const theme = extendTheme({
   colors: {
     // Add new color
@@ -87,7 +87,6 @@ const App = () => {
             (_, result) => console.log("Tabela criada ou já existe", result),
             (_, error) => console.log("Erro ao criar tabela", error)
           );
-
         });
 
         // Espera artificial, ajuste conforme necessário
@@ -138,16 +137,103 @@ const App = () => {
             drawerInactiveTintColor: "#fff",
           }}
         >
-          <Drawer.Screen name="Home" component={HomeScreen} options={{}} />
+          <Drawer.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              drawerLabel: "Home",
+              headerTitle: "Home",
+              drawerIcon: ({ focused, color, size }) => (
+                <Icon
+                  name={focused ? "home" : "home-outline"}
+                  style={{ marginRight: -20 }}
+                  color={color}
+                  size={size}
+                />
+              ),
+            }}
+          />
           <Drawer.Screen
             name="Tasks Screen"
             component={TasksScreen}
-            options={{ drawerLabel: "Tasks", headerTitle: "Tasks" }}
+            options={{
+              drawerLabel: "Tasks",
+              headerTitle: "Tasks",
+              drawerIcon: ({ focused, color, size }) => (
+                <Icon
+                  name={
+                    focused ? "checkmark-circle" : "checkmark-circle-outline"
+                  }
+                  style={{ marginRight: -20 }}
+                  color={color}
+                  size={size}
+                />
+              ),
+            }}
           />
           <Drawer.Screen
             name="Planner"
             component={WeekPlannerScreen}
-            options={{ drawerLabel: "Planner", headerTitle: "Planner" }}
+            options={{
+              drawerLabel: "Planner",
+              headerTitle: "Planner",
+              drawerIcon: ({ focused, color, size }) => (
+                <Icon
+                  name={focused ? "calendar" : "calendar-outline"}
+                  style={{ marginRight: -20 }}
+                  color={color}
+                  size={size}
+                />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="Habit"
+            component={WeekPlannerScreen}
+            options={{
+              drawerLabel: "Habit Tracker",
+              headerTitle: "Habit Tracker",
+              drawerIcon: ({ focused, color, size }) => (
+                <Icon
+                  name={focused ? "disc" : "disc-outline"}
+                  style={{ marginRight: -20 }}
+                  color={color}
+                  size={size}
+                />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="Stats"
+            component={WeekPlannerScreen}
+            options={{
+              drawerLabel: "Statistic",
+              headerTitle: "Statistic",
+              drawerIcon: ({ focused, color, size }) => (
+                <Icon
+                  name={focused ? "bar-chart" : "bar-chart-outline"}
+                  style={{ marginRight: -20 }}
+                  color={color}
+                  size={size}
+                />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="Settings"
+            component={WeekPlannerScreen}
+            options={{
+              drawerLabel: "Settings",
+              headerTitle: "Settings",
+              drawerIcon: ({ focused, color, size }) => (
+                <Icon
+                  name={focused ? "settings" : "settings-outline"}
+                  style={{ marginRight: -20 }}
+                  color={color}
+                  size={size}
+                />
+              ),
+            }}
           />
         </Drawer.Navigator>
       </NavigationContainer>
