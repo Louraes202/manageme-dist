@@ -8,6 +8,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import AuthScreen from "./../src/screens/AuthScreen";
 import HomeScreen from "./../src/screens/HomeScreen";
 import TasksScreen from "../src/screens/Tasks/TasksScreen";
+import WeekPlannerScreen from "../src/screens/Weekplanner/WeekPlannerScreen"
 import styles from ".././src/styles/styles"; // Importar estilos globais
 import "react-native-gesture-handler";
 import * as SQLite from "expo-sqlite";
@@ -80,12 +81,12 @@ const App = () => {
             );
           });
 
-          {/*} tx.executeSql(
+          tx.executeSql(
             "ALTER TABLE Grupos ADD COLUMN imageUri TEXT;",
             [],
             (_, result) => console.log("Tabela criada ou já existe", result),
             (_, error) => console.log("Erro ao criar tabela", error)
-          ); {*/}
+          );
 
         });
 
@@ -142,6 +143,11 @@ const App = () => {
             name="Tasks Screen"
             component={TasksScreen}
             options={{ drawerLabel: "Tasks", headerTitle: "Tasks" }}
+          />
+          <Drawer.Screen
+            name="Planner"
+            component={WeekPlannerScreen}
+            options={{ drawerLabel: "Planner", headerTitle: "Planner" }}
           />
         </Drawer.Navigator>
       </NavigationContainer>

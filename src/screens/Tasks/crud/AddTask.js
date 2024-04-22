@@ -36,9 +36,6 @@ const AddTask = ({ navigation, setUpdateTasks }) => {
     });
   };
 
-  
-  
-
   return (
     <ScrollView style={styles_add.container}>
       <HStack alignItems={"center"} space={""}>

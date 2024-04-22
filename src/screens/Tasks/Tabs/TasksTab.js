@@ -151,21 +151,19 @@ const SeeTasks = ({
   }, [updateProjects]);
 
   useEffect(() => {
-    if (updateTasks) {
-      fetchTasksFromDatabase()
-        .then((tasks) => {
-          setTasks(tasks), setUpdateTasks(false);
-        })
-        .catch((error) => console.error("Error fetching tasks:", error));
-    }
+    fetchTasksFromDatabase().then((data) => {
+      setTasks(data);
+      setUpdateTasks(false);
+    });
   }, []);
 
   useEffect(() => {
-    fetchTasksFromDatabase()
-      .then((tasks) => {
-        setTasks(tasks), setUpdateTasks(false);
-      })
-      .catch((error) => console.error("Error fetching tasks:", error));
+    if (updateTasks) {
+      fetchTasksFromDatabase().then((data) => {
+        setTasks(data);
+        setUpdateTasks(false);
+      });
+    }
   }, [updateTasks]);
 
   const isFocused = useIsFocused();
@@ -295,7 +293,7 @@ const SeeTasks = ({
                   group={task["grupo"]}
                   doTask={() => doTask(task)}
                   deleteTask={() => deleteTask(task)}
-                  updatetasks={updateTasks}
+                  updateTasks={updateTasks}
                   setUpdateTasks={setUpdateTasks}
                 />
               ))}
@@ -357,7 +355,7 @@ const TasksTab = ({ navigation }) => {
             {...props}
             updateProjects={updateProjects}
             setUpdateProjects={setUpdateProjects}
-            updateTAsks={updateTasks}
+            updateTasks={updateTasks}
             setUpdateTasks={setUpdateTasks}
           />
         )}
