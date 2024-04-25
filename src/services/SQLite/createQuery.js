@@ -24,8 +24,9 @@ CREATE TABLE IF NOT EXISTS Tarefas (
     idTarefa INTEGER PRIMARY KEY AUTOINCREMENT,
     nome NVARCHAR(100) NOT NULL,
     descricao NVARCHAR(255),
-    repetir DATETIME,
-    notificar DATETIME,
+    dataConclusao DATE,
+    repetir BOOLEAN,
+    diasRepeticao TEXT,  // JSON para armazenar os dias específicos para repetição
     idGrupo INTEGER,
     diaMes DATE,
     idPerfil INTEGER,
@@ -191,6 +192,23 @@ CREATE TABLE IF NOT EXISTS GrupoEvento (
     PRIMARY KEY (idGrupo, idEvento),
     FOREIGN KEY (idGrupo) REFERENCES Grupos(idGrupo),
     FOREIGN KEY (idEvento) REFERENCES Eventos(idEvento)
+);
+
+CREATE TABLE IF NOT EXISTS Projetos (
+    idProjeto INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome NVARCHAR(100) NOT NULL,
+    descricao NVARCHAR(255),
+    imageUri NVARCHAR(255),
+    idPerfil INTEGER,
+    FOREIGN KEY (idPerfil) REFERENCES Perfil(idPerfil)
+);
+
+CREATE TABLE IF NOT EXISTS ProjetoTarefa (
+    idProjeto INTEGER,
+    idTarefa INTEGER,
+    PRIMARY KEY (idProjeto, idTarefa),
+    FOREIGN KEY (idProjeto) REFERENCES Projetos(idProjeto),
+    FOREIGN KEY (idTarefa) REFERENCES Tarefas(idTarefa)
 );
 `;
 

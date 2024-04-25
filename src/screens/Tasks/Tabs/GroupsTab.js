@@ -5,7 +5,7 @@ import styles from "../../../styles/styles"; // Importar estilos globais
 const GroupsTab = () => {
   return (
     <View style={styles.screen}>
-      <Text style={styles.maintext}>Projects Screen</Text>
+      <Text style={styles.maintext}>Groups Screen</Text>
     </View>
   );
 };

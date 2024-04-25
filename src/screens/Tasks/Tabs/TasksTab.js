@@ -71,7 +71,7 @@ const fetchProjectsFromDatabase = () => {
     const db = SQLite.openDatabase("manageme");
     db.transaction((tx) => {
       tx.executeSql(
-        "SELECT * FROM Grupos",
+        "SELECT * FROM Projetos",
         [],
         (tx, results) => {
           const len = results.rows.length;
@@ -177,7 +177,6 @@ const SeeTasks = ({
           borderRadius="4"
           py="3"
           px="1"
-          fontSize="14"
           InputLeftElement={
             <Icon
               m="2"
@@ -291,6 +290,7 @@ const SeeTasks = ({
                   name={task["nome"]}
                   desc={task["descricao"]}
                   group={task["grupo"]}
+                  createdAt={task.createdAt}
                   doTask={() => doTask(task)}
                   deleteTask={() => deleteTask(task)}
                   updateTasks={updateTasks}

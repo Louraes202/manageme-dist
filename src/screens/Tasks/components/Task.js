@@ -13,8 +13,9 @@ import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
 import { FaCheckCircle } from "react-icons/fa";
 import { FontAwesome } from "@expo/vector-icons";
+import { differenceInMinutes, formatDistanceToNow } from 'date-fns';
 
-const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task, updateTasks, setUpdateTasks }) => {
+const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task, updateTasks, setUpdateTasks, createdAt }) => {
   const [done, setDone] = useState(false);
   const [dodelete, setDelete] = useState(false);
 
@@ -29,6 +30,12 @@ const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task
       doTask(task);
     }
   }, [done]);
+
+  // Converter a string de data para um objeto Date
+  const createdAtDate = new Date(createdAt);
+  
+  // Calcular a diferença de tempo em relação ao agora
+  const timeAgo = formatDistanceToNow(createdAtDate, { addSuffix: true });
 
   return (
     <Box alignItems="center" marginY={2}>
@@ -59,7 +66,7 @@ const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task
             </Badge>
             <Spacer />
             <Text fontSize={10} color="coolGray.800">
-              1 month ago
+              {timeAgo}
             </Text>
           </HStack>
           <Text color="coolGray.800" mt="3" fontWeight="medium" fontSize="xl">

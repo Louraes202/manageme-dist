@@ -81,10 +81,10 @@ const App = () => {
             );
           });
 
-          tx.executeSql(
-            "ALTER TABLE Grupos ADD COLUMN imageUri TEXT;",
+          tx.executeSql( // funçao para executar queries ocasionais
+            "",
             [],
-            (_, result) => console.log("Tabela criada ou já existe", result),
+            (_, result) => console.log("Done!", result),
             (_, error) => console.log("Erro ao criar tabela", error)
           );
         });

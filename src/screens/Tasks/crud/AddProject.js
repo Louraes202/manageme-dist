@@ -37,7 +37,7 @@ const AddProject = ({ navigation, setUpdateProjects }) => {
   const addProject = () => {
     db.transaction((tx) => {
       tx.executeSql(
-        "INSERT INTO Grupos (nome, descricao, imageUri) VALUES (?, ?, ?);",
+        "INSERT INTO Projetos (nome, descricao, imageUri) VALUES (?, ?, ?);",
         [name, description, imageUri],
         (_, result) => {
           console.log("Project added:", result);
