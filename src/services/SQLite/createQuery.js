@@ -26,10 +26,11 @@ CREATE TABLE IF NOT EXISTS Tarefas (
     descricao NVARCHAR(255),
     dataConclusao DATE,
     repetir BOOLEAN,
-    diasRepeticao TEXT,  // JSON para armazenar os dias específicos para repetição
+    diasRepeticao TEXT,  
     idGrupo INTEGER,
     diaMes DATE,
     idPerfil INTEGER,
+    createdAt DATE,
     FOREIGN KEY (idGrupo) REFERENCES Grupos(idGrupo),
     FOREIGN KEY (diaMes) REFERENCES Dias_Mes(diaMes),
     FOREIGN KEY (idPerfil) REFERENCES Perfil(idPerfil)

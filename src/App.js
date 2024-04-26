@@ -17,6 +17,8 @@ import Colors from "../assets/utils/pallete.json";
 import { NativeBaseProvider, extendTheme } from "native-base";
 import createTablesQuery from "./services/SQLite/createQuery";
 import Icon from "react-native-vector-icons/Ionicons";
+import { LogBox } from "react-native";
+
 const theme = extendTheme({
   colors: {
     // Add new color
@@ -64,6 +66,11 @@ const App = () => {
   });
 
   useEffect(() => {
+    LogBox.ignoreLogs(['In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.']),
+    LogBox.ignoreLogs(['fontFamily "Poppins" is not a system font and has not been loaded through expo-font.'])
+  }, []);
+
+  useEffect(() => {
     async function prepare() {
       try {
         const queries = createTablesQuery
@@ -84,8 +91,8 @@ const App = () => {
           tx.executeSql( // funçao para executar queries ocasionais
             "",
             [],
-            (_, result) => console.log("Done!", result),
-            (_, error) => console.log("Erro ao criar tabela", error)
+            (_, result) => console.log("Alterações feitas com sucesso.", result),
+            (_, error) => console.log("Erro ao efetuar alterações", error)
           );
         });
 

@@ -15,7 +15,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { FontAwesome } from "@expo/vector-icons";
 import { differenceInMinutes, formatDistanceToNow } from 'date-fns';
 
-const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task, updateTasks, setUpdateTasks, createdAt }) => {
+const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task, updateTasks, setUpdateTasks, onPress, createdAt }) => {
   const [done, setDone] = useState(false);
   const [dodelete, setDelete] = useState(false);
 
@@ -31,16 +31,22 @@ const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task
     }
   }, [done]);
 
-  // Converter a string de data para um objeto Date
-  const createdAtDate = new Date(createdAt);
+  const createdAtDate = new Date();
+  console.log(createdAt)
+  if (isNaN(createdAtDate)) {
+      console.error("Invalid date:", createdAt);
+  } else {
+      const timeAgo = formatDistanceToNow(createdAtDate, { addSuffix: true });
+      console.log(timeAgo);
+  }
   
   // Calcular a diferença de tempo em relação ao agora
-  const timeAgo = formatDistanceToNow(createdAtDate, { addSuffix: true });
+  const timeAgo = !isNaN(createdAtDate) ? formatDistanceToNow(createdAtDate, { addSuffix: true }) : "Data indisponível";
 
   return (
     <Box alignItems="center" marginY={2}>
       <Pressable
-        onPress={() => console.log("I'm Pressed")}
+        onPress={onPress}
         rounded="8"
         overflow="hidden"
         borderWidth="1"

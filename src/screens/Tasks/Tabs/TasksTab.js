@@ -34,6 +34,7 @@ import createTablesQuery from "../../../services/SQLite/createQuery";
 import ProjectCard from "../components/ProjectCard";
 import ProjectDetail from "../crud/ProjectDetail";
 import AddTask from "../crud/AddTask";
+import TaskDetails from "../crud/TaskDetail";
 
 const { width, height } = Dimensions.get("window");
 
@@ -285,14 +286,16 @@ const SeeTasks = ({
             <Flex direction="column">
               {tasks.map((task) => (
                 <Task
+                  onPress={() =>
+                    navigation.navigate("Task Detail", { task })
+                  }
+                  deleteTask={deleteTask}
+                  doTask={doTask}
                   task={task}
                   key={task["idTarefa"]}
                   name={task["nome"]}
                   desc={task["descricao"]}
                   group={task["grupo"]}
-                  createdAt={task.createdAt}
-                  doTask={() => doTask(task)}
-                  deleteTask={() => deleteTask(task)}
                   updateTasks={updateTasks}
                   setUpdateTasks={setUpdateTasks}
                 />
@@ -372,6 +375,9 @@ const TasksTab = ({ navigation }) => {
       </TasksStack.Screen>
       <TasksStack.Screen name="Add Task">
         {(props) => <AddTask {...props} setUpdateTasks={setUpdateTasks} />}
+      </TasksStack.Screen>
+      <TasksStack.Screen name="Task Detail">
+        {(props) => <TaskDetails {...props} setUpdateTasks={setUpdateTasks} />}
       </TasksStack.Screen>
     </TasksStack.Navigator>
   );
