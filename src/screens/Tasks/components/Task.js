@@ -15,7 +15,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { FontAwesome } from "@expo/vector-icons";
 import { differenceInMinutes, formatDistanceToNow } from 'date-fns';
 
-const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task, updateTasks, setUpdateTasks, onPress, createdAt }) => {
+const Task = ({ task, name, desc, groupName, onPress, createdAt, deleteTask, doTask, setUpdateTasks }) => {
   const [done, setDone] = useState(false);
   const [dodelete, setDelete] = useState(false);
 
@@ -68,7 +68,7 @@ const Task = ({ name, key, desc, group, category, date, doTask, deleteTask, task
               variant="solid"
               rounded="30"
             >
-              {group}
+              {groupName}
             </Badge>
             <Spacer />
             <Text fontSize={10} color="coolGray.800">

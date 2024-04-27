@@ -43,18 +43,12 @@ const fetchTasksFromDatabase = () => {
     const db = SQLite.openDatabase("manageme");
     db.transaction((tx) => {
       tx.executeSql(
-        "SELECT * FROM TAREFAS",
+        "SELECT t.*, g.nome as groupName FROM Tarefas t LEFT JOIN Grupos g ON t.idGrupo = g.idGrupo;",
         [],
         (tx, results) => {
-          const len = results.rows.length;
           const tasks = [];
-          for (let i = 0; i < len; i++) {
-            const task = results.rows.item(i);
-            const taskId = task.key; // Acessa o campo idTarefa
-            console.log(taskId);
-            const taskName = task.nome; // Acessa o campo nome
-            const taskDescription = task.descricao; // Acessa o campo descricao
-            tasks.push(task);
+          for (let i = 0; i < results.rows.length; i++) {
+            tasks.push(results.rows.item(i));
           }
           resolve(tasks);
         },
@@ -286,16 +280,14 @@ const SeeTasks = ({
             <Flex direction="column">
               {tasks.map((task) => (
                 <Task
-                  onPress={() =>
-                    navigation.navigate("Task Detail", { task })
-                  }
+                  onPress={() => navigation.navigate("Task Detail", { task, setUpdateTasks })}
                   deleteTask={deleteTask}
                   doTask={doTask}
                   task={task}
-                  key={task["idTarefa"]}
-                  name={task["nome"]}
+                  key={task.idTarefa}
+                  name={task.nome}
                   desc={task["descricao"]}
-                  group={task["grupo"]}
+                  groupName={task.groupName}
                   updateTasks={updateTasks}
                   setUpdateTasks={setUpdateTasks}
                 />

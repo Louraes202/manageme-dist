@@ -1,75 +1,87 @@
 import React, { useState, useEffect } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, View, Text } from "react-native";
 import {
   Input,
-  FormControl,  
+  FormControl,
   HStack,
   IconButton,
   Select,
   Checkbox,
   VStack,
-  Spacer,
-  Icon,
-  ScrollView,
-  Text,
+  Modal,
   Button,
+  Icon,
+  Spacer,
 } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import * as SQLite from "expo-sqlite";
 import { format } from "date-fns";
+import { Calendar } from "react-native-calendars";
 
 const db = SQLite.openDatabase("manageme");
 
 const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
   const { task } = route.params;
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState(task.nome);
+  const [description, setDescription] = useState(task.descricao);
   const [groups, setGroups] = useState([]);
-  const [selectedGroup, setSelectedGroup] = useState("");
-  const [Repeat, setRepeat] = useState(false);
-  const [frequency, setFrequency] = useState("frequencia"); // Estado inicial
+  const [selectedGroup, setSelectedGroup] = useState(task.idGrupo);
+  const [repeat, setRepeat] = useState(task.repetir === 1);
+  const [dueDate, setDueDate] = useState(new Date(task.dataConclusao));
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [dueDate, setDueDate] = useState(new Date());
-  const [repetitionDays, setRepetitionDays] = useState("");
   const [isPickerVisible, setPickerVisible] = useState(false);
   const [selectedDates, setSelectedDates] = useState({});
-  const { multiPickerVisible, setMultiPickerVisible } = useState(false);
 
-  const addTask = () => {
-    // Formatar a data de conclusão para armazenar no banco de dados
-    const formattedDueDate = format(dueDate, "yyyy-MM-dd"); // Ajuste o formato conforme a sua necessidade de banco de dados
+  useEffect(() => {
+    fetchGroups();
+  }, []);
 
+  const fetchGroups = () => {
     db.transaction((tx) => {
       tx.executeSql(
-        `INSERT INTO Tarefas (nome, descricao, idGrupo, repetir, diasRepeticao, dataConclusao, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?);`,
-        [
-          name,
-          description,
-          selectedGroup,
-          Repeat ? 1 : 0,
-          repetitionDays,
-          formattedDueDate,
-          new Date().toISOString(),
-        ],
-        (_, result) => {
-          console.log("Task added:", result);
-          setUpdateTasks(true);
-          navigation.goBack();
-        },
-        (_, error) => console.error("Error adding new task:", error)
+        "SELECT * FROM Grupos;",
+        [],
+        (_, { rows }) => setGroups(rows._array),
+        (_, error) => console.error("Error fetching groups:", error)
       );
     });
   };
 
-  const showDateTimePicker = () => {
-    setShowDatePicker(true);
+  const updateTask = () => {
+    const formattedDueDate = format(dueDate, "yyyy-MM-dd");
+    db.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE Tarefas SET nome = ?, descricao = ?, idGrupo = ?, repetir = ?, dataConclusao = ? WHERE idTarefa = ?;",
+        [name, description, selectedGroup, repeat ? 1 : 0, formattedDueDate, task.idTarefa],
+        () => {
+          Alert.alert("Success", "Task updated successfully");
+          setUpdateTasks(true);
+          navigation.goBack();
+        },
+        (_, error) => console.error("Error updating task:", error)
+      );
+    });
   };
 
-  const onDateConfirm = (selectedDate) => {
-    const currentDate = selectedDate;
-    setShowDatePicker(false);
-    setDueDate(currentDate);
+  const deleteTask = () => {
+    Alert.alert("Confirm Delete", "Are you sure you want to delete this task?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Delete", onPress: () => {
+        db.transaction((tx) => {
+          tx.executeSql(
+            "DELETE FROM Tarefas WHERE idTarefa = ?;",
+            [task.idTarefa],
+            () => {
+              Alert.alert("Success", "Task deleted successfully");
+              setUpdateTasks(true);
+              navigation.goBack();
+            },
+            (_, error) => console.error("Error deleting task:", error)
+          );
+        });
+      }}
+    ]);
   };
 
   const toggleDate = (date) => {
@@ -84,52 +96,20 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
 
   const confirmDates = () => {
     const datesString = Object.keys(selectedDates)
-      .map((date) => {
-        return format(new Date(date), "dd/MM/yyyy"); // formatando cada data para o formato desejado
-      })
+      .map(date => format(new Date(date), "dd/MM/yyyy"))
       .join(", ");
-    setRepetitionDays(datesString);
-    setPickerVisible(false); // Fecha o modal após confirmar
+    Alert.alert("Selected Dates", datesString);
+    setPickerVisible(false);
   };
 
-  useEffect(() => {
-    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
-  }, []);
-
-  useEffect(() => {
-    // Função para carregar os grupos do banco de dados
-    const loadGroups = () => {
-      db.transaction((tx) => {
-        tx.executeSql(
-          "SELECT * FROM Grupos;",
-          [],
-          (tx, results) => {
-            const loadedGroups = [];
-            var len = results.rows.length;
-            for (let i = 0; i < len; i++) {
-              let row = results.rows.item(i);
-              loadedGroups.push({ id: row.idGrupo, name: row.nome });
-            }
-            setGroups(loadedGroups);
-          },
-          (tx, error) => {
-            console.error("Error fetching groups:", error);
-          }
-        );
-      });
-    };
-
-    loadGroups();
-  }, []);
-
   return (
-    <ScrollView style={styles.container}>
-      <HStack alignItems={"center"}>
+    <ScrollView style={{ padding: 20 }}>
+      <HStack alignItems="center" space={3}>
         <IconButton
           icon={<Icon as={Ionicons} name="arrow-back" />}
           onPress={() => navigation.goBack()}
         />
-        <Text>Edit Task</Text>
+        <Text fontSize="lg" bold>Edit Task</Text>
       </HStack>
       <FormControl>
         <FormControl.Label>Name</FormControl.Label>
@@ -137,21 +117,17 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
       </FormControl>
       <FormControl>
         <FormControl.Label>Description</FormControl.Label>
-        <Input
-          value={description}
-          onChangeText={setDescription}
-          multiline={true}
-        />
+        <Input value={description} onChangeText={setDescription} multiline />
       </FormControl>
       <FormControl>
         <FormControl.Label>Group</FormControl.Label>
-        <Select selectedValue={selectedGroup} onValueChange={setSelectedGroup}>
-          {groups.map((group) => (
-            <Select.Item
-              label={group.name}
-              value={group.id.toString()}
-              key={group.id}
-            />
+        <Select
+          selectedValue={selectedGroup}
+          onValueChange={setSelectedGroup}
+          placeholder="Select group"
+        >
+          {groups.map(group => (
+            <Select.Item label={group.nome} value={group.idGrupo} key={group.idGrupo} />
           ))}
         </Select>
       </FormControl>
@@ -161,38 +137,39 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
         </Checkbox>
       </FormControl>
       <FormControl>
+        <FormControl.Label>Due Date</FormControl.Label>
         <Input
           value={format(dueDate, "dd/MM/yyyy")}
-          onPressIn={() => setShowDatePicker(true)}
+          onTouchStart={() => setShowDatePicker(true)}
+          isReadOnly
         />
         <DateTimePicker
           isVisible={showDatePicker}
-          onConfirm={setDueDate}
+          mode="date"
+          onConfirm={(date) => {
+            setDueDate(date);
+            setShowDatePicker(false);
+          }}
           onCancel={() => setShowDatePicker(false)}
         />
       </FormControl>
+      {repeat && (
+        <Button onPress={() => setPickerVisible(true)}>Select Repetition Days</Button>
+      )}
+      <Modal isOpen={isPickerVisible} onClose={() => setPickerVisible(false)}>
+        <Calendar
+          markingType="custom"
+          markedDates={selectedDates}
+          onDayPress={(day) => toggleDate(day.dateString)}
+        />
+        <Button onPress={confirmDates}>Confirm Dates</Button>
+      </Modal>
       <VStack space={4} mt={5}>
-        <Button title="Save Changes" onPress={updateTask} />
-        <Button title="Delete Task" onPress={deleteTask} color="red" />
+        <Button onPress={updateTask}>Save Changes</Button>
+        <Button colorScheme="danger" onPress={deleteTask}>Delete Task</Button>
       </VStack>
     </ScrollView>
   );
 };
 
 export default TaskDetails;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  formControl: {
-    marginBottom: 15,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    borderRadius: 6,
-    paddingHorizontal: 15,
-  },
-});
