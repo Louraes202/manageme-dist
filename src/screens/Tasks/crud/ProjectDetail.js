@@ -33,8 +33,8 @@ const ProjectDetail = ({ route, navigation, setUpdateProjects }) => {
   const updateProject = () => {
     db.transaction((tx) => {
       tx.executeSql(
-        "UPDATE Projetos SET nome = ?, descricao = ?, imageUri = ? WHERE idGrupo = ?;",
-        [name, description, imageUri, project.idGrupo],
+        "UPDATE Projetos SET nome = ?, descricao = ?, imageUri = ? WHERE idProjeto = ?;",
+        [name, description, imageUri, project.idProjeto],
         () => {
           Alert.alert("Sucesso", "Projeto atualizado com sucesso!");
           setUpdateProjects(true);
@@ -56,8 +56,8 @@ const ProjectDetail = ({ route, navigation, setUpdateProjects }) => {
         onPress: () => {
           db.transaction((tx) => {
             tx.executeSql(
-              "DELETE FROM Projetos WHERE idGrupo = ?;",
-              [project.idGrupo],
+              "DELETE FROM Projetos WHERE idProjeto = ?;",
+              [project.idProjeto],
               () => {
                 Alert.alert("Sucesso", "Projeto excluído com sucesso!");
                 setUpdateProjects(true);

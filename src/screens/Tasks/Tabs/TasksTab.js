@@ -152,6 +152,44 @@ export const SearchBar = ({placeholder, value, onChangeText}) => {
   );
 };
 
+export const AddButton = ({ color, onPress, paddingX, paddingY }) => {
+  return (
+    <Box alignItems="center">
+      <Pressable maxW="96" onPress={onPress}>
+        {({ isHovered, isFocused, isPressed }) => {
+          return (
+            <Box
+              bg={
+                isPressed
+                  ? "coolGray.200"
+                  : isHovered
+                  ? "coolGray.200"
+                  : color
+              }
+              style={{
+                transform: [
+                  {
+                    scale: isPressed ? 0.96 : 1,
+                  },
+                ],
+              }}
+              px={paddingX}
+              py={paddingY}
+              rounded="8"
+              shadow={3}
+              borderWidth="1"
+              borderColor="coolGray.300"
+            >
+              <FontAwesome5 name="plus" size="30" color="white" />
+              <Text style={{ color: "white" }}>New</Text>
+            </Box>
+          );
+        }}
+      </Pressable>
+    </Box>
+  );
+};
+
 
 const SeeTasks = ({
   navigation,
@@ -219,44 +257,6 @@ const SeeTasks = ({
 
   const isFocused = useIsFocused();
 
-  const AddButton = ({ color, onPress, paddingX, paddingY }) => {
-    return (
-      <Box alignItems="center">
-        <Pressable maxW="96" onPress={onPress}>
-          {({ isHovered, isFocused, isPressed }) => {
-            return (
-              <Box
-                bg={
-                  isPressed
-                    ? "coolGray.200"
-                    : isHovered
-                    ? "coolGray.200"
-                    : color
-                }
-                style={{
-                  transform: [
-                    {
-                      scale: isPressed ? 0.96 : 1,
-                    },
-                  ],
-                }}
-                px={paddingX}
-                py={paddingY}
-                rounded="8"
-                shadow={3}
-                borderWidth="1"
-                borderColor="coolGray.300"
-              >
-                <FontAwesome5 name="plus" size="30" color="white" />
-                <Text style={{ color: "white" }}>New</Text>
-              </Box>
-            );
-          }}
-        </Pressable>
-      </Box>
-    );
-  };
-
   return (
     <View style={styles.screen}>
       <ScrollView>
@@ -273,7 +273,7 @@ const SeeTasks = ({
           <VStack my={2}>
             <ScrollView style={{ paddingBottom: 20 }} horizontal={true}>
             {filteredProjects.map((project) => (
-              <Pressable key={project.id} onPress={() => navigation.navigate("ProjectDetail", { project })}>
+              <Pressable key={project.id} onPress={() => navigation.navigate("Project Detail", { project })}>
                 <ProjectCard project={project} />
               </Pressable>
             ))}
@@ -310,10 +310,11 @@ const SeeTasks = ({
                   task={task}
                   key={task.idTarefa}
                   name={task.nome}
-                  desc={task["descricao"]}
+                  desc={task.descricao}
                   groupName={task.groupName}
                   updateTasks={updateTasks}
                   setUpdateTasks={setUpdateTasks}
+                  createdAt={task.createdAt}
                 />
               ))}
             </Flex>

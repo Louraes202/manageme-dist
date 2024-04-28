@@ -1,5 +1,7 @@
 import React from "react";
 import { useState, useEffect, useCallback } from "react";
+import { GlobalProvider } from "./context/GlobalProvider";
+
 import { useFonts } from "expo-font";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -121,130 +123,132 @@ const App = () => {
   const Drawer = createDrawerNavigator();
 
   return (
-    <NativeBaseProvider theme={theme}>
-      <NavigationContainer>
-        <Stack.Screen
-          name="Auth"
-          component={AuthScreen}
-          options={{ headerShown: false, drawerItemStyle: { height: 0 } }}
-        />
-        <Drawer.Navigator
-          style={{ backgroundColor: Colors.mainbg }}
-          initialRouteName="Auth"
-          screenOptions={{
-            sceneContainerStyle: { backgroundColor: Colors.mainbg },
-            headerBackgroundContainerStyle: { backgroundColor: "#ffffff" },
-            headerStyle: {
-              backgroundColor: Colors.navblue,
-              borderBottomColor: "transparent",
-            },
-            headerTintColor: "#fff",
-            drawerStyle: { backgroundColor: Colors.navblue },
-            drawerActiveTintColor: "#fff",
-            drawerInactiveTintColor: "#fff",
-          }}
-        >
-          <Drawer.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              drawerLabel: "Home",
-              headerTitle: "Home",
-              drawerIcon: ({ focused, color, size }) => (
-                <Icon
-                  name={focused ? "home" : "home-outline"}
-                  style={{ marginRight: -20 }}
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
+    <GlobalProvider>
+      <NativeBaseProvider theme={theme}>
+        <NavigationContainer>
+          <Stack.Screen
+            name="Auth"
+            component={AuthScreen}
+            options={{ headerShown: false, drawerItemStyle: { height: 0 } }}
           />
-          <Drawer.Screen
-            name="Tasks Screen"
-            component={TasksScreen}
-            options={{
-              drawerLabel: "Tasks",
-              headerTitle: "Tasks",
-              drawerIcon: ({ focused, color, size }) => (
-                <Icon
-                  name={
-                    focused ? "checkmark-circle" : "checkmark-circle-outline"
-                  }
-                  style={{ marginRight: -20 }}
-                  color={color}
-                  size={size}
-                />
-              ),
+          <Drawer.Navigator
+            style={{ backgroundColor: Colors.mainbg }}
+            initialRouteName="Auth"
+            screenOptions={{
+              sceneContainerStyle: { backgroundColor: Colors.mainbg },
+              headerBackgroundContainerStyle: { backgroundColor: "#ffffff" },
+              headerStyle: {
+                backgroundColor: Colors.navblue,
+                borderBottomColor: "transparent",
+              },
+              headerTintColor: "#fff",
+              drawerStyle: { backgroundColor: Colors.navblue },
+              drawerActiveTintColor: "#fff",
+              drawerInactiveTintColor: "#fff",
             }}
-          />
-          <Drawer.Screen
-            name="Planner"
-            component={WeekPlannerScreen}
-            options={{
-              drawerLabel: "Planner",
-              headerTitle: "Planner",
-              drawerIcon: ({ focused, color, size }) => (
-                <Icon
-                  name={focused ? "calendar" : "calendar-outline"}
-                  style={{ marginRight: -20 }}
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
-          />
-          <Drawer.Screen
-            name="Habit"
-            component={View}
-            options={{
-              drawerLabel: "Habit Tracker",
-              headerTitle: "Habit Tracker",
-              drawerIcon: ({ focused, color, size }) => (
-                <Icon
-                  name={focused ? "disc" : "disc-outline"}
-                  style={{ marginRight: -20 }}
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
-          />
-          <Drawer.Screen
-            name="Stats"
-            component={View}
-            options={{
-              drawerLabel: "Statistic",
-              headerTitle: "Statistic",
-              drawerIcon: ({ focused, color, size }) => (
-                <Icon
-                  name={focused ? "bar-chart" : "bar-chart-outline"}
-                  style={{ marginRight: -20 }}
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
-          />
-          <Drawer.Screen
-            name="Settings"
-            component={View}
-            options={{
-              drawerLabel: "Settings",
-              headerTitle: "Settings",
-              drawerIcon: ({ focused, color, size }) => (
-                <Icon
-                  name={focused ? "settings" : "settings-outline"}
-                  style={{ marginRight: -20 }}
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
-          />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    </NativeBaseProvider>
+          >
+            <Drawer.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{
+                drawerLabel: "Home",
+                headerTitle: "Home",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "home" : "home-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Tasks Screen"
+              component={TasksScreen}
+              options={{
+                drawerLabel: "Tasks",
+                headerTitle: "Tasks",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={
+                      focused ? "checkmark-circle" : "checkmark-circle-outline"
+                    }
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Planner"
+              component={WeekPlannerScreen}
+              options={{
+                drawerLabel: "Planner",
+                headerTitle: "Planner",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "calendar" : "calendar-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Habit"
+              component={View}
+              options={{
+                drawerLabel: "Habit Tracker",
+                headerTitle: "Habit Tracker",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "disc" : "disc-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Stats"
+              component={View}
+              options={{
+                drawerLabel: "Statistic",
+                headerTitle: "Statistic",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "bar-chart" : "bar-chart-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Settings"
+              component={View}
+              options={{
+                drawerLabel: "Settings",
+                headerTitle: "Settings",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "settings" : "settings-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </NativeBaseProvider>
+    </GlobalProvider>
   );
 };
 

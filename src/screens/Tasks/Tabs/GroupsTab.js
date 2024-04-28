@@ -47,6 +47,7 @@ const SeeGroups = ({ navigation, groupsUpdate, setGroupsUpdate }) => {
 
   return (
     <ScrollView style={styles.screen}>
+      <Text style={styles.title_textscreen}>Groups</Text>
       <VStack space={4} mt={5}>
         {groups.map((group) => (
           <Pressable key={group.idGrupo} onPress={() => handleEditGroup(group)}>
