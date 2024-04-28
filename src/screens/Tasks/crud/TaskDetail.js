@@ -105,11 +105,14 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
   return (
     <ScrollView style={{ padding: 20 }}>
       <HStack alignItems="center" space={3}>
-        <IconButton
-          icon={<Icon as={Ionicons} name="arrow-back" />}
+      <IconButton
+          py={0}
+          px={2}
+          _icon={{ as: Ionicons, name: "arrow-back", color: "black" }}
+          _pressed={{ backgroundColor: "green.100" }}
           onPress={() => navigation.goBack()}
-        />
-        <Text fontSize="lg" bold>Edit Task</Text>
+        ></IconButton>
+        <Text bold>Edit Task</Text>
       </HStack>
       <FormControl>
         <FormControl.Label>Name</FormControl.Label>

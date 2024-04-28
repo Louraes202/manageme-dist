@@ -196,7 +196,7 @@ const App = () => {
           />
           <Drawer.Screen
             name="Habit"
-            component={WeekPlannerScreen}
+            component={View}
             options={{
               drawerLabel: "Habit Tracker",
               headerTitle: "Habit Tracker",
@@ -212,7 +212,7 @@ const App = () => {
           />
           <Drawer.Screen
             name="Stats"
-            component={WeekPlannerScreen}
+            component={View}
             options={{
               drawerLabel: "Statistic",
               headerTitle: "Statistic",
@@ -228,7 +228,7 @@ const App = () => {
           />
           <Drawer.Screen
             name="Settings"
-            component={WeekPlannerScreen}
+            component={View}
             options={{
               drawerLabel: "Settings",
               headerTitle: "Settings",

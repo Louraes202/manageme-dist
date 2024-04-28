@@ -1,6 +1,6 @@
 import React from "react";
 import AddProject from "../crud/AddProject";
-import { useState, useEffect } from "react";
+import { useState, useEffect, StyleSheet } from "react";
 import { View, Text } from "react-native";
 import styles from "../../../styles/styles"; // Importar estilos globais
 import { Dimensions } from "react-native";
@@ -22,6 +22,7 @@ import {
   Spacer,
   Icon,
   Pressable,
+  Radio,
 } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Colors from "../../../../assets/utils/pallete.json";
@@ -35,6 +36,7 @@ import ProjectCard from "../components/ProjectCard";
 import ProjectDetail from "../crud/ProjectDetail";
 import AddTask from "../crud/AddTask";
 import TaskDetails from "../crud/TaskDetail";
+import RadioGroup from "../components/RadioGroup";
 
 const { width, height } = Dimensions.get("window");
 
@@ -116,6 +118,41 @@ const deleteTask = (task) => {
 
 const TasksStack = createNativeStackNavigator();
 
+export const SearchBar = ({placeholder, value, onChangeText}) => {
+  return (
+    <VStack w="100%" my={2} alignSelf="center">
+      <Input
+        placeholder={placeholder}
+        width="100%"
+        borderRadius="4"
+        py="3"
+        px="1"
+        value={value}
+        onChangeText={onChangeText}
+        InputLeftElement={
+          <Icon
+            m="2"
+            ml="3"
+            size="6"
+            color="gray.400"
+            as={<FontAwesome5 name="search" />}
+          />
+        }
+        InputRightElement={
+          <Icon
+            m="2"
+            mr="3"
+            size="6"
+            color="gray.400"
+            as={<FontAwesome5 name="" />}
+          />
+        }
+      />
+    </VStack>
+  );
+};
+
+
 const SeeTasks = ({
   navigation,
   updateProjects,
@@ -126,6 +163,7 @@ const SeeTasks = ({
   const [tasks, setTasks] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [value, setValue] = useState("one");
 
   const [projects, setProjects] = useState([]);
 
@@ -161,39 +199,25 @@ const SeeTasks = ({
     }
   }, [updateTasks]);
 
-  const isFocused = useIsFocused();
+  const [searchText, setSearchText] = useState("");
 
-  const SearchBar = () => {
-    return (
-      <VStack w="100%" my={2} alignSelf="center">
-        <Input
-          placeholder="Search People & Places"
-          width="100%"
-          borderRadius="4"
-          py="3"
-          px="1"
-          InputLeftElement={
-            <Icon
-              m="2"
-              ml="3"
-              size="6"
-              color="gray.400"
-              as={<FontAwesome5 name="search" />}
-            />
-          }
-          InputRightElement={
-            <Icon
-              m="2"
-              mr="3"
-              size="6"
-              color="gray.400"
-              as={<FontAwesome5 name="" />}
-            />
-          }
-        />
-      </VStack>
-    );
-  };
+  useEffect(() => {
+    fetchProjectsFromDatabase().then(setProjects);
+    fetchTasksFromDatabase().then(setTasks);
+  }, []);
+
+  const filteredProjects = projects.filter(project =>
+    project.nome.toLowerCase().includes(searchText.toLowerCase()) ||
+    project.descricao.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const filteredTasks = tasks.filter(task =>
+    task.nome.toLowerCase().includes(searchText.toLowerCase()) ||
+    task.descricao.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+
+  const isFocused = useIsFocused();
 
   const AddButton = ({ color, onPress, paddingX, paddingY }) => {
     return (
@@ -238,7 +262,7 @@ const SeeTasks = ({
       <ScrollView>
         {/* Início */}
         {/* Zona de pesquisa */}
-        <SearchBar />
+        <SearchBar placeholder={'Search Projects and Tasks'} value={searchText} onChangeText={setSearchText}/>
         {/* Zona dos projetos */}
         <VStack>
           <HStack alignItems={"center"}>
@@ -248,15 +272,11 @@ const SeeTasks = ({
           </HStack>
           <VStack my={2}>
             <ScrollView style={{ paddingBottom: 20 }} horizontal={true}>
-              {projects.map((project) => (
-                <Pressable
-                  onPress={() =>
-                    navigation.navigate("Project Detail", { project })
-                  }
-                >
-                  <ProjectCard key={project.id} project={project} />
-                </Pressable>
-              ))}
+            {filteredProjects.map((project) => (
+              <Pressable key={project.id} onPress={() => navigation.navigate("ProjectDetail", { project })}>
+                <ProjectCard project={project} />
+              </Pressable>
+            ))}
               <AddButton
                 color="#5983FC"
                 paddingX={8}
@@ -274,13 +294,17 @@ const SeeTasks = ({
             <Spacer />
             <Text>See all</Text>
           </HStack>
+          <RadioGroup radioOptions={[{label: 'All', value: 'all'}, {label: 'Today', value: 'today'}, {label: 'From project', value: 'fromproject'}]}></RadioGroup>
+
         </VStack>
         <ScrollView>
           <VStack py="">
             <Flex direction="column">
-              {tasks.map((task) => (
+              {filteredTasks.map((task) => (
                 <Task
-                  onPress={() => navigation.navigate("Task Detail", { task, setUpdateTasks })}
+                  onPress={() =>
+                    navigation.navigate("Task Detail", { task, setUpdateTasks })
+                  }
                   deleteTask={deleteTask}
                   doTask={doTask}
                   task={task}
@@ -314,31 +338,12 @@ const SeeTasks = ({
   );
 };
 
-{
-  /*}
-const NewTask = ({ open, setOpen, tasks, setTasks, updateTasks, setUpdateTasks }) => {
-  const addNewTask = (name, description) => {
-    const db = SQLite.openDatabase("manageme");
-    db.transaction((tx) => {
-      tx.executeSql(
-        "INSERT INTO TAREFAS (nome, descricao) VALUES (?, ?)",
-        [name, description],
-        setUpdateTasks(true),
-
-        (error) => {
-          console.error("Error adding new task:", error);
-        }
-      );
-    });
-  };
-};
-{*/
-}
-
 const TasksTab = ({ navigation }) => {
+  {/* Aqui vão ficar os hooks dos respetivos ecrãs */}
   const [updateProjects, setUpdateProjects] = useState(false);
   const [updateTasks, setUpdateTasks] = useState(false);
 
+  {/* Zona de navegação */}
   return (
     <TasksStack.Navigator
       initialRouteName="Tasks Screen"

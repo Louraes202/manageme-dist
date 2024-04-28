@@ -13,7 +13,7 @@ import Colors from "../../../assets/utils/pallete.json";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const CustomTabBarButton = ({ children, onPress }) => (
+export const CustomTabBarButton = ({ children, onPress }) => (
   <TouchableOpacity
     style={{
       position: "fixed",
@@ -77,7 +77,7 @@ const Tasks = ({ navigation }) => {
       />
       <Tab.Screen
         name="FAB"
-        component={View} // Componente dummy, já que o FAB não abrirá uma tela
+        component={View} 
         options={{
           tabBarIcon: ({ focused }) => (
             <FontAwesome5 name="plus" color={"white"} size={24} />
