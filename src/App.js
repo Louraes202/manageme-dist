@@ -8,7 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import AuthScreen from "./../src/screens/AuthScreen";
-import HomeScreen from "./../src/screens/HomeScreen";
+import HomeScreen from "./screens/Home/HomeScreen";
 import TasksScreen from "../src/screens/Tasks/TasksScreen";
 import WeekPlannerScreen from "../src/screens/Weekplanner/WeekPlannerScreen";
 import styles from ".././src/styles/styles"; // Importar estilos globais
@@ -20,6 +20,7 @@ import { NativeBaseProvider, extendTheme } from "native-base";
 import createTablesQuery from "./services/SQLite/createQuery";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LogBox } from "react-native";
+import HabitsScreen from "./screens/Habits/HabitsScreen";
 
 const theme = extendTheme({
   colors: {
@@ -199,7 +200,7 @@ const App = () => {
             />
             <Drawer.Screen
               name="Habit"
-              component={View}
+              component={HabitsScreen}
               options={{
                 drawerLabel: "Habit Tracker",
                 headerTitle: "Habit Tracker",
