@@ -1,0 +1,12 @@
+Ótimo.
+Passando agora a outro pedido.
+A proposta da secção planner, com o weekview, é conectar todos os elementos desta aplicação, incluíndo tarefas, eventos, projetos, tudo o que tenha as datas de conclusão ou de acontecimento na base de dados, quero que apareça no weekplanner e no calendário. A proposta é esta, termos um sítio onde podemos planear tudo com base nos dias, para podermos planear a nossa semana e o nosso mês, o que é uma prática extremamente recomendada no mundo da produtividade e gestão pessoal.
+O que te vou pedir é para ligares então as tarefas e projetos ao WeeklyCalendar e ao Calendar, utilizando as técnicas de backend que achares necessário e também as que já utilizo nos meus ficheiros.
+Podes ir buscar os dados à tabela que seja mais prática para o efeito, em anexo vão os respetivos ficheiros js e a base de dados em sql. Ajuda-me com o meu projeto react native com expo, uma aplicação de gestão pessoal e produtividade que visa ser inovadora, prática e eficaz.
+Deixo o front-end a teu critério, tenta seguir as boas práticas de UI/UX, mas se eu achar que está feio eu depois mudo.
+
+
+
+
+
+

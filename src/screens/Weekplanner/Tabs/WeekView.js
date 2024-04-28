@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { useState } from "react";
-import WeeklyCalendar from "react-native-weekly-calendar";
+import WeeklyCalendar from "../components/WeeklyCalendar/WeeklyCalendar";
 import { Menu, Fab, HStack, Select, Spacer } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
