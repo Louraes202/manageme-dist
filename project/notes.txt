@@ -2,3 +2,6 @@ https://reactnative.dev/docs/components-and-apis
 https://docs.nativebase.io/getting-started
 https://madewithnativebase.com/
 https://dribbble.com/shots/20452255-Task-management-app-Project-management-app-App-UI-Design
+
+Mockup genial:
+https://dribbble.com/shots/19664699-Task-Management-App-Animation-Concept

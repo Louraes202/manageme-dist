@@ -80,7 +80,7 @@ const Tasks = ({ navigation }) => {
         component={View} 
         options={{
           tabBarIcon: ({ focused }) => (
-            <FontAwesome5 name="plus" color={"white"} size={24} />
+            <FontAwesome5 name="microphone" color={"white"} size={24} />
           ),
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
           
