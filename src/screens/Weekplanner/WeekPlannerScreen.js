@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { useState } from "react";
 import WeeklyCalendar from "react-native-weekly-calendar";
-import { Menu, Fab, HStack, Select, Spacer } from "native-base";
+import { Menu, Fab, HStack, Select, Spacer, Text } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -12,15 +12,28 @@ import styles from "../../styles/styles";
 import { StyleSheet } from "react-native";
 import { CustomTabBarButton } from "../Tasks/TasksScreen";
 import EventsActivitiesTab from "./Tabs/EventsActivitiesTab";
-import WeekView from './Tabs/WeekView';
+import WeekView from "./Tabs/WeekView";
 import Colors from "../../../assets/utils/pallete.json";
+import AddEvent from "./crud/AddEvent";
+import EventDetail from "./crud/EventDetail";
 
 const { width, height } = Dimensions.get("window");
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const Weekplanner = ({ navigation }) => {
+const Weekplanner = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+      <Stack.Screen name="AddEvent" component={AddEvent} />
+      <Stack.Screen name="EventDetail" component={EventDetail} />
+    </Stack.Navigator>
+  );
+};
+
+
+const MainTabNavigator = ({ navigation }) => {
   {
     /* Aqui vão ficar os hooks e outros dados dos respetivos ecrãs, se for preciso trocar estes dados entre eles */
   }
@@ -35,7 +48,6 @@ const Weekplanner = ({ navigation }) => {
           backgroundColor: Colors.navblue,
           borderTopColor: "#0062ff",
           borderRadius: 25,
-
           marginBottom: 30,
           marginHorizontal: 10,
           height: 50,
@@ -61,7 +73,6 @@ const Weekplanner = ({ navigation }) => {
           ),
         }}
       />
-
       <Tab.Screen
         name="Weekly view"
         component={WeekView}
@@ -71,7 +82,6 @@ const Weekplanner = ({ navigation }) => {
           ),
         }}
       />
-
       <Tab.Screen
         name="Calendar"
         component={View}

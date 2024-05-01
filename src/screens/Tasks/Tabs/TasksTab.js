@@ -37,6 +37,8 @@ import ProjectDetail from "../crud/ProjectDetail";
 import AddTask from "../crud/AddTask";
 import TaskDetails from "../crud/TaskDetail";
 import RadioGroup from "../components/RadioGroup";
+import { useGlobalContext } from "../../../context/GlobalProvider";
+
 
 const { width, height } = Dimensions.get("window");
 
@@ -341,8 +343,7 @@ const SeeTasks = ({
 
 const TasksTab = ({ navigation }) => {
   {/* Aqui vão ficar os hooks dos respetivos ecrãs */}
-  const [updateProjects, setUpdateProjects] = useState(false);
-  const [updateTasks, setUpdateTasks] = useState(false);
+  const { updateTasks, setUpdateTasks, updateProjects, setUpdateProjects } = useGlobalContext();
 
   {/* Zona de navegação */}
   return (
