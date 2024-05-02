@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from "react";
 
 const GlobalContext = createContext();
 
@@ -8,7 +8,9 @@ export const GlobalProvider = ({ children }) => {
   const [updateTasks, setUpdateTasks] = useState(false);
   const [updateProjects, setUpdateProjects] = useState(false);
   const [updateGroups, setUpdateGroups] = useState(false);
-
+  const [updateEvents, setUpdateEvents] = useState(false);
+  const [updateActivities, setUpdateActivities] = useState(false);
+  
   const value = {
     updateTasks,
     setUpdateTasks,
@@ -16,7 +18,13 @@ export const GlobalProvider = ({ children }) => {
     setUpdateProjects,
     updateGroups,
     setUpdateGroups,
+    updateEvents,
+    setUpdateEvents,
+    updateActivities,
+    setUpdateActivities,
   };
 
-  return <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>;
+  return (
+    <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>
+  );
 };

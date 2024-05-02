@@ -1,7 +1,15 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import styles from "../../styles/styles"; // Importar estilos globais
-import { Box, FlatList, Flex, Icon, Pressable, Spacer, VStack } from "native-base";
+import {
+  Box,
+  FlatList,
+  Flex,
+  Icon,
+  Pressable,
+  Spacer,
+  VStack,
+} from "native-base";
 import { Dimensions } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 
@@ -27,7 +35,15 @@ const DataBox = ({ title, subtitle, description }) => {
   );
 };
 
-const NavBox = ({ title, subtitle, description, icon, text, color }) => {
+const NavBox = ({
+  title,
+  subtitle,
+  description,
+  icon,
+  text,
+  color,
+  onPress,
+}) => {
   return (
     <Box
       height={60}
@@ -38,14 +54,8 @@ const NavBox = ({ title, subtitle, description, icon, text, color }) => {
       borderWidth={1.5}
       borderRadius={10}
     >
-      <Pressable flexDirection={'row'} alignItems={'center'}>
-        <Icon
-          m="2"
-          size="6"
-          color="white"
-          as={<FontAwesome5 name={icon} />}
-        />
-
+      <Pressable flexDirection={"row"} alignItems={"center"} onPress={onPress}>
+        <Icon m="2" size="6" color="white" as={<FontAwesome5 name={icon} />} />
         <Text style={homestyles.navtext}>{text}</Text>
       </Pressable>
     </Box>
@@ -82,10 +92,30 @@ const Home = ({ navigation }) => {
         Navigate to
       </Text>
       <VStack marginBottom={10}>
-        <NavBox icon='check' text='Tasks' color='blue.500'/>
-        <NavBox icon='calendar-week' text='Planner' color='blue.500'/>
-        <NavBox icon='bullseye' text='Habits' color='blue.500'/>
-        <NavBox icon='chart-pie' text='Statistics & IA' color='blue.500'/>
+        <NavBox
+          icon="check"
+          text="Tasks"
+          color="blue.500"
+          onPress={() => navigation.navigate("Tasks Screen")}
+        />
+        <NavBox
+          icon="calendar-week"
+          text="Planner"
+          color="blue.500"
+          onPress={() => navigation.navigate("Planner")}
+        />
+        <NavBox
+          icon="bullseye"
+          text="Habits"
+          color="blue.500"
+          onPress={() => navigation.navigate("Habit")}
+        />
+        <NavBox
+          icon="chart-pie"
+          text="Statistics & IA"
+          color="blue.500"
+          onPress={() => navigation.navigate("Stats")}
+        />
       </VStack>
     </ScrollView>
   );
@@ -109,6 +139,6 @@ const homestyles = StyleSheet.create({
     fontFamily: "Poppins_Medium",
     fontSize: 20,
     marginLeft: 7,
-    color: '#ffffff',
+    color: "#ffffff",
   },
 });

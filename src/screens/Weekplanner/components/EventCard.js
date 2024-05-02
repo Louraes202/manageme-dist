@@ -10,7 +10,8 @@ const EventCard = ({ event, onPress }) => {
         borderColor="coolGray.300"
         borderRadius="md"
         p={3}
-        mb="2"
+        mb={2}
+        mr={2}
         bg="white"
         w={120}
       >

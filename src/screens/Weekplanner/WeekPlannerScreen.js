@@ -16,6 +16,10 @@ import WeekView from "./Tabs/WeekView";
 import Colors from "../../../assets/utils/pallete.json";
 import AddEvent from "./crud/AddEvent";
 import EventDetail from "./crud/EventDetail";
+import AddActivity from "./crud/AddActivity";
+import ActivityDetail from "./crud/ActivityDetail";
+import BlockDetail from "./crud/BlockDetail";
+import AddBlock from "./crud/AddBlock";
 
 const { width, height } = Dimensions.get("window");
 
@@ -28,6 +32,10 @@ const Weekplanner = () => {
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
       <Stack.Screen name="AddEvent" component={AddEvent} />
       <Stack.Screen name="EventDetail" component={EventDetail} />
+      <Stack.Screen name="AddActivity" component={AddActivity} />
+      <Stack.Screen name="ActivityDetail" component={ActivityDetail} />
+      <Stack.Screen name="AddBlock" component={AddBlock} />
+      <Stack.Screen name="BlockDetail" component={BlockDetail} />
     </Stack.Navigator>
   );
 };

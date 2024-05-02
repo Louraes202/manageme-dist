@@ -218,8 +218,8 @@ const App = () => {
               name="Stats"
               component={View}
               options={{
-                drawerLabel: "Statistic",
-                headerTitle: "Statistic",
+                drawerLabel: "Statistics",
+                headerTitle: "Statistics",
                 drawerIcon: ({ focused, color, size }) => (
                   <Icon
                     name={focused ? "bar-chart" : "bar-chart-outline"}

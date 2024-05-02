@@ -37,7 +37,7 @@ const EventDetail = ({ route, navigation }) => {
     db.transaction((tx) => {
       tx.executeSql(
         `DELETE FROM Eventos WHERE idEvento = ?;`,
-        [idEvento],
+        [event.idEvento],
         () => {
           console.log("Event deleted successfully!");
           navigation.goBack();

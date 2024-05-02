@@ -46,6 +46,7 @@
     "react-icons": "^5.0.1",
     "react-native": "0.73.4",
     "react-native-calendars": "^1.1304.1",
+    "react-native-draggable": "^3.3.0",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-modal-datetime-picker": "^17.1.0",
     "react-native-paper": "^5.12.3",
