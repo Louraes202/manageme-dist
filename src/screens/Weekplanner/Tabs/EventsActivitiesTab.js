@@ -10,7 +10,7 @@ import styles from "../../../styles/styles";
 import { useGlobalContext } from "../../../context/GlobalProvider";
 
 // Fetch Functions
-const fetchEventsFromDatabase = async () => {
+export const fetchEventsFromDatabase = async () => {
   const db = SQLite.openDatabase("manageme");
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -28,7 +28,7 @@ const fetchEventsFromDatabase = async () => {
   });
 };
 
-const fetchActivitiesFromDatabase = async () => {
+export const fetchActivitiesFromDatabase = async () => {
   const db = SQLite.openDatabase("manageme");
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {

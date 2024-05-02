@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS Atividades (
     idAtividade INTEGER PRIMARY KEY AUTOINCREMENT,
     nomeAtividade NVARCHAR(100) NOT NULL,
     descricaoAtividade NVARCHAR(255),
-    flexivel BOOLEAN NOT NULL,
+    flexivel BOOLEAN,
     idPerfil INTEGER,
     FOREIGN KEY (idPerfil) REFERENCES Perfil(idPerfil)
 );

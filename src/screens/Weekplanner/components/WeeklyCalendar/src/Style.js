@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     borderColor: "grey",
     borderTopWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
+    zIndex: 1,
   },
   header: {
     width: "100%",
@@ -67,6 +68,7 @@ const styles = StyleSheet.create({
   },
   schedule: {
     width: "100%",
+    maxHeight: 400,
   },
   pickerButtons: {
     flexDirection: "row",

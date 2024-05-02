@@ -1,35 +1,44 @@
-import React from "react";
-import { View, Text } from "react-native";
-import { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
+import { View, Text, Dimensions } from "react-native";
+import { HStack, Select, ScrollView } from "native-base";
 import WeeklyCalendar from "../components/WeeklyCalendar/WeeklyCalendar";
-import { Menu, Fab, HStack, Select, Spacer } from "native-base";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Dimensions } from "react-native";
-import { Calendar } from "react-native-calendars";
-import * as SQLite from "expo-sqlite";
-import moment from "moment/min/moment-with-locales";
-import { useGlobalContext } from "../../../context/GlobalProvider";
-
+import { fetchActivitiesFromDatabase } from "./EventsActivitiesTab";
 import styles from "../../../styles/styles";
-import { StyleSheet } from "react-native";
+import ActivityCard from "../components/ActivityCard";
 
-const { width, height } = Dimensions.get("window");
-
-const WeekView = () => {
-  const sampleEvents = [
-    { start: "2020-03-23 09:00:00", duration: "00:20:00", note: "Walk my dog" },
-  ];
-
+const WeekView = ({ navigation }) => {
   const [selectedView, setSelectedView] = useState("hour");
+  const [activities, setActivities] = useState([]);
+  const [calendarBounds, setCalendarBounds] = useState(null);
 
+  const loadActivities = useCallback(() => {
+    fetchActivitiesFromDatabase().then(setActivities).catch(console.error);
+  }, []);
+
+  const onDrop = (activity, x, y, resetPosition) => {
+    if (
+      calendarBounds &&
+      x >= calendarBounds.x &&
+      x <= calendarBounds.x + calendarBounds.width &&
+      y >= calendarBounds.y &&
+      y <= calendarBounds.y + calendarBounds.height
+    ) {
+      console.log(`Activity ${activity.id} dropped in the grid!`);
+      // Atualize o bloco de atividades na grade
+    } else {
+      console.log(`Activity ${activity.id} dropped outside the grid.`);
+      resetPosition();
+    }
+  };
+
+  useEffect(() => {
+    loadActivities();
+  }, [loadActivities]);
 
   return (
     <View style={styles.screen}>
       <HStack justifyContent={"space-between"} alignItems={"center"}>
-        <Text style={styles.title_textscreen}>Weekly view</Text>
-        <Spacer />
+        <Text style={styles.title_textscreen}>Weekly View</Text>
         <Select
           selectedValue={selectedView}
           width={170}
@@ -40,18 +49,39 @@ const WeekView = () => {
           <Select.Item label="Weekly View" value="week" />
         </Select>
       </HStack>
-      <WeeklyCalendar
-        viewMode={selectedView}
-        themeColor={"blue"}
-        style={{
-          marginLeft: -10,
-          marginTop: 15,
-          height: 600,
-          borderColor: "white",
+      <View
+        style={{ zIndex: 0 }}
+        onLayout={(event) => {
+          const { x, y, width, height } = event.nativeEvent.layout;
+          setCalendarBounds({ x, y, width, height });
         }}
+      >
+        <WeeklyCalendar
+          viewMode={selectedView}
+          themeColor={"blue"}
+          style={{
+            marginLeft: -10,
+            marginTop: 15,
+            borderColor: "white",
+          }}
+        />
+      </View>
 
-
-      />
+      {selectedView === "hour" && (
+        <ScrollView horizontal zIndex={1}>
+          {activities.map((activity) => (
+            <ActivityCard
+              key={activity.id}
+              activity={activity}
+              isDraggable
+              onDrop={onDrop}
+              onPress={() =>
+                navigation.navigate("ActivityDetail", { activity })
+              }
+            />
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };
