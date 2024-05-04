@@ -11,6 +11,7 @@ export const GlobalProvider = ({ children }) => {
   const [updateEvents, setUpdateEvents] = useState(false);
   const [updateActivities, setUpdateActivities] = useState(false);
   
+  
   const value = {
     updateTasks,
     setUpdateTasks,

@@ -4,6 +4,7 @@ import { VStack, FormControl, IconButton, Icon, HStack, Button, Select, Input } 
 import { Ionicons } from '@expo/vector-icons';
 import * as SQLite from 'expo-sqlite';
 import moment from 'moment';
+import { useGlobalContext } from '../../../context/GlobalProvider';
 
 const db = SQLite.openDatabase('manageme');
 
@@ -14,6 +15,7 @@ const ActivityDetail = ({ route, navigation }) => {
   const [blocos, setBlocos] = useState([]);
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState('');
+  const { setUpdateActivities } = useGlobalContext();
 
   const loadBlocks = () => {
     const startOfWeek = moment().startOf('isoWeek').format('YYYY-MM-DD');
@@ -77,10 +79,12 @@ const ActivityDetail = ({ route, navigation }) => {
                   [activity.idAtividade, selectedGroup],
                   () => {
                     console.log("Activity and Group association updated successfully!");
+                    setUpdateActivities(true);
                     navigation.goBack();
                   }
                 );
               } else {
+                setUpdateActivities(true);
                 navigation.goBack();
               }
             }
@@ -100,6 +104,7 @@ const ActivityDetail = ({ route, navigation }) => {
         [activity.idAtividade],
         () => {
           console.log('Activity deleted successfully!');
+          setUpdateActivities(true);
           navigation.goBack();
         },
         (_, error) => console.error('DB Error: ' + error.message)

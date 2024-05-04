@@ -40,9 +40,10 @@ const WeeklyCalendar = (props) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [hoursOfDay, setHoursOfDay] = useState([]);
 
-  const { updateTasks, updateProjects } = useGlobalContext();
+  const { updateTasks, updateProjects, updateEvents } = useGlobalContext();
 
   const [taskEvents, setTaskEvents] = useState("");
+  const [eventEvents, setEventEvents] = useState([]);
 
   useEffect(() => {
     // Fetch tasks once the component mounts
@@ -67,6 +68,37 @@ const WeeklyCalendar = (props) => {
         console.error("Error fetching tasks for the week:", error);
       });
   }, [updateTasks, updateProjects]);
+
+  useEffect(() => {
+    console.log("Mapping taskEvents: ", moment().format("HH:mm:ss.SSS"));
+    createEventMap(taskEvents);
+  }, [taskEvents]);
+
+  // eventEvents
+  useEffect(() => {
+    fetchEventsForWeek()
+      .then((eventsFromDb) => {
+        setEventEvents(eventsFromDb);
+      })
+      .catch((error) => {
+        console.error("Error fetching events for the week:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchEventsForWeek()
+      .then((eventsFromDb) => {
+        setEventEvents(eventsFromDb);
+      })
+      .catch((error) => {
+        console.error("Error fetching events for the week:", error);
+      });
+  }, [updateEvents]);
+
+  useEffect(() => {
+    console.log("Mapping eventEvents: ", moment().format("HH:mm:ss.SSS"));
+    createEventMap(eventEvents);
+  }, [eventEvents]);
 
   // UseState para controlar a visualização selecionada
   const [viewMode, setViewMode] = useState("week"); // 'week' ou 'hour'
@@ -129,10 +161,54 @@ const WeeklyCalendar = (props) => {
     });
   };
 
-  useEffect(() => {
-    console.log("Mapping events: ", moment().format('HH:mm:ss.SSS'));
-    createEventMap(taskEvents);
-  }, [taskEvents]);
+  const fetchEventsForWeek = () => {
+    return new Promise((resolve, reject) => {
+      const db = SQLite.openDatabase("manageme");
+      db.transaction((tx) => {
+        tx.executeSql(
+          `SELECT * FROM Eventos`,
+          [],
+          (_, { rows }) => {
+            const events = rows._array.flatMap((event) => {
+              const eventEvents = [];
+              let startTime = moment(event.horaInicio);
+              let endTime = moment(event.horaFim);
+
+              if (!startTime.isValid() || !endTime.isValid()) {
+                console.error(`Invalid date format for event: ${event.nome}`);
+                eventEvents.push([]);
+              }
+              
+              const durationSeconds = endTime.diff(startTime, 'seconds');
+              const durationHours = Math.floor(durationSeconds / 3600);
+              const durationMinutes = Math.floor((durationSeconds % 3600) / 60);
+              const duration = `${String(durationHours).padStart(2, '0')}:${String(durationMinutes).padStart(2, '0')}:${String(durationSeconds % 60).padStart(2, '0')}`;
+
+              eventEvents.push({
+                start: startTime.format("YYYY-MM-DD HH:mm:ss"),
+                end: endTime.format("YYYY-MM-DD HH:mm:ss"),
+                duration: duration,
+                note: event.nome,
+              });
+              console.log(
+                "Event events instant: ",
+                moment().format("HH:mm:ss.SSS"),
+                " ",
+                event
+              );
+              return eventEvents;
+            });
+            resolve(events);
+          },
+          (_, error) => {
+            reject(error);
+          }
+        );
+      });
+    });
+  };
+
+
 
   const createEventMap = (events) => {
     let dateMap = new Map();

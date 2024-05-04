@@ -34,10 +34,13 @@ const BlockDetail = ({ route, navigation }) => {
   };
 
   const updateBlock = () => {
+    const start = format(horaInicio, 'yyyy-MM-dd HH:mm:ss');
+    const end = format(horaFim, 'yyyy-MM-dd HH:mm:ss');
+
     db.transaction((tx) => {
       tx.executeSql(
         `UPDATE Blocos SET hora_inicio = ?, hora_fim = ? WHERE idBloco = ?;`,
-        [format(horaInicio, 'yyyy-MM-dd HH:mm:ss'), format(horaFim, 'yyyy-MM-dd HH:mm:ss'), bloco.idBloco],
+        [start, end, bloco.idBloco],
         () => {
           console.log('Block updated successfully!');
           navigation.goBack();

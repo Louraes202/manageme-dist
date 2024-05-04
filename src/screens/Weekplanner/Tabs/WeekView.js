@@ -69,17 +69,19 @@ const WeekView = ({ navigation }) => {
 
       {selectedView === "hour" && (
         <ScrollView horizontal zIndex={1}>
-          {activities.map((activity) => (
-            <ActivityCard
-              key={activity.id}
-              activity={activity}
-              isDraggable
-              onDrop={onDrop}
-              onPress={() =>
-                navigation.navigate("ActivityDetail", { activity })
-              }
-            />
-          ))}
+          <HStack space={3}>
+            {activities.map((activity) => (
+              <ActivityCard
+                key={activity.id}
+                activity={activity}
+                isDraggable
+                onDrop={onDrop}
+                onPress={() =>
+                  navigation.navigate("ActivityDetail", { activity })
+                }
+              />
+            ))}
+          </HStack>
         </ScrollView>
       )}
     </View>

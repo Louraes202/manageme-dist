@@ -11,7 +11,7 @@ const ActivityCard = ({ activity, isDraggable, onDrop, onPress }) => {
     setPosition(initialPosition);
   };
 
-  const renderCardContent = () => (
+  return (
     <Pressable onPress={() => onPress(activity)}>
       <Box borderWidth={1} borderColor="coolGray.300" borderRadius="md" p={4} mb={4} zIndex={999}>
         <VStack space={2}>
@@ -30,21 +30,6 @@ const ActivityCard = ({ activity, isDraggable, onDrop, onPress }) => {
     </Pressable>
   );
 
-  return isDraggable ? (
-    <Draggable
-      x={position.x}
-      y={position.y}
-      renderSize={60}
-      onDragRelease={(e, gestureState) => {
-        const { moveX, moveY } = gestureState;
-        onDrop(activity, moveX, moveY, resetPosition);
-      }}
-    >
-      {renderCardContent()}
-    </Draggable>
-  ) : (
-    renderCardContent()
-  );
 };
 
 export default ActivityCard;

@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 import { ScrollView, Text } from "react-native";
-import {
-  Button,
-  VStack,
-  FormControl,
-  Input,
-  IconButton,
-  Icon,
-  HStack
-} from "native-base";
+import { Button, VStack, FormControl, Input, IconButton, Icon, HStack } from "native-base";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { format } from "date-fns";
 import * as SQLite from "expo-sqlite";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { useGlobalContext } from "../../../context/GlobalProvider";
 import styles from "../../../styles/styles";
 
 const db = SQLite.openDatabase("manageme");
@@ -24,6 +17,7 @@ const AddEvent = ({ navigation }) => {
   const [horaFim, setHoraFim] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [currentPicker, setCurrentPicker] = useState("");
+  const { setUpdateEvents } = useGlobalContext();
 
   const handleConfirm = (date) => {
     if (currentPicker === "inicio") {
@@ -53,6 +47,7 @@ const AddEvent = ({ navigation }) => {
         [nome, descricao, start, end],
         () => {
           console.log("Event added successfully!");
+          setUpdateEvents(true);
           navigation.goBack();
         },
         (t, error) => {
@@ -71,7 +66,7 @@ const AddEvent = ({ navigation }) => {
           _icon={{ as: Ionicons, name: "arrow-back", color: "black" }}
           _pressed={{ backgroundColor: "green.100" }}
           onPress={() => navigation.goBack()}
-        ></IconButton>
+        />
         <Text style={styles.title_text}>Add event</Text>
       </HStack>
       <VStack space={3}>

@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, Text } from "react-native";
-import {
-  Button,
-  VStack,
-  FormControl,
-  Input,
-  IconButton,
-  Icon,
-  HStack,
-  Select,
-} from "native-base";
+import { Button, VStack, FormControl, Input, IconButton, Icon, HStack, Select } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import * as SQLite from "expo-sqlite";
+import { useGlobalContext } from "../../../context/GlobalProvider";
 
 const db = SQLite.openDatabase("manageme");
 
@@ -20,6 +12,7 @@ const AddActivity = ({ navigation }) => {
   const [descricaoAtividade, setDescricaoAtividade] = useState("");
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState("");
+  const { setUpdateActivities } = useGlobalContext();
 
   useEffect(() => {
     // Carregar os grupos para o dropdown
@@ -54,6 +47,7 @@ const AddActivity = ({ navigation }) => {
               [newActivityId, selectedGroup],
               () => {
                 console.log("Activity and Group association added successfully!");
+                setUpdateActivities(true);
                 navigation.goBack();
               },
               (_, error) => {
@@ -61,6 +55,7 @@ const AddActivity = ({ navigation }) => {
               }
             );
           } else {
+            setUpdateActivities(true);
             navigation.goBack();
           }
         },

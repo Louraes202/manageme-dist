@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Text, ScrollView } from "react-native";
-import { VStack } from "native-base";
+import { HStack, VStack } from "native-base";
 import { SearchBar, AddButton } from "../../Tasks/Tabs/TasksTab";
 import EventCard from "../components/EventCard";
 import ActivityCard from "../components/ActivityCard";
@@ -107,15 +107,17 @@ const EventsActivitiesTab = ({ navigation }) => {
           <VStack space={activities.length === 0 ? 2 : 4} mb="4">
             <Text style={styles.title_textscreen}>Activities</Text>
             <ScrollView horizontal={true}>
-              {activities.map((activity) => (
-                <ActivityCard
-                  key={activity.id}
-                  activity={activity}
-                  onPress={() =>
-                    navigation.navigate("ActivityDetail", { activity })
-                  }
-                />
-              ))}
+              <HStack space={3}>
+                {activities.map((activity) => (
+                  <ActivityCard
+                    key={activity.id}
+                    activity={activity}
+                    onPress={() =>
+                      navigation.navigate("ActivityDetail", { activity })
+                    }
+                  />
+                ))}
+              </HStack>
             </ScrollView>
             <AddButton
               color="#5983FC"

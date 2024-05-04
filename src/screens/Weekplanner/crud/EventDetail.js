@@ -1,18 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ScrollView, View, Text } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { format } from "date-fns";
 import * as SQLite from "expo-sqlite";
-import {
-  VStack,
-  FormControl,
-  Input,
-  IconButton,
-  Icon,
-  Button,
-  HStack
-} from "native-base";
+import { VStack, FormControl, Input, IconButton, Button, HStack, Icon } from "native-base";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { useGlobalContext } from "../../../context/GlobalProvider";
 import styles from "../../../styles/styles";
 
 const db = SQLite.openDatabase("manageme");
@@ -20,6 +12,7 @@ const db = SQLite.openDatabase("manageme");
 const EventDetail = ({ route, navigation }) => {
   const { event } = route.params;
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const { setUpdateEvents } = useGlobalContext();
 
   const handleConfirm = (date) => {
     hideDatePicker();
@@ -40,6 +33,7 @@ const EventDetail = ({ route, navigation }) => {
         [event.idEvento],
         () => {
           console.log("Event deleted successfully!");
+          setUpdateEvents(true);
           navigation.goBack();
         },
         (t, error) => {
@@ -58,17 +52,17 @@ const EventDetail = ({ route, navigation }) => {
           _icon={{ as: Ionicons, name: "arrow-back", color: "black" }}
           _pressed={{ backgroundColor: "green.100" }}
           onPress={() => navigation.goBack()}
-        ></IconButton>
+        />
         <Text style={styles.title_text}>Edit event</Text>
       </HStack>
       <VStack space={3}>
         <FormControl>
           <FormControl.Label>Name</FormControl.Label>
-          <Input value={event.nome} isReadOnly={true} />
+          <Input value={event.nome} isReadOnly />
         </FormControl>
         <FormControl>
           <FormControl.Label>Description</FormControl.Label>
-          <Input value={event.descricao} isReadOnly={true} />
+          <Input value={event.descricao} isReadOnly />
         </FormControl>
         <Button
           onPress={showDatePicker}
