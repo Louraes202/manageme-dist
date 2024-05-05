@@ -2,12 +2,13 @@
   "expo": {
     "name": "manageme",
     "slug": "manageme",
+    "entryPoint": "./src/App.js",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/ManageMeLogo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/ManageMeLogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,21 +20,24 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/ManageMeLogo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.manageme"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/ManageMeLogo.png"
     },
     "plugins": [
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts"]
+          "fonts": [
+            "./assets/fonts"
+          ]
         }
-      ]
-
+      ],
+      "expo-build-properties"
     ]
   }
 }

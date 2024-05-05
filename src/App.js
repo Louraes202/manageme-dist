@@ -1,96 +1,255 @@
-import { useCallback, useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Dimensions } from "react-native";
-import { StyleSheet, Text, View, Image } from 'react-native';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import * as Font from 'expo-font';
+import React from "react";
+import { useState, useEffect, useCallback } from "react";
+import { GlobalProvider } from "./context/GlobalProvider";
 
-SplashScreen.preventAutoHideAsync();
+import { useFonts } from "expo-font";
+import { StyleSheet, Text, View, Image } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import AuthScreen from "./../src/screens/AuthScreen";
+import HomeScreen from "./screens/Home/HomeScreen";
+import TasksScreen from "../src/screens/Tasks/TasksScreen";
+import WeekPlannerScreen from "../src/screens/Weekplanner/WeekPlannerScreen";
+import styles from ".././src/styles/styles"; // Importar estilos globais
+import "react-native-gesture-handler";
+import * as SQLite from "expo-sqlite";
+import { databaseSchema } from "./services/SQLite/databaseSchema";
+import Colors from "../assets/utils/pallete.json";
+import { NativeBaseProvider, extendTheme } from "native-base";
+import createTablesQuery from "./services/SQLite/createQuery";
+import Icon from "react-native-vector-icons/Ionicons";
+import { LogBox } from "react-native";
+import HabitsScreen from "./screens/Habits/HabitsScreen";
 
-export default function App() {
+const theme = extendTheme({
+  colors: {
+    // Add new color
+    primary: {
+      50: "#E3F2F9",
+      100: "#C5E4F3",
+      200: "#A2D4EC",
+      300: "#7AC1E4",
+      400: "#47A9DA",
+      500: "#0088CC",
+      600: "#007AB8",
+      700: "#006BA1",
+      800: "#005885",
+      900: "#003F5E",
+    },
+    // Redefining only one shade, rest of the color will remain same.
+    amber: {
+      400: "#d97706",
+    },
+  },
+  config: {
+    // Changing initialColorMode to 'dark'
+    initialColorMode: "white",
+  },
+});
+
+const LoadingScreen = ({ styles }) => (
+  <View style={styles.container_loading}>
+    <Image source={require("../img/mylogo.png")} style={styles.mainlogo} />
+    <Text style={styles.maintext_loading}>Welcome to Manage Me!</Text>
+  </View>
+);
+
+const db = SQLite.openDatabase("manageme");
+
+const App = () => {
+  const [appIsReady, setAppIsReady] = useState(false);
+
   const [fontsLoaded] = useFonts({
-    'Kode Mono': require('../assets/fonts/Kode_Mono/KodeMono-VariableFont_wght.ttf'),
-    'Roboto': require('../assets/fonts/Roboto/Roboto-Light.ttf'),
+    "Kode Mono": require("../assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"),
+    Roboto: require("../assets/fonts/Roboto/Roboto-Light.ttf"),
+    Poppins: require("../assets/fonts/Poppins/Poppins-Light.ttf"),
+    Poppins_Bold: require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
+    Poppins_Medium: require("../assets/fonts/Poppins/Poppins-Medium.ttf"),
   });
 
-  const [appIsReady, setAppIsReady] = useState(false);
+  useEffect(() => {
+    LogBox.ignoreAllLogs(true);
+  }, []);
 
   useEffect(() => {
     async function prepare() {
       try {
-        // Pre-load fonts, make any API calls you need to do here
-        // Artificially delay for two seconds to simulate a slow loading
-        // experience. Please remove this if you copy and paste the code!
+        const queries = createTablesQuery
+          .trim()
+          .split(";")
+          .filter((query) => query.length > 0);
 
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        db.transaction((tx) => {
+          queries.forEach((query) => {
+            tx.executeSql(
+              query,
+              [],
+              (_, result) => console.log("Tabela criada ou já existe", result),
+              (_, error) => console.log("Erro ao criar tabela", error)
+            );
+          });
+
+          tx.executeSql( // funçao para executar queries ocasionais
+            "",
+            [],
+            (_, result) => console.log("Alterações feitas com sucesso.", result),
+            (_, error) => console.log("Erro ao efetuar alterações", error)
+          );
+        });
+
+        // Espera artificial, ajuste conforme necessário
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
       } finally {
-        // Tell the application to render
         setAppIsReady(true);
       }
     }
 
     prepare();
   }, []);
-
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
-      // Pre-load fonts, make any API calls you need to do here
-
-      
       await SplashScreen.hideAsync();
     }
   }, [appIsReady]);
 
   if (!appIsReady) {
-    return (
-      <View style={styles.container}>
-        <Image source={require('../img/mylogo.png')} style={styles.mainlogo}/>
-        <Text style={styles.maintext}>Loading...</Text>
-      </View>
-    );
-  } 
-  
+    return <LoadingScreen styles={styles} />;
+  }
+
+  const Stack = createNativeStackNavigator();
+  const Drawer = createDrawerNavigator();
 
   return (
-    <View style={{flex:1}}>
-      <View style={styles.container}>
-        <Image source={require('.././img/mylogo.png')} style={styles.mainlogo}/>
-        <Text style={styles.maintext}>Welcome to Manage Me!</Text>
-        <StatusBar style="auto" />
-      </View>
-    </View>
-    );
-}
+    <GlobalProvider>
+      <NativeBaseProvider theme={theme}>
+        <NavigationContainer>
+          <Stack.Screen
+            name="Auth"
+            component={AuthScreen}
+            options={{ headerShown: false, drawerItemStyle: { height: 0 } }}
+          />
+          <Drawer.Navigator
+            style={{ backgroundColor: Colors.mainbg }}
+            initialRouteName="Auth"
+            screenOptions={{
+              sceneContainerStyle: { backgroundColor: Colors.mainbg },
+              headerBackgroundContainerStyle: { backgroundColor: "#ffffff" },
+              headerStyle: {
+                backgroundColor: Colors.navblue,
+                borderBottomColor: "transparent",
+              },
+              headerTintColor: "#fff",
+              drawerStyle: { backgroundColor: Colors.navblue },
+              drawerActiveTintColor: "#fff",
+              drawerInactiveTintColor: "#fff",
+            }}
+          >
+            <Drawer.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{
+                drawerLabel: "Home",
+                headerTitle: "Home",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "home" : "home-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Tasks Screen"
+              component={TasksScreen}
+              options={{
+                drawerLabel: "Tasks",
+                headerTitle: "Tasks",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={
+                      focused ? "checkmark-circle" : "checkmark-circle-outline"
+                    }
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Planner"
+              component={WeekPlannerScreen}
+              options={{
+                drawerLabel: "Planner",
+                headerTitle: "Planner",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "calendar" : "calendar-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Habit"
+              component={HabitsScreen}
+              options={{
+                drawerLabel: "Habit Tracker",
+                headerTitle: "Habit Tracker",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "disc" : "disc-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Stats"
+              component={View}
+              options={{
+                drawerLabel: "Statistics",
+                headerTitle: "Statistics",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "bar-chart" : "bar-chart-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Settings"
+              component={View}
+              options={{
+                drawerLabel: "Settings",
+                headerTitle: "Settings",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "settings" : "settings-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+              }}
+            />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </NativeBaseProvider>
+    </GlobalProvider>
+  );
+};
 
-const { width, height } = Dimensions.get('window');
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1c73ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-
-  },
-
-  maintext: {
-    fontFamily: 'Roboto',
-    fontSize: 24,
-    color: '#ffffff',
-  },
-
-  mainlogo: {
-    width: width * 0.5, 
-    height: height * 0.2, 
-    marginBottom: 30,
-  },
-
-});
+export default App;

@@ -1,0 +1,11 @@
+{
+    "themes-link1": "https://docs.nativebase.io/default-theme",
+    "mainblue": "#1c73ff",
+    "navblue": "#1d4ed8",
+    "selected": "#fff",
+    "unselected": "#dddddd",
+
+    "activeitem": "#2563eb",
+
+    "mainbg": "#ffffff"
+}
