@@ -61,13 +61,15 @@ CREATE TABLE IF NOT EXISTS Categorias (
 CREATE TABLE IF NOT EXISTS Habitos (
     idHabito INTEGER PRIMARY KEY AUTOINCREMENT,
     nome NVARCHAR(100) NOT NULL,
-    descricao NVARCHAR(255),
-    frequenciaSemanal INTEGER NOT NULL,
+    descricao NVARCHAR(255), 
+    frequenciaSemanal TEXT,
+    repeticaoDiaria INTEGER NOT NULL,  
     idPerfil INTEGER,
     idRotina INTEGER,
     FOREIGN KEY (idPerfil) REFERENCES Perfil(idPerfil),
     FOREIGN KEY (idRotina) REFERENCES Rotinas(idRotina)
 );
+
 
 CREATE TABLE IF NOT EXISTS Perfil (
     idPerfil INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -211,6 +213,15 @@ CREATE TABLE IF NOT EXISTS ProjetoTarefa (
     FOREIGN KEY (idProjeto) REFERENCES Projetos(idProjeto),
     FOREIGN KEY (idTarefa) REFERENCES Tarefas(idTarefa)
 );
+
+CREATE TABLE IF NOT EXISTS ConclusoesHabito (
+    idConclusao INTEGER PRIMARY KEY AUTOINCREMENT,
+    idHabito INTEGER,
+    dataConclusao DATETIME,
+    FOREIGN KEY (idHabito) REFERENCES Habitos(idHabito)
+);
+
 `;
+
 
 export default createTablesQuery;

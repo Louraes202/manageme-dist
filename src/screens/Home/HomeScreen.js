@@ -123,7 +123,7 @@ const Home = ({ navigation }) => {
 
 export default Home;
 
-const homestyles = StyleSheet.create({
+export const homestyles = StyleSheet.create({
   boxtitle1: {
     fontFamily: "Poppins_Medium",
     fontSize: 24,
