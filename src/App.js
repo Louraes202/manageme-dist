@@ -140,6 +140,7 @@ const App = () => {
               headerStyle: {
                 backgroundColor: Colors.navblue,
                 borderBottomColor: "transparent",
+                
               },
               headerTintColor: "#fff",
               drawerStyle: { backgroundColor: Colors.navblue },

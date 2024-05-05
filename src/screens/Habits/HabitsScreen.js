@@ -7,6 +7,7 @@ import Colors from "../../../assets/utils/pallete.json";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import RoutinesTab from "./Tabs/RoutinesTab";
 import AddHabit from "./crud/AddHabit";
+import HabitDetail from "./crud/HabitDetail";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -15,6 +16,7 @@ const HabitsScreen = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MainTabs" component={MainTabNavigator} />
     <Stack.Screen name="AddHabit" component={AddHabit} />
+    <Stack.Screen name="HabitDetail" component={HabitDetail} />
   </Stack.Navigator>
 );
 
