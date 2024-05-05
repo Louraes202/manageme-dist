@@ -10,6 +10,7 @@ export const GlobalProvider = ({ children }) => {
   const [updateGroups, setUpdateGroups] = useState(false);
   const [updateEvents, setUpdateEvents] = useState(false);
   const [updateActivities, setUpdateActivities] = useState(false);
+  const [updateBlocks, setUpdateBlocks] = useState(false);
   
   
   const value = {
@@ -23,6 +24,8 @@ export const GlobalProvider = ({ children }) => {
     setUpdateEvents,
     updateActivities,
     setUpdateActivities,
+    updateBlocks,
+    setUpdateBlocks,
   };
 
   return (

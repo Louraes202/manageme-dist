@@ -5,6 +5,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
 import * as SQLite from 'expo-sqlite';
+import { useGlobalContext } from '../../../context/GlobalProvider';
 
 const db = SQLite.openDatabase('manageme');
 
@@ -14,6 +15,7 @@ const BlockDetail = ({ route, navigation }) => {
   const [horaFim, setHoraFim] = useState(new Date(bloco.hora_fim));
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [pickerType, setPickerType] = useState('');
+  const { setUpdateBlocks } = useGlobalContext();
 
   const handleConfirm = (date) => {
     if (pickerType === 'start') {
@@ -43,6 +45,7 @@ const BlockDetail = ({ route, navigation }) => {
         [start, end, bloco.idBloco],
         () => {
           console.log('Block updated successfully!');
+          setUpdateBlocks(true);
           navigation.goBack();
         },
         (_, error) => console.error('DB Error:', error)
@@ -57,6 +60,7 @@ const BlockDetail = ({ route, navigation }) => {
         [bloco.idBloco],
         () => {
           console.log('Block deleted successfully!');
+          setUpdateBlocks(true);
           navigation.goBack();
         },
         (_, error) => console.error('DB Error:', error)

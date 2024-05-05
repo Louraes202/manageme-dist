@@ -172,18 +172,45 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: "10%",
   },
-  hourBlock: {
-    backgroundColor: "#FFF", // a mesma cor de fundo usada para os blocos de dias
-    borderBottomColor: "#E9E9E9", // ou qualquer cor de linha que você tenha para separadores de dia
+  hourRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderBottomWidth: 1,
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-    // outros estilos de layout que você tenha para os blocos de dias, como margens ou alinhamento
+    borderBottomColor: '#ccc',
+    minHeight: 60, // Altura mínima para cada hora
   },
-  hourText: {
-    fontSize: 16, // assegure que esteja consistente com o tamanho da fonte dos blocos de dias
-    color: "#333", // a cor do texto deve também ser consistente
-    // outros estilos de texto que você tenha para os blocos de dias
+  hourLabel: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  hourLabelText: {
+    // Estilos de texto para as horas
+  },
+  hourBlock: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  block: {
+    backgroundColor: '#4A90E2', // Cor vibrante
+    borderRadius: 8, // Cantos arredondados
+    marginVertical: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 15,
+    flexDirection: 'row', // Alinha o conteúdo na mesma linha
+    justifyContent: 'space-between', // Distribui o espaço entre os elementos
+    alignItems: 'center', // Alinha o texto no centro
+  },
+  blockTitle: {
+    color: 'white', // Cor branca para o texto
+    fontSize: 16, // Tamanho do texto
+    fontWeight: 'bold', // Texto em negrito
+    flex: 1, // Permite que o texto ocupe espaço flexível
+  },
+  blockTime: {
+    color: 'white', // Cor branca para a hora
+    fontSize: 14, // Tamanho do texto para a hora
+    flexShrink: 0, // Evita que o texto da hora seja reduzido
+    marginLeft: 10, // Espaço entre o nome da atividade e a hora
   },
 });
 

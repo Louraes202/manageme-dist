@@ -3,8 +3,9 @@ import styles from "../../styles/styles";
 import createBottomTabNavigator from "@react-navigation/bottom-tabs/src/navigators/createBottomTabNavigator";
 import createNativeStackNavigator from "@react-navigation/native-stack/src/navigators/createNativeStackNavigator";
 import HabitsTab from "./Tabs/HabitsTab";
-import Colors from "../../../assets/utils/pallete.json"
-import { FontAwesome5 } from "@expo/vector-icons";
+import Colors from "../../../assets/utils/pallete.json";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import RoutinesTab from "./Tabs/RoutinesTab";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -25,7 +26,7 @@ const HabitsScreen = ({ navigation }) => {
         tabBarActiveTintColor: "#fff",
         tabBarInactiveTintColor: "#fff",
         tabBarActiveBackgroundColor: Colors.activeitem,
-        tabBarInactiveBackgroundColor: "trnsparent",
+        tabBarInactiveBackgroundColor: "transparent",
         tabBarItemStyle: {
           height: 50,
           borderRadius: 25,
@@ -39,7 +40,16 @@ const HabitsScreen = ({ navigation }) => {
         component={HabitsTab}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="target" color={"white"} size={24} />
+            <FontAwesome5 name="bullseye" color={"white"} size={24} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Routines"
+        component={RoutinesTab}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="repeat-outline" color={"white"} size={30} />
           ),
         }}
       />

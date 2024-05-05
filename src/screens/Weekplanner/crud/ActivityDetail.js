@@ -1,32 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, Text } from 'react-native';
-import { VStack, FormControl, IconButton, Icon, HStack, Button, Select, Input } from 'native-base';
-import { Ionicons } from '@expo/vector-icons';
-import * as SQLite from 'expo-sqlite';
-import moment from 'moment';
-import { useGlobalContext } from '../../../context/GlobalProvider';
+import React, { useState, useEffect } from "react";
+import { ScrollView, Text } from "react-native";
+import {
+  VStack,
+  FormControl,
+  IconButton,
+  Icon,
+  HStack,
+  Button,
+  Select,
+  Input,
+  Pressable,
+  Box,
+} from "native-base";
+import { Ionicons } from "@expo/vector-icons";
+import * as SQLite from "expo-sqlite";
+import moment from "moment";
+import { useGlobalContext } from "../../../context/GlobalProvider";
+import styles from "../../../styles/styles";
 
-const db = SQLite.openDatabase('manageme');
+const db = SQLite.openDatabase("manageme");
 
 const ActivityDetail = ({ route, navigation }) => {
   const { activity } = route.params;
   const [nomeAtividade, setNomeAtividade] = useState(activity.nomeAtividade);
-  const [descricaoAtividade, setDescricaoAtividade] = useState(activity.descricaoAtividade);
+  const [descricaoAtividade, setDescricaoAtividade] = useState(
+    activity.descricaoAtividade
+  );
   const [blocos, setBlocos] = useState([]);
   const [groups, setGroups] = useState([]);
-  const [selectedGroup, setSelectedGroup] = useState('');
-  const { setUpdateActivities } = useGlobalContext();
+  const [selectedGroup, setSelectedGroup] = useState("");
+  const { setUpdateActivities, updateBlocks, setUpdateBlocks } = useGlobalContext();
 
   const loadBlocks = () => {
-    const startOfWeek = moment().startOf('isoWeek').format('YYYY-MM-DD');
-    const endOfWeek = moment().endOf('isoWeek').format('YYYY-MM-DD');
-
     db.transaction((tx) => {
       tx.executeSql(
-        `SELECT * FROM Blocos WHERE idAtividade = ? AND diaMes BETWEEN ? AND ?;`,
-        [activity.idAtividade, startOfWeek, endOfWeek],
+        `SELECT * FROM Blocos WHERE idAtividade = ?;`,
+        [activity.idAtividade],
         (_, results) => setBlocos(results.rows._array),
-        (_, error) => console.error('DB Error:', error)
+        (_, error) => console.error("DB Error:", error)
       );
     });
   };
@@ -49,7 +60,7 @@ const ActivityDetail = ({ route, navigation }) => {
       );
     });
 
-    db.transaction(tx => {
+    db.transaction((tx) => {
       tx.executeSql(
         `SELECT idGrupo FROM Atividade_Grupo WHERE idAtividade = ?;`,
         [activity.idAtividade],
@@ -78,7 +89,9 @@ const ActivityDetail = ({ route, navigation }) => {
                   `INSERT INTO Atividade_Grupo (idAtividade, idGrupo) VALUES (?, ?);`,
                   [activity.idAtividade, selectedGroup],
                   () => {
-                    console.log("Activity and Group association updated successfully!");
+                    console.log(
+                      "Activity and Group association updated successfully!"
+                    );
                     setUpdateActivities(true);
                     navigation.goBack();
                   }
@@ -103,11 +116,11 @@ const ActivityDetail = ({ route, navigation }) => {
         `DELETE FROM Atividades WHERE idAtividade = ?;`,
         [activity.idAtividade],
         () => {
-          console.log('Activity deleted successfully!');
+          console.log("Activity deleted successfully!");
           setUpdateActivities(true);
           navigation.goBack();
         },
-        (_, error) => console.error('DB Error: ' + error.message)
+        (_, error) => console.error("DB Error: " + error.message)
       );
     });
   };
@@ -116,6 +129,10 @@ const ActivityDetail = ({ route, navigation }) => {
     loadBlocks();
     loadGroups();
   }, []);
+
+  useEffect(() => {
+    loadBlocks();
+  }, [updateBlocks]);
 
   return (
     <ScrollView style={{ padding: 20 }}>
@@ -127,7 +144,9 @@ const ActivityDetail = ({ route, navigation }) => {
           _pressed={{ backgroundColor: "green.100" }}
           onPress={() => navigation.goBack()}
         />
-        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Activity Details</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+          Activity Details
+        </Text>
       </HStack>
       <VStack space={3}>
         <FormControl>
@@ -136,7 +155,10 @@ const ActivityDetail = ({ route, navigation }) => {
         </FormControl>
         <FormControl>
           <FormControl.Label>Description</FormControl.Label>
-          <Input value={descricaoAtividade} onChangeText={setDescricaoAtividade} />
+          <Input
+            value={descricaoAtividade}
+            onChangeText={setDescricaoAtividade}
+          />
         </FormControl>
         <FormControl>
           <FormControl.Label>Group</FormControl.Label>
@@ -155,16 +177,33 @@ const ActivityDetail = ({ route, navigation }) => {
             ))}
           </Select>
         </FormControl>
-        <Button onPress={updateActivity} colorScheme="blue">Update Activity</Button>
-        <Button colorScheme="red" onPress={deleteActivity}>Delete Activity</Button>
-        <Text style={{ fontWeight: 'bold', fontSize: 18, marginTop: 20 }}>Blocks This Week</Text>
+        <Button onPress={updateActivity} colorScheme="blue">
+          Update Activity
+        </Button>
+        <Button colorScheme="red" onPress={deleteActivity}>
+          Delete Activity
+        </Button>
+        <Text style={{ fontWeight: "bold", fontSize: 18, marginTop: 20 }}>
+          Blocks This Week
+        </Text>
         {blocos.map((bloco) => (
-          <HStack key={bloco.idBloco} justifyContent="space-between" alignItems="center">
-            <Text>{moment(bloco.hora_inicio).format('LLLL')} - {moment(bloco.hora_fim).format('LLLL')}</Text>
-            <Button onPress={() => navigation.navigate('BlockDetail', { bloco })}>Edit</Button>
-          </HStack>
+          <Pressable
+            onPress={() => navigation.navigate("BlockDetail", { bloco })}
+          >
+            <Box
+              key={bloco.idBloco}
+              justifyContent="space-between"
+              alignItems="center"
+              borderColor={"gray.500"}
+              borderWidth={1}
+              borderRadius={10}
+            >
+              <Text style={{color: 'black', fontFamily: 'Poppins'}}>Block start: {moment(bloco.hora_inicio).format("LLLL")}</Text>
+              <Text style={{color: 'black', fontFamily: 'Poppins'}}>Block end: {moment(bloco.hora_fim).format("LLLL")}</Text>
+            </Box>
+          </Pressable>
         ))}
-        <Button onPress={() => navigation.navigate('AddBlock', { activity })}>
+        <Button onPress={() => navigation.navigate("AddBlock", { activity })}>
           Add Block
         </Button>
       </VStack>

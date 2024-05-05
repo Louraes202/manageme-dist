@@ -50,7 +50,6 @@ const WeekView = ({ navigation }) => {
         </Select>
       </HStack>
       <View
-        style={{ zIndex: 0 }}
         onLayout={(event) => {
           const { x, y, width, height } = event.nativeEvent.layout;
           setCalendarBounds({ x, y, width, height });
@@ -62,7 +61,9 @@ const WeekView = ({ navigation }) => {
           style={{
             marginLeft: -10,
             marginTop: 15,
+            marginBottom: 15,
             borderColor: "white",
+            height: 500,
           }}
         />
       </View>
