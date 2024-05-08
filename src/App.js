@@ -16,11 +16,13 @@ import "react-native-gesture-handler";
 import * as SQLite from "expo-sqlite";
 import { databaseSchema } from "./services/SQLite/databaseSchema";
 import Colors from "../assets/utils/pallete.json";
-import { NativeBaseProvider, extendTheme } from "native-base";
+import { NativeBaseProvider, extendTheme, IconButton } from "native-base";
 import createTablesQuery from "./services/SQLite/createQuery";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LogBox } from "react-native";
 import HabitsScreen from "./screens/Habits/HabitsScreen";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+
 
 const theme = extendTheme({
   colors: {
@@ -90,10 +92,12 @@ const App = () => {
             );
           });
 
-          tx.executeSql( // funçao para executar queries ocasionais
+          tx.executeSql(
+            // funçao para executar queries ocasionais
             "",
             [],
-            (_, result) => console.log("Alterações feitas com sucesso.", result),
+            (_, result) =>
+              console.log("Alterações feitas com sucesso.", result),
             (_, error) => console.log("Erro ao efetuar alterações", error)
           );
         });
@@ -118,6 +122,7 @@ const App = () => {
   if (!appIsReady) {
     return <LoadingScreen styles={styles} />;
   }
+
 
   const Stack = createNativeStackNavigator();
   const Drawer = createDrawerNavigator();
@@ -145,6 +150,23 @@ const App = () => {
               drawerStyle: { backgroundColor: Colors.navblue },
               drawerActiveTintColor: "#fff",
               drawerInactiveTintColor: "#fff",
+
+              headerRight: () => (
+                <IconButton
+                  icon={
+                    <Ionicons
+                      name="mic"
+                      color={"white"}
+                      size={24}
+                      style={{margin: 3}}
+
+                    />
+                  }
+                  onPress={() => {
+                    console.log("E");
+                  }}
+                />
+              ),
             }}
           >
             <Drawer.Screen
