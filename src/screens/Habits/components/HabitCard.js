@@ -33,7 +33,7 @@ const DayButton = ({ dayNumber, dayIndex, isSelected, onPress }) => {
 };
 
 // Habits Card
-const HabitCard = ({ habitName, groupName, days }) => {
+const HabitCard = ({ habitName, groupName, days, onPress }) => {
   const [selectedDays, setSelectedDays] = React.useState(days);
 
   const handleDayPress = (dayIndex) => {
@@ -45,42 +45,44 @@ const HabitCard = ({ habitName, groupName, days }) => {
   };
 
   return (
-    <Box
-      padding={4}
-      my={3}
-      borderRadius={15}
-      backgroundColor="white"
-      borderColor="blue.300"
-      borderWidth={1}
-    >
-      <VStack space={2}>
-        <HStack>
-            <Text fontSize="lg" fontWeight="bold">
-              {habitName}
-            </Text>
-            <Spacer />
-            <Badge alignContent={"center"} justifyContent={"center"} backgroundColor={'blue.500'} borderRadius={20}>
-              <Text color="white" fontWeight={'bold'}>{groupName}</Text>
-            </Badge>
-        </HStack>
-        <HStack
-          space={3}
-          flex={1}
-          flexDirection={"row"}
-          justifyContent={"center"}
-        >
-          {Array.from({ length: 7 }, (_, i) => (
-            <DayButton
-              key={i}
-              dayNumber={i + 1} // número do dia do mês
-              dayIndex={i} // índice do dia da semana
-              isSelected={selectedDays.includes(i)}
-              onPress={handleDayPress}
-            />
-          ))}
-        </HStack>
-      </VStack>
-    </Box>
+    <Pressable onPress={onPress}>
+      <Box
+        padding={4}
+        my={3}
+        borderRadius={15}
+        backgroundColor="white"
+        borderColor="blue.300"
+        borderWidth={1}
+      >
+        <VStack space={2}>
+          <HStack>
+              <Text fontSize="lg" fontWeight="bold">
+                {habitName}
+              </Text>
+              <Spacer />
+              <Badge alignContent={"center"} justifyContent={"center"} backgroundColor={'blue.500'} borderRadius={20}>
+                <Text color="white" fontWeight={'bold'}>{groupName}</Text>
+              </Badge>
+          </HStack>
+          <HStack
+            space={3}
+            flex={1}
+            flexDirection={"row"}
+            justifyContent={"center"}
+          >
+            {Array.from({ length: 7 }, (_, i) => (
+              <DayButton
+                key={i}
+                dayNumber={i + 1} // número do dia do mês
+                dayIndex={i} // índice do dia da semana
+                isSelected={selectedDays.includes(i)}
+                onPress={() => {}}
+              />
+            ))}
+          </HStack>
+        </VStack>
+      </Box>
+    </Pressable>
   );
 };
 

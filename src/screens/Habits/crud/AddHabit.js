@@ -7,7 +7,7 @@ import * as SQLite from "expo-sqlite";
 
 const db = SQLite.openDatabase("manageme");
 
-const DayButton = ({ dayIndex, isSelected, onPress }) => {
+export const DayButton = ({ dayIndex, isSelected, onPress }) => {
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const bgColor = isSelected ? "blue.500" : "gray.200"; // Button colors
   const textColor = isSelected ? "white" : "black";

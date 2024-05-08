@@ -21,6 +21,7 @@ import { homestyles } from "../../Home/HomeScreen";
 import HabitCard from "../components/HabitCard";
 import { AddHabitBox } from "./HabitsTab";
 import * as SQLite from "expo-sqlite";
+import moment from "moment";
 
 const db = SQLite.openDatabase("manageme");
 
@@ -118,13 +119,14 @@ const RoutinesTab = ({ navigation }) => {
         <VStack>
           <Text style={styles.title_textscreen}>Habits</Text>
           {habits.map((habit) => {
-            const days = habit.frequenciaSemanal ? JSON.parse(habit.frequenciaSemanal).map((day) => moment(day, "dddd").day()) : [];
+            const days = habit.frequenciaSemanal.split(',').map(Number); // parse the days correctly
             return (
               <HabitCard
                 key={habit.idHabito}
                 habitName={habit.nome}
-                groupName={"school"} // Adjust this according to your data
+                groupName={"school"} // Ajuste isso conforme sua estrutura
                 days={days}
+                onPress={() => navigation.navigate("HabitDetail", { habit })}
               />
             );
           })}
