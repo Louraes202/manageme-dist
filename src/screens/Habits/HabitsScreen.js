@@ -9,6 +9,8 @@ import RoutinesTab from "./Tabs/RoutinesTab";
 import AddHabit from "./crud/AddHabit";
 import HabitDetail from "./crud/HabitDetail";
 
+import moment from 'moment';
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 

@@ -4,6 +4,7 @@ import { View, Button, TextInput, Alert, Pressable } from "react-native";
 import { Box, Text, VStack, HStack } from "native-base";
 import moment from "moment";
 import * as SQLite from "expo-sqlite";
+import { useGlobalContext } from "../../../context/GlobalProvider";
 
 const db = SQLite.openDatabase("manageme");
 
@@ -39,6 +40,8 @@ const AddHabit = ({ navigation }) => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [dailyFrequency, setDailyFrequency] = useState(1);
 
+  const {updateHabits, setUpdateHabits} = useGlobalContext();
+
   const toggleDaySelection = (dayIndex) => {
     setSelectedDays((prev) =>
       prev.includes(dayIndex)
@@ -60,6 +63,7 @@ const AddHabit = ({ navigation }) => {
         [name, description, weekDays, dailyFrequency],
         () => {
           Alert.alert("Success", "Habit added successfully");
+          setUpdateHabits(true);
           navigation.goBack();
         },
         (error) => {

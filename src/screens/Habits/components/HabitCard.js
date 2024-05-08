@@ -1,5 +1,13 @@
-import React from "react";
-import { Pressable, Text, VStack, Box, HStack, Badge, Spacer } from "native-base";
+import React, { useEffect, useState } from "react";
+import {
+  Pressable,
+  Text,
+  VStack,
+  Box,
+  HStack,
+  Badge,
+  Spacer,
+} from "native-base";
 
 // Função para converter índice em nome do dia da semana
 const getDayName = (index) =>
@@ -12,9 +20,7 @@ const DayButton = ({ dayNumber, dayIndex, isSelected, onPress }) => {
   return (
     <Pressable onPress={() => onPress(dayIndex)}>
       <VStack alignItems="center" marginX={1}>
-        <Text color={"black"}>
-          {getDayName(dayIndex)}
-        </Text>
+        <Text color={"black"}>{getDayName(dayIndex)}</Text>
         <Box
           backgroundColor={bgColor}
           borderRadius="full"
@@ -34,7 +40,7 @@ const DayButton = ({ dayNumber, dayIndex, isSelected, onPress }) => {
 
 // Habits Card
 const HabitCard = ({ habitName, groupName, days, onPress }) => {
-  const [selectedDays, setSelectedDays] = React.useState(days);
+  const [selectedDays, setSelectedDays] = useState(days);
 
   const handleDayPress = (dayIndex) => {
     setSelectedDays((prev) =>
@@ -43,6 +49,10 @@ const HabitCard = ({ habitName, groupName, days, onPress }) => {
         : [...prev, dayIndex]
     );
   };
+
+  useEffect(() => {
+    setSelectedDays(days);
+  }, [days]);
 
   return (
     <Pressable onPress={onPress}>
@@ -56,13 +66,20 @@ const HabitCard = ({ habitName, groupName, days, onPress }) => {
       >
         <VStack space={2}>
           <HStack>
-              <Text fontSize="lg" fontWeight="bold">
-                {habitName}
+            <Text fontSize="lg" fontWeight="bold">
+              {habitName}
+            </Text>
+            <Spacer />
+            <Badge
+              alignContent={"center"}
+              justifyContent={"center"}
+              backgroundColor={"blue.500"}
+              borderRadius={20}
+            >
+              <Text color="white" fontWeight={"bold"}>
+                {groupName}
               </Text>
-              <Spacer />
-              <Badge alignContent={"center"} justifyContent={"center"} backgroundColor={'blue.500'} borderRadius={20}>
-                <Text color="white" fontWeight={'bold'}>{groupName}</Text>
-              </Badge>
+            </Badge>
           </HStack>
           <HStack
             space={3}
