@@ -3,7 +3,7 @@ import { ScrollView, View, Text } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as SQLite from "expo-sqlite";
 import { VStack, FormControl, Input, IconButton, Button, HStack, Icon } from "native-base";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useGlobalContext } from "../../../context/GlobalProvider";
 import styles from "../../../styles/styles";
 
@@ -66,14 +66,14 @@ const EventDetail = ({ route, navigation }) => {
         </FormControl>
         <Button
           onPress={showDatePicker}
-          leftIcon={<Icon as={FontAwesome5} name="clock" size="sm" />}
+          leftIcon={<Icon as={Ionicons} name="clock" size="sm" />}
         >
           Change Start Time
         </Button>
         <Text>Start Time: {event.horaInicio}</Text>
         <Button
           onPress={showDatePicker}
-          leftIcon={<Icon as={FontAwesome5} name="clock" size="sm" />}
+          leftIcon={<Icon as={Ionicons} name="clock" size="sm" />}
         >
           Change End Time
         </Button>

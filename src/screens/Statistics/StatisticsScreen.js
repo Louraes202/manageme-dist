@@ -4,7 +4,7 @@ import createBottomTabNavigator from "@react-navigation/bottom-tabs/src/navigato
 import createNativeStackNavigator from "@react-navigation/native-stack/src/navigators/createNativeStackNavigator";
 import HabitsTab from "./Tabs/HabitsTab";
 import Colors from "../../../assets/utils/pallete.json";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import StatisticsTab from "./Tabs/StatisticsTab";
 
 
@@ -46,7 +46,7 @@ const MainTabNavigator = () => (
       component={StatisticsTab}
       options={{
         tabBarIcon: ({ color, size }) => (
-          <FontAwesome5 name="bullseye" color={"white"} size={24} />
+          <Ionicons name="bullseye" color={"white"} size={24} />
         ),
       }}
     />

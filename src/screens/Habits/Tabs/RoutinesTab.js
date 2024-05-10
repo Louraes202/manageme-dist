@@ -16,7 +16,7 @@ import {
   VStack,
 } from "native-base";
 import Colors from "../../../../assets/utils/pallete.json";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { homestyles } from "../../Home/HomeScreen";
 import HabitCard from "../components/HabitCard";
 import { AddHabitBox } from "./HabitsTab";

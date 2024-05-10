@@ -20,7 +20,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as SQLite from "expo-sqlite";
 import styles from "../../../styles/styles";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 const db = SQLite.openDatabase("manageme");
 

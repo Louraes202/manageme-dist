@@ -14,7 +14,7 @@ import {
 } from "native-base";
 import CalendarStrip from "react-native-calendar-strip";
 import Colors from "../../../../assets/utils/pallete.json";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 
 export const AddHabitBox = ({text, onPress}) => {
@@ -31,7 +31,7 @@ export const AddHabitBox = ({text, onPress}) => {
         borderWidth={2}
       >
         <HStack flex={1} alignItems={"center"} px={4} justifyContent={'center'} space={2}>
-          <FontAwesome5 name="plus" size="20" color="white" />
+          <Ionicons name="plus" size="20" color="white" />
           <Text style={{ color: "white", fontFamily: 'Poppins', fontSize: 20 }}>{text}</Text>
         </HStack>
       </Box>

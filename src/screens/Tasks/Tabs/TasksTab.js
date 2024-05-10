@@ -137,7 +137,7 @@ export const SearchBar = ({placeholder, value, onChangeText}) => {
             ml="3"
             size="6"
             color="gray.400"
-            as={<FontAwesome5 name="search" />}
+            as={<FontAwesome5 name="search"/>}
           />
         }
         InputRightElement={

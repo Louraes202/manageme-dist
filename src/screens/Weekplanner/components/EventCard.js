@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, VStack, Text, Pressable, Icon, HStack } from "native-base";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 const EventCard = ({ event, onPress }) => {
   return (
@@ -23,7 +23,7 @@ const EventCard = ({ event, onPress }) => {
             {event.descricao}
           </Text>
           <HStack alignItems="center" space={2}>
-            <Icon as={FontAwesome5} name="calendar-alt" size="sm" color="coolGray.400" />
+            <Icon as={Ionicons} name="calendar-alt" size="sm" color="coolGray.400" />
             <Text fontSize="xs" color="coolGray.500">
               {event.horaInicio}
             </Text>

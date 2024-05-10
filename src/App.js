@@ -21,7 +21,7 @@ import createTablesQuery from "./services/SQLite/createQuery";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LogBox } from "react-native";
 import HabitsScreen from "./screens/Habits/HabitsScreen";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 
 const theme = extendTheme({
@@ -63,11 +63,11 @@ const App = () => {
   const [appIsReady, setAppIsReady] = useState(false);
 
   const [fontsLoaded] = useFonts({
-    "Kode Mono": require("../assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"),
-    Roboto: require("../assets/fonts/Roboto/Roboto-Light.ttf"),
-    Poppins: require("../assets/fonts/Poppins/Poppins-Light.ttf"),
-    Poppins_Bold: require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
-    Poppins_Medium: require("../assets/fonts/Poppins/Poppins-Medium.ttf"),
+    'Kode Mono': require("../assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"),
+    "Roboto": require("../assets/fonts/Roboto/Roboto-Light.ttf"),
+    'Poppins': require("../assets/fonts/Poppins/Poppins-Light.ttf"),
+    'Poppins_Bold': require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
+    'Poppins_Medium': require("../assets/fonts/Poppins/Poppins-Medium.ttf"),
   });
 
   useEffect(() => {

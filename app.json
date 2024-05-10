@@ -28,14 +28,7 @@
       "favicon": "./assets/ManageMeLogo.png"
     },
     "plugins": [
-      [
-        "expo-font",
-        {
-          "fonts": [
-            "./assets/fonts"
-          ]
-        }
-      ],
+      ["expo-font"],
       "expo-build-properties",
       "expo-asset"
     ]
