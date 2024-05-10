@@ -11,6 +11,7 @@ export const GlobalProvider = ({ children }) => {
   const [updateEvents, setUpdateEvents] = useState(false);
   const [updateActivities, setUpdateActivities] = useState(false);
   const [updateBlocks, setUpdateBlocks] = useState(false);
+  const [updateHabits, setUpdateHabits] = useState(false);
   
   
   const value = {
@@ -26,6 +27,8 @@ export const GlobalProvider = ({ children }) => {
     setUpdateActivities,
     updateBlocks,
     setUpdateBlocks,
+    updateHabits,
+    setUpdateHabits
   };
 
   return (

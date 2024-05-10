@@ -4,15 +4,18 @@ import { Input, FormControl, Checkbox, VStack, Button, HStack } from "native-bas
 import * as SQLite from "expo-sqlite";
 import { format } from "date-fns";
 import { DayButton } from "./AddHabit";
+import { useGlobalContext } from "../../../context/GlobalProvider";
 
 const db = SQLite.openDatabase("manageme");
 
-const HabitDetail = ({ route, navigation, setUpdateHabits }) => {
+const HabitDetail = ({ route, navigation }) => {
   const { habit } = route.params;
   const [name, setName] = useState(habit.nome);
   const [description, setDescription] = useState(habit.descricao);
   const [selectedDays, setSelectedDays] = useState(habit.frequenciaSemanal ? habit.frequenciaSemanal.split(',').map(Number) : []);
   const [dailyFrequency, setDailyFrequency] = useState(habit.repeticaoDiaria);
+  const {updateHabits, setUpdateHabits} = useGlobalContext();
+
 
   const toggleDaySelection = (dayIndex) => {
     setSelectedDays((prev) =>

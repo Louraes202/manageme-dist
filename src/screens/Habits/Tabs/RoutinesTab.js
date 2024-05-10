@@ -22,8 +22,10 @@ import HabitCard from "../components/HabitCard";
 import { AddHabitBox } from "./HabitsTab";
 import * as SQLite from "expo-sqlite";
 import moment from "moment";
+import { useGlobalContext } from "../../../context/GlobalProvider";
 
 const db = SQLite.openDatabase("manageme");
+
 
 const fetchHabitsFromDatabase = (callback) => {
     db.transaction((tx) => {
@@ -66,6 +68,31 @@ const RoutinesTab = ({ navigation }) => {
   const isFocused = useIsFocused();
 
   const [habits, setHabits] = useState([]);
+  
+  const {updateHabits, setUpdateHabits} = useGlobalContext();
+
+  useEffect(() => {
+    const fetchHabits = () => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "SELECT * FROM Habitos;",
+          [],
+          (_, { rows: { _array } }) => {
+            setHabits(_array.map(habit => ({
+              ...habit,
+              days: habit.frequenciaSemanal.split(',').map(Number) // Transforma os dias em números assim que obtém os dados
+            })));
+          },
+          (error) => console.error("Error fetching habits:", error)
+        );
+      });
+    };
+  
+    if (isFocused || updateHabits) {
+      fetchHabits();
+    }
+  }, [isFocused, updateHabits]);
+  
 
   useEffect(() => {
     db.transaction((tx) => {
@@ -78,7 +105,7 @@ const RoutinesTab = ({ navigation }) => {
         (error) => console.error("Error fetching habits:", error)
       );
     });
-  }, []);
+  }, [updateHabits]);
 
   return (
     <ScrollView style={[styles.screen, { padding: 0 }]}>
@@ -124,7 +151,7 @@ const RoutinesTab = ({ navigation }) => {
               <HabitCard
                 key={habit.idHabito}
                 habitName={habit.nome}
-                groupName={"school"} // Ajuste isso conforme sua estrutura
+                groupName={"school"} // ajustar isto conforme sua estrutura
                 days={days}
                 onPress={() => navigation.navigate("HabitDetail", { habit })}
               />
