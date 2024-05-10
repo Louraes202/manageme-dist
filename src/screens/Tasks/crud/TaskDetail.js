@@ -17,7 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import * as SQLite from "expo-sqlite";
 import { format } from "date-fns";
-import { Calendar } from "react-native-calendars";
+// import { Calendar } from "react-native-calendars";
 
 const db = SQLite.openDatabase("manageme");
 

@@ -12,11 +12,11 @@ import {
   Modal,
   Spacer,
 } from "native-base";
-import DateTimePicker from "react-native-modal-datetime-picker";
+import DateTimePicker from "react-native-modal-datetime-picker"; // o problema de dependências está aqui
 import * as SQLite from "expo-sqlite";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
-import MultipleDatePicker from "../components/MultipleDatePicker";
+// import MultipleDatePicker from "../components/MultipleDatePicker";
 import { Calendar } from "react-native-calendars";
 
 import styles from "../../../styles/styles"; // Este é o caminho correto para seus estilos globais
