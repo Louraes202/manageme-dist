@@ -5,6 +5,8 @@ import createNativeStackNavigator from "@react-navigation/native-stack/src/navig
 import HabitsTab from "./Tabs/HabitsTab";
 import Colors from "../../../assets/utils/pallete.json";
 import { Ionicons } from "@expo/vector-icons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+
 import RoutinesTab from "./Tabs/RoutinesTab";
 import AddHabit from "./crud/AddHabit";
 import HabitDetail from "./crud/HabitDetail";
@@ -50,7 +52,7 @@ const MainTabNavigator = () => (
       component={HabitsTab}
       options={{
         tabBarIcon: ({ color, size }) => (
-          <Ionicons name="bullseye" color={"white"} size={24} />
+          <FontAwesome name="bullseye" color={"white"} size={24} />
         ),
       }}
     />

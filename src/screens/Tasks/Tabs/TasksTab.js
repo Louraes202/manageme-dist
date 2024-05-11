@@ -24,7 +24,7 @@ import {
   Pressable,
   Radio,
 } from "native-base";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import Colors from "../../../../assets/utils/pallete.json";
 import Task from "../components/Task";
 import { ScrollView } from "react-native-gesture-handler";
@@ -137,7 +137,7 @@ export const SearchBar = ({placeholder, value, onChangeText}) => {
             ml="3"
             size="6"
             color="gray.400"
-            as={<FontAwesome5 name="search"/>}
+            as={<Ionicons name="search"/>}
           />
         }
         InputRightElement={
@@ -146,7 +146,7 @@ export const SearchBar = ({placeholder, value, onChangeText}) => {
             mr="3"
             size="6"
             color="gray.400"
-            as={<FontAwesome5 name="" />}
+            as={<FontAwesome name="" />}
           />
         }
       />
@@ -182,7 +182,7 @@ export const AddButton = ({ color, onPress, paddingX, paddingY }) => {
               borderWidth="1"
               borderColor="coolGray.300"
             >
-              <FontAwesome5 name="plus" size="30" color="white" />
+              <Entypo name="plus" size="30" color="white" />
               <Text style={{ color: "white" }}>New</Text>
             </Box>
           );

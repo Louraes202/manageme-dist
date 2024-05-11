@@ -11,8 +11,10 @@ import {
   VStack,
 } from "native-base";
 import { Dimensions } from "react-native";
-import FontAwesome5 from '@expo/vector-icons/FontAwesome';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Ionicons } from "@expo/vector-icons";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 
 const { width, height } = Dimensions.get("window");
 
@@ -57,7 +59,7 @@ const NavBox = ({
       borderRadius={10}
     >
       <Pressable flexDirection={"row"} alignItems={"center"} onPress={onPress}>
-        {!icontype ? <Icon m="2" size="6" color="white" as={<FontAwesome5 name={icon} />} /> : <Icon m="2" size="6" color="white" as={icontype} />}
+        {!icontype ? <Icon m="2" size="6" color="white" as={<FontAwesome name={icon} />} /> : <Icon m="2" size="6" color="white" as={icontype} />}
         <Text style={homestyles.navtext}>{text}</Text>
       </Pressable>
     </Box>
@@ -113,7 +115,7 @@ const Home = ({ navigation }) => {
           onPress={() => navigation.navigate("Habit")}
         />
         <NavBox
-          icontype={<Ionicons name="stats"/>}
+          icontype={<MaterialIcons name="query-stats"/>}
           text="Statistics & IA"
           color="blue.500"
           onPress={() => navigation.navigate("Stats")}

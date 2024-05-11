@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import PropTypes from "prop-types";
 import moment from "moment/min/moment-with-locales";
-import Picker from "@react-native-community/datetimepicker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { applyLocale, displayTitleByLocale } from "./src/Locale";
 import styles from "./src/Style";
 

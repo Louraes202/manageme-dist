@@ -14,10 +14,10 @@ import {
 } from "native-base";
 import CalendarStrip from "react-native-calendar-strip";
 import Colors from "../../../../assets/utils/pallete.json";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Entypo from "@expo/vector-icons/Entypo";
 
-
-export const AddHabitBox = ({text, onPress}) => {
+export const AddHabitBox = ({ text, onPress }) => {
   return (
     <Pressable onPress={onPress}>
       <Box
@@ -30,9 +30,17 @@ export const AddHabitBox = ({text, onPress}) => {
         borderColor={"blue.400"}
         borderWidth={2}
       >
-        <HStack flex={1} alignItems={"center"} px={4} justifyContent={'center'} space={2}>
-          <Ionicons name="plus" size="20" color="white" />
-          <Text style={{ color: "white", fontFamily: 'Poppins', fontSize: 20 }}>{text}</Text>
+        <HStack
+          flex={1}
+          alignItems={"center"}
+          px={4}
+          justifyContent={"center"}
+          space={2}
+        >
+          <Entypo name="plus" size={28} color={"white"} />
+          <Text style={{ color: "white", fontFamily: "Poppins", fontSize: 20 }}>
+            {text}
+          </Text>
         </HStack>
       </Box>
     </Pressable>
@@ -111,15 +119,17 @@ const HabitsTab = ({ navigation }) => {
         dateNumberStyle={{ color: "white", fontSize: 20 }}
         dateNameStyle={{ color: "white" }}
         iconContainer={{ flex: 0.1 }}
-        onDateSelected={(date) => {setSelectedDate(date)}}
+        onDateSelected={(date) => {
+          setSelectedDate(date);
+        }}
       />
 
       <Divider my={3}></Divider>
 
       <Text style={styles.title_textscreen}>Accomplish</Text>
 
-      <HabitBox nCheckbox={3} name={'Meditate'} checkedIndices={[0]}/>
-      <AddHabitBox text={'Add Habit'} />
+      <HabitBox nCheckbox={3} name={"Meditate"} checkedIndices={[0]} />
+      <AddHabitBox text={"Add Habit"} />
     </View>
   );
 };

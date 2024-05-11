@@ -4,6 +4,10 @@ import { useState } from "react";
 import WeeklyCalendar from "react-native-weekly-calendar";
 import { Menu, Fab, HStack, Select, Spacer, Text } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Dimensions } from "react-native";
@@ -77,7 +81,7 @@ const MainTabNavigator = ({ navigation }) => {
         component={EventsActivitiesTab}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" color={"white"} size={24} />
+            <MaterialIcons name="event-note" color={"white"} size={26} />
           ),
         }}
       />
@@ -86,7 +90,7 @@ const MainTabNavigator = ({ navigation }) => {
         component={WeekView}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar-week" color={"white"} size={24} />
+            <FontAwesome6 name="calendar-week" color={"white"} size={24} />
           ),
         }}
       />
@@ -95,7 +99,7 @@ const MainTabNavigator = ({ navigation }) => {
         component={View}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" color={"white"} size={24} />
+            <FontAwesome name="calendar" color={"white"} size={24} />
           ),
         }}
       />

@@ -1,7 +1,8 @@
 import React from "react";
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import { Menu, Fab } from "native-base";
-import { FontAwesome5 } from "@expo/vector-icons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import styles from "../../styles/styles"; // Importar estilos globais
@@ -69,7 +70,7 @@ const Tasks = ({ navigation }) => {
         component={TasksTab}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="check" color={"white"} size={24} />
+            <FontAwesome name="check" color={"white"} size={24} />
           ),
    
   
@@ -80,7 +81,7 @@ const Tasks = ({ navigation }) => {
         component={View} 
         options={{
           tabBarIcon: ({ focused }) => (
-            <FontAwesome5 name="microphone" color={"white"} size={24} />
+            <FontAwesome name="microphone" color={"white"} size={24} />
           ),
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
           
@@ -91,7 +92,7 @@ const Tasks = ({ navigation }) => {
         component={GroupsTab}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="layer-group" color={"white"} size={24} />
+            <FontAwesome6 name="layer-group" color={"white"} size={24} />
           ),
         }}
       />
