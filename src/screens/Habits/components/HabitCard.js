@@ -9,38 +9,57 @@ import {
   Spacer,
 } from "native-base";
 
+import moment from "moment";
+
 // Função para converter índice em nome do dia da semana
 const getDayName = (index) =>
   ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index];
+
+export const getWeekDays = () => {
+  const startOfWeek = moment().startOf("week");
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    days.push({
+      dayOfWeek: startOfWeek.format("ddd"), // 'Sun', 'Mon', 'Tue', etc.
+      dateOfMonth: startOfWeek.date(), // 1, 2, 3, etc.
+    });
+    startOfWeek.add(1, "day");
+  }
+  return days;
+};
 
 const DayButton = ({ dayNumber, dayIndex, isSelected, onPress }) => {
   const bgColor = isSelected ? "blue.500" : "gray.200"; // Cor para botões selecionados e não selecionados
   const textColor = isSelected ? "white" : "black";
 
   return (
-    <Pressable onPress={() => onPress(dayIndex)}>
-      <VStack alignItems="center" marginX={1}>
-        <Text color={"black"}>{getDayName(dayIndex)}</Text>
-        <Box
-          backgroundColor={bgColor}
-          borderRadius="full"
-          width={8}
-          height={8}
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Text color={textColor} fontWeight="bold">
-            {dayNumber}
-          </Text>
-        </Box>
-      </VStack>
-    </Pressable>
+    <VStack alignItems="center" marginX={1}>
+      <Text color={"black"}>{getDayName(dayIndex)}</Text>
+      <Box
+        backgroundColor={bgColor}
+        borderRadius="full"
+        width={8}
+        height={8}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Text color={textColor} fontWeight="bold">
+          {dayNumber}
+        </Text>
+      </Box>
+    </VStack>
   );
 };
 
 // Habits Card
 const HabitCard = ({ habitName, groupName, days, onPress }) => {
   const [selectedDays, setSelectedDays] = useState(days);
+
+  const [weekDays, setWeekDays] = useState([]);
+
+  useEffect(() => {
+    setWeekDays(getWeekDays());
+  }, []);
 
   const handleDayPress = (dayIndex) => {
     setSelectedDays((prev) =>
@@ -87,13 +106,12 @@ const HabitCard = ({ habitName, groupName, days, onPress }) => {
             flexDirection={"row"}
             justifyContent={"center"}
           >
-            {Array.from({ length: 7 }, (_, i) => (
+            {weekDays.map((day, index) => (
               <DayButton
-                key={i}
-                dayNumber={i + 1} // número do dia do mês
-                dayIndex={i} // índice do dia da semana
-                isSelected={selectedDays.includes(i)}
-                onPress={() => {}}
+                key={index}
+                dayNumber={day.dateOfMonth} // Número do dia no mês
+                dayIndex={index} // Índice do dia na semana
+                isSelected={selectedDays.includes(index)}
               />
             ))}
           </HStack>

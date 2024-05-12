@@ -1,14 +1,17 @@
 // AddHabit.js
-import React, { useState } from "react";
-import { View, Button, TextInput, Alert, Pressable } from "react-native";
-import { Box, Text, VStack, HStack } from "native-base";
+import React, { useEffect, useState } from "react";
+import { View, Button, TextInput, Alert, Pressable, Text } from "react-native";
+import { Box, VStack, HStack, IconButton, FormControl, Input } from "native-base";
 import moment from "moment";
 import * as SQLite from "expo-sqlite";
 import { useGlobalContext } from "../../../context/GlobalProvider";
+import { Ionicons } from "@expo/vector-icons";
+import styles from "../../../styles/styles";
+import { getWeekDays } from "../components/HabitCard";
 
 const db = SQLite.openDatabase("manageme");
 
-export const DayButton = ({ dayIndex, isSelected, onPress }) => {
+export const DayButton = ({ dayIndex, isSelected, onPress, dayNumber }) => {
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const bgColor = isSelected ? "blue.500" : "gray.200"; // Button colors
   const textColor = isSelected ? "white" : "black";
@@ -16,7 +19,7 @@ export const DayButton = ({ dayIndex, isSelected, onPress }) => {
   return (
     <Pressable onPress={() => onPress(dayIndex)}>
       <VStack alignItems="center" marginX={1}>
-        <Text color={"black"}>{dayNames[dayIndex]}</Text>
+        <Text style={{marginTop: 15}}>{dayNames[dayIndex]}</Text>
         <Box
           backgroundColor={bgColor}
           borderRadius="full"
@@ -25,8 +28,8 @@ export const DayButton = ({ dayIndex, isSelected, onPress }) => {
           alignItems="center"
           justifyContent="center"
         >
-          <Text color={textColor} fontWeight="bold">
-            {dayIndex + 1}
+          <Text style={{color: textColor, fontWeight: 'bold'}}>
+            {dayNumber+1}
           </Text>
         </Box>
       </VStack>
@@ -40,7 +43,13 @@ const AddHabit = ({ navigation }) => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [dailyFrequency, setDailyFrequency] = useState(1);
 
-  const {updateHabits, setUpdateHabits} = useGlobalContext();
+  const { updateHabits, setUpdateHabits } = useGlobalContext();
+
+  const [weekDays, setWeekDays] = useState([]);
+
+  useEffect(() => {
+    setWeekDays(getWeekDays());
+  }, []);
 
   const toggleDaySelection = (dayIndex) => {
     setSelectedDays((prev) =>
@@ -52,15 +61,12 @@ const AddHabit = ({ navigation }) => {
 
   const addHabit = () => {
     // Convert selected days to moment format and serialize them
-    const weekDaysMoment = selectedDays.map((day) =>
-      moment().day(day).format("dddd")
-    );
-    const weekDays = JSON.stringify(weekDaysMoment);
+    const weekDaysDB = selectedDays.join(",");
 
     db.transaction((tx) => {
       tx.executeSql(
         "INSERT INTO Habitos (nome, descricao, frequenciaSemanal, repeticaoDiaria) VALUES (?, ?, ?, ?);",
-        [name, description, weekDays, dailyFrequency],
+        [name, description, weekDaysDB, dailyFrequency],
         () => {
           Alert.alert("Success", "Habit added successfully");
           setUpdateHabits(true);
@@ -76,39 +82,46 @@ const AddHabit = ({ navigation }) => {
 
   return (
     <View style={{ padding: 20 }}>
-      <TextInput
-        placeholder="Habit Name"
-        value={name}
-        onChangeText={setName}
-        style={{ borderWidth: 1, marginBottom: 10, padding: 10 }}
-      />
-      <TextInput
-        placeholder="Habit Description"
-        value={description}
-        onChangeText={setDescription}
-        style={{ borderWidth: 1, marginBottom: 10, padding: 10 }}
-      />
+      <HStack alignItems={"center"} space={""}>
+        <IconButton
+          py={0}
+          px={2}
+          _icon={{ as: Ionicons, name: "arrow-back", color: "black" }}
+          _pressed={{ backgroundColor: "green.100" }}
+          onPress={() => navigation.goBack()}
+        ></IconButton>
+        <Text style={styles.title_text}>Create habit</Text>
+      </HStack>
+
+      <FormControl>
+        <FormControl.Label>Name</FormControl.Label>
+        <Input onChangeText={setName} />
+      </FormControl>
+      <FormControl>
+        <FormControl.Label>Description</FormControl.Label>
+        <Input onChangeText={setDescription} multiline />
+      </FormControl>
 
       {/* Weekday Buttons */}
       <HStack space={3} justifyContent="center" mb={4}>
-        {Array.from({ length: 7 }, (_, i) => (
+        {weekDays.map((day, index) => (
           <DayButton
-            key={i}
-            dayIndex={i}
-            isSelected={selectedDays.includes(i)}
+            key={index}
+            dayNumber={day.dateOfMonth} // Número do dia no mês
+            dayIndex={index} // Índice do dia na semana
+            isSelected={selectedDays.includes(index)}
             onPress={toggleDaySelection}
           />
         ))}
       </HStack>
 
-      {/* Daily Frequency */}
-      <TextInput
-        placeholder="Daily Frequency"
-        value={String(dailyFrequency)}
-        keyboardType="number-pad"
-        onChangeText={(text) => setDailyFrequency(Number(text))}
-        style={{ borderWidth: 1, marginBottom: 10, padding: 10 }}
-      />
+      <FormControl>
+        <FormControl.Label>Daily Frequency</FormControl.Label>
+        <Input
+          keyboardType="number-pad"
+          onChangeText={(text) => setDailyFrequency(Number(text))}
+        />
+      </FormControl>
 
       <Button title="Add Habit" onPress={addHabit} />
     </View>

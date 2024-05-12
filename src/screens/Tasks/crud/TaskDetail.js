@@ -53,7 +53,14 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
     db.transaction((tx) => {
       tx.executeSql(
         "UPDATE Tarefas SET nome = ?, descricao = ?, idGrupo = ?, repetir = ?, dataConclusao = ? WHERE idTarefa = ?;",
-        [name, description, selectedGroup, repeat ? 1 : 0, formattedDueDate, task.idTarefa],
+        [
+          name,
+          description,
+          selectedGroup,
+          repeat ? 1 : 0,
+          formattedDueDate,
+          task.idTarefa,
+        ],
         () => {
           Alert.alert("Success", "Task updated successfully");
           setUpdateTasks(true);
@@ -65,23 +72,30 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
   };
 
   const deleteTask = () => {
-    Alert.alert("Confirm Delete", "Are you sure you want to delete this task?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", onPress: () => {
-        db.transaction((tx) => {
-          tx.executeSql(
-            "DELETE FROM Tarefas WHERE idTarefa = ?;",
-            [task.idTarefa],
-            () => {
-              Alert.alert("Success", "Task deleted successfully");
-              setUpdateTasks(true);
-              navigation.goBack();
-            },
-            (_, error) => console.error("Error deleting task:", error)
-          );
-        });
-      }}
-    ]);
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this task?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          onPress: () => {
+            db.transaction((tx) => {
+              tx.executeSql(
+                "DELETE FROM Tarefas WHERE idTarefa = ?;",
+                [task.idTarefa],
+                () => {
+                  Alert.alert("Success", "Task deleted successfully");
+                  setUpdateTasks(true);
+                  navigation.goBack();
+                },
+                (_, error) => console.error("Error deleting task:", error)
+              );
+            });
+          },
+        },
+      ]
+    );
   };
 
   const toggleDate = (date) => {
@@ -96,7 +110,7 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
 
   const confirmDates = () => {
     const datesString = Object.keys(selectedDates)
-      .map(date => format(new Date(date), "dd/MM/yyyy"))
+      .map((date) => format(new Date(date), "dd/MM/yyyy"))
       .join(", ");
     Alert.alert("Selected Dates", datesString);
     setPickerVisible(false);
@@ -105,7 +119,7 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
   return (
     <ScrollView style={{ padding: 20 }}>
       <HStack alignItems="center" space={3}>
-      <IconButton
+        <IconButton
           py={0}
           px={2}
           _icon={{ as: Ionicons, name: "arrow-back", color: "black" }}
@@ -129,8 +143,12 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
           onValueChange={setSelectedGroup}
           placeholder="Select group"
         >
-          {groups.map(group => (
-            <Select.Item label={group.nome} value={group.idGrupo} key={group.idGrupo} />
+          {groups.map((group) => (
+            <Select.Item
+              label={group.nome}
+              value={group.idGrupo}
+              key={group.idGrupo}
+            />
           ))}
         </Select>
       </FormControl>
@@ -157,7 +175,9 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
         />
       </FormControl>
       {repeat && (
-        <Button onPress={() => setPickerVisible(true)}>Select Repetition Days</Button>
+        <Button onPress={() => setPickerVisible(true)}>
+          Select Repetition Days
+        </Button>
       )}
       <Modal isOpen={isPickerVisible} onClose={() => setPickerVisible(false)}>
         <Calendar
@@ -169,7 +189,9 @@ const TaskDetails = ({ route, navigation, setUpdateTasks }) => {
       </Modal>
       <VStack space={4} mt={5}>
         <Button onPress={updateTask}>Save Changes</Button>
-        <Button colorScheme="danger" onPress={deleteTask}>Delete Task</Button>
+        <Button colorScheme="danger" onPress={deleteTask}>
+          Delete Task
+        </Button>
       </VStack>
     </ScrollView>
   );

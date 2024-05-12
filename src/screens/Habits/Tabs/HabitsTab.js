@@ -10,12 +10,41 @@ import {
   HStack,
   Pressable,
   Radio,
+  ScrollView,
   VStack,
 } from "native-base";
 import CalendarStrip from "react-native-calendar-strip";
 import Colors from "../../../../assets/utils/pallete.json";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
+import * as SQLite from "expo-sqlite";
+import { useGlobalContext } from "../../../context/GlobalProvider";
+import { getDay } from "date-fns";
+
+const db = SQLite.openDatabase("manageme");
+
+const fetchHabitsFromDatabase = () => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM HABITOS;",
+        [],
+        (tx, results) => {
+          const habits = [];
+          for (let i = 0; i < results.rows.length; i++) {
+            const habit = results.rows.item(i);
+            habits.push(habit);
+          }
+          resolve(habits);
+        },
+        (error) => {
+          console.error("Error fetching habits from database.", error);
+          reject(error);
+        }
+      );
+    });
+  });
+};
 
 export const AddHabitBox = ({ text, onPress }) => {
   return (
@@ -48,7 +77,6 @@ export const AddHabitBox = ({ text, onPress }) => {
 };
 
 const HabitBox = ({ name, nCheckbox, checkedIndices = [] }) => {
-  // Inicializa o estado das checkboxes com base nos índices marcados
   const [checkedState, setCheckedState] = useState(
     Array.from({ length: nCheckbox }, (_, i) => checkedIndices.includes(i))
   );
@@ -96,13 +124,25 @@ const HabitBox = ({ name, nCheckbox, checkedIndices = [] }) => {
   );
 };
 
-const HabitsTab = ({ navigation }) => {
-  const isFocused = useIsFocused();
-  const [selectedDate, setSelectedDate] = useState(null);
+const HabitsTab = () => {
+  const { updateHabits, setUpdateHabits } = useGlobalContext();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [habits, setHabits] = useState([]);
 
   useEffect(() => {
-    console.log(selectedDate);
-  }, [selectedDate]);
+    fetchHabitsFromDatabase().then(setHabits);
+    console.log(habits);
+  }, [updateHabits]);
+
+  const handleCompletion = (habit) => {
+    // Log completion to the database or handle it as needed
+    Alert.alert("Habit Completed", `${habit.nome} has been completed!`);
+    // Optional: remove the habit from the list or mark it as completed
+  };
+
+  const filteredHabits = habits.filter((habit) => {
+//
+  });
 
   return (
     <View style={styles.screen}>
@@ -123,12 +163,13 @@ const HabitsTab = ({ navigation }) => {
           setSelectedDate(date);
         }}
       />
-
-      <Divider my={3}></Divider>
-
+      <Divider my="3" />
       <Text style={styles.title_textscreen}>Accomplish</Text>
-
-      <HabitBox nCheckbox={3} name={"Meditate"} checkedIndices={[0]} />
+      <ScrollView space={4}>
+        {filteredHabits.map((habit) => (
+          <HabitBox key={habit.idHabito} name={habit.nome} />
+        ))}
+      </ScrollView>
       <AddHabitBox text={"Add Habit"} />
     </View>
   );

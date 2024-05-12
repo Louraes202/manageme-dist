@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import moment from "moment";
 
 const GlobalContext = createContext();
 
@@ -12,7 +13,7 @@ export const GlobalProvider = ({ children }) => {
   const [updateActivities, setUpdateActivities] = useState(false);
   const [updateBlocks, setUpdateBlocks] = useState(false);
   const [updateHabits, setUpdateHabits] = useState(false);
-  
+
   
   const value = {
     updateTasks,

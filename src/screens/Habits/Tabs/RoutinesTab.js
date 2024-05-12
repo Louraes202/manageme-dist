@@ -71,6 +71,9 @@ const RoutinesTab = ({ navigation }) => {
   
   const {updateHabits, setUpdateHabits} = useGlobalContext();
 
+  const { weekDays } = useGlobalContext();
+
+
   useEffect(() => {
     const fetchHabits = () => {
       db.transaction((tx) => {
@@ -146,18 +149,18 @@ const RoutinesTab = ({ navigation }) => {
         <VStack>
           <Text style={styles.title_textscreen}>Habits</Text>
           {habits.map((habit) => {
-            const days = habit.frequenciaSemanal.split(',').map(Number); // parse the days correctly
+            const days = ( habit.frequenciaSemanal != "" ? habit.frequenciaSemanal.split(',').map(Number) : ""); // parse the days correctly
             return (
               <HabitCard
                 key={habit.idHabito}
                 habitName={habit.nome}
                 groupName={"school"} // ajustar isto conforme sua estrutura
                 days={days}
-                onPress={() => navigation.navigate("HabitDetail", { habit })}
+                onPress={() => navigation.navigate("HabitDetail", { habit, weekDays: weekDays })}
               />
             );
           })}
-          <AddHabitBox text={'Create Habit'} onPress={() => navigation.navigate('AddHabit')} />
+          <AddHabitBox text={'Create Habit'} onPress={() => navigation.navigate('AddHabit', {weekDays: weekDays})} />
         </VStack>
       </View>
     </ScrollView>
