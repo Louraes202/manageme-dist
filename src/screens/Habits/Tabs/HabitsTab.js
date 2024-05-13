@@ -21,6 +21,8 @@ import * as SQLite from "expo-sqlite";
 import { useGlobalContext } from "../../../context/GlobalProvider";
 import { getDay } from "date-fns";
 
+import moment from "moment";
+
 const db = SQLite.openDatabase("manageme");
 
 const fetchHabitsFromDatabase = () => {
@@ -127,14 +129,16 @@ const HabitBox = ({ name, nCheckbox, checkedIndices = [] }) => {
 const HabitsTab = () => {
   const { updateHabits, setUpdateHabits } = useGlobalContext();
   const [filteredHabits, setFilteredHabits] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState([new Date(moment())]);
   const [habits, setHabits] = useState([]);
+  const [checkboxStates, setCheckboxStates] = useState({});
   const isFocused = useIsFocused();
 
   useEffect(() => {
     fetchHabitsFromDatabase().then(setHabits);
-    console.log(habits);
   }, [updateHabits]);
+
+
 
   useEffect(() => {
     const dayOfWeek = getDay(selectedDate); // dia da semana como número
@@ -167,6 +171,7 @@ const HabitsTab = () => {
         dateNumberStyle={{ color: "white", fontSize: 20 }}
         dateNameStyle={{ color: "white" }}
         iconContainer={{ flex: 0.1 }}
+        startingDate={new Date(moment())}
         onDateSelected={(date) => {
           const dateObj = new Date(date);
           setSelectedDate(dateObj);
