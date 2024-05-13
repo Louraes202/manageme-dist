@@ -126,23 +126,31 @@ const HabitBox = ({ name, nCheckbox, checkedIndices = [] }) => {
 
 const HabitsTab = () => {
   const { updateHabits, setUpdateHabits } = useGlobalContext();
+  const [filteredHabits, setFilteredHabits] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [habits, setHabits] = useState([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     fetchHabitsFromDatabase().then(setHabits);
     console.log(habits);
   }, [updateHabits]);
 
-  const handleCompletion = (habit) => {
-    // Log completion to the database or handle it as needed
-    Alert.alert("Habit Completed", `${habit.nome} has been completed!`);
-    // Optional: remove the habit from the list or mark it as completed
-  };
+  useEffect(() => {
+    const dayOfWeek = getDay(selectedDate); // dia da semana como número
+    const filtered = habits.filter(habit => {
+      const freqSemanal = habit.frequenciaSemanal.split(',').map(Number);
+      return freqSemanal.includes(dayOfWeek);
+    });
+    setFilteredHabits(filtered);
+  }, [isFocused, selectedDate]);
 
-  const filteredHabits = habits.filter((habit) => {
-//
-  });
+
+
+  const handleCompletion = (habit) => {
+    Alert.alert("Habit Completed", `${habit.nome} has been completed!`);
+    // Código da função que completa o hábito
+  };
 
   return (
     <View style={styles.screen}>
@@ -160,14 +168,19 @@ const HabitsTab = () => {
         dateNameStyle={{ color: "white" }}
         iconContainer={{ flex: 0.1 }}
         onDateSelected={(date) => {
-          setSelectedDate(date);
-        }}
+          const dateObj = new Date(date);
+          setSelectedDate(dateObj);
+      }}
       />
       <Divider my="3" />
       <Text style={styles.title_textscreen}>Accomplish</Text>
       <ScrollView space={4}>
         {filteredHabits.map((habit) => (
-          <HabitBox key={habit.idHabito} name={habit.nome} />
+          <HabitBox
+            key={habit.idHabito}
+            name={habit.nome}
+            nCheckbox={habit.repeticaoDiaria}
+          />
         ))}
       </ScrollView>
       <AddHabitBox text={"Add Habit"} />
