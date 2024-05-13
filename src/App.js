@@ -22,6 +22,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { LogBox } from "react-native";
 import HabitsScreen from "./screens/Habits/HabitsScreen";
 import { Ionicons } from "@expo/vector-icons";
+import StatisticsScreen from "./screens/Statistics/StatisticsScreen";
 
 
 const theme = extendTheme({
@@ -238,7 +239,7 @@ const App = () => {
             />
             <Drawer.Screen
               name="Stats"
-              component={View}
+              component={StatisticsScreen}
               options={{
                 drawerLabel: "Statistics",
                 headerTitle: "Statistics",

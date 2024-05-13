@@ -2,19 +2,16 @@ import { View } from "react-native";
 import styles from "../../styles/styles";
 import createBottomTabNavigator from "@react-navigation/bottom-tabs/src/navigators/createBottomTabNavigator";
 import createNativeStackNavigator from "@react-navigation/native-stack/src/navigators/createNativeStackNavigator";
-import HabitsTab from "./Tabs/HabitsTab";
 import Colors from "../../../assets/utils/pallete.json";
 import { Ionicons } from "@expo/vector-icons";
 import StatisticsTab from "./Tabs/StatisticsTab";
-
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const StatisticsScreen = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="MainTabs">
     <Stack.Screen name="MainTabs" component={MainTabNavigator} />
-    <Stack.Screen name="AddHabit" component={AddHabit} />
   </Stack.Navigator>
 );
 
@@ -52,7 +49,7 @@ const MainTabNavigator = () => (
     />
     <Tab.Screen
       name="IATab"
-      component={<></>}
+      component={View}
       options={{
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="repeat-outline" color={"white"} size={30} />
