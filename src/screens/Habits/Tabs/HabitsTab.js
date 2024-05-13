@@ -78,16 +78,24 @@ export const AddHabitBox = ({ text, onPress }) => {
   );
 };
 
-const HabitBox = ({ name, nCheckbox, checkedIndices = [] }) => {
+const HabitBox = ({ habit, name, nCheckbox, checkboxStates, selectedDate }) => {
   const [checkedState, setCheckedState] = useState(
-    Array.from({ length: nCheckbox }, (_, i) => checkedIndices.includes(i))
+    checkboxStates[habit.idHabito] || Array(nCheckbox).fill(false)
   );
 
-  // Função para alternar o estado de uma checkbox específica
+  useEffect(() => {
+    const completions =
+      checkboxStates[habit.idHabito] || Array(nCheckbox).fill(false);
+    setCheckedState(completions);
+  }, [checkboxStates, habit.idHabito, nCheckbox]);
+
   const toggleCheckbox = (index) => {
-    setCheckedState((prevState) =>
-      prevState.map((isChecked, i) => (i === index ? !isChecked : isChecked))
+    const newState = checkedState.map((item, idx) =>
+      idx === index ? !item : item
     );
+    setCheckedState(newState);
+    const timesCompleted = newState.filter(Boolean).length;
+    markHabitAsComplete(habit.idHabito, selectedDate, timesCompleted);
   };
 
   const checkboxes = [];
@@ -119,11 +127,71 @@ const HabitBox = ({ name, nCheckbox, checkedIndices = [] }) => {
       borderWidth={2}
     >
       <HStack flex={1} alignItems={"center"} px={4} space={2}>
-        {checkboxes}
+        {checkedState.map((isChecked, index) => (
+          <Checkbox
+            key={index}
+            isChecked={isChecked}
+            aria-label={`habit-do-${index}`}
+            borderRadius={20}
+            size={20}
+            boxSize={7}
+            color={"blue.400"}
+            colorScheme={"blue"}
+            onChange={() => toggleCheckbox(index)}
+          />
+        ))}
         <Text style={{ fontFamily: "Poppins", fontSize: 17 }}>{name}</Text>
       </HStack>
     </Box>
   );
+};
+
+const markHabitAsComplete = (habitId, date, timesCompleted) => {
+  const completionDate = moment(date).format("YYYY-MM-DD");
+  db.transaction((tx) => {
+    if (timesCompleted > 0) {
+      // Garantindo que a cláusula ON CONFLICT esteja funcionando como esperado
+      tx.executeSql(
+        `INSERT INTO HabitCompletion (habitId, completionDate, timesCompleted)
+         VALUES (?, ?, ?)
+         ON CONFLICT(habitId, completionDate)
+         DO UPDATE SET timesCompleted = ?`,
+        [habitId, completionDate, timesCompleted, timesCompleted],
+        () => console.log("Habit marked as completed."),
+        (_, error) => console.error("Error updating habit completion: ", error)
+      );
+    } else {
+      tx.executeSql(
+        `DELETE FROM HabitCompletion WHERE habitId = ? AND completionDate = ?`,
+        [habitId, completionDate],
+        () => console.log("Habit completion deleted."),
+        (_, error) => console.error("Error deleting habit completion: ", error)
+      );
+    }
+  });
+};
+
+const fetchCompletionsForDate = (date, setCheckboxStates) => {
+  const completionDate = moment(date).format("YYYY-MM-DD");
+  db.transaction(tx => {
+    tx.executeSql(
+      `SELECT habitId, timesCompleted FROM HabitCompletion WHERE completionDate = ?;`,
+      [completionDate],
+      (_, result) => {
+        console.log(result.rows);
+        let newCheckedStates = {};
+        for (let i = 0; i < result.rows.length; i++) {
+          let row = result.rows.item(i);
+          newCheckedStates[row.habitId] = Array.from(
+            { length: row.timesCompleted },
+            (_, index) => index < row.timesCompleted
+          );
+        }
+        setCheckboxStates(newCheckedStates);
+      },
+      (_, error) => console.error("Error fetching completions: ", error)
+    );
+  });
 };
 
 const HabitsTab = () => {
@@ -138,18 +206,18 @@ const HabitsTab = () => {
     fetchHabitsFromDatabase().then(setHabits);
   }, [updateHabits]);
 
-
-
   useEffect(() => {
     const dayOfWeek = getDay(selectedDate); // dia da semana como número
-    const filtered = habits.filter(habit => {
-      const freqSemanal = habit.frequenciaSemanal.split(',').map(Number);
+    const filtered = habits.filter((habit) => {
+      const freqSemanal = habit.frequenciaSemanal.split(",").map(Number);
       return freqSemanal.includes(dayOfWeek);
     });
     setFilteredHabits(filtered);
   }, [isFocused, selectedDate]);
 
-
+  useEffect(() => {
+    fetchCompletionsForDate(selectedDate, setCheckboxStates);
+  }, [isFocused, selectedDate]);
 
   const handleCompletion = (habit) => {
     Alert.alert("Habit Completed", `${habit.nome} has been completed!`);
@@ -175,7 +243,7 @@ const HabitsTab = () => {
         onDateSelected={(date) => {
           const dateObj = new Date(date);
           setSelectedDate(dateObj);
-      }}
+        }}
       />
       <Divider my="3" />
       <Text style={styles.title_textscreen}>Accomplish</Text>
@@ -183,8 +251,11 @@ const HabitsTab = () => {
         {filteredHabits.map((habit) => (
           <HabitBox
             key={habit.idHabito}
+            habit={habit}
             name={habit.nome}
             nCheckbox={habit.repeticaoDiaria}
+            checkboxStates={checkboxStates}
+            selectedDate={selectedDate}
           />
         ))}
       </ScrollView>

@@ -221,6 +221,14 @@ CREATE TABLE IF NOT EXISTS ConclusoesHabito (
     FOREIGN KEY (idHabito) REFERENCES Habitos(idHabito)
 );
 
+CREATE TABLE IF NOT EXISTS HabitCompletion (
+    habitId INTEGER,
+    completionDate DATE,
+    timesCompleted INTEGER,
+    PRIMARY KEY (habitId, completionDate)
+    FOREIGN KEY (habitId) REFERENCES HABITOS(idHabito)
+  );
+
 `;
 
 
