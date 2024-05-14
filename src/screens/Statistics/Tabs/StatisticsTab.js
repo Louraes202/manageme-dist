@@ -20,8 +20,8 @@ const db = SQLite.openDatabase("manageme");
 
 // Função para buscar tarefas
 const fetchTasksForWeek = () => {
-  const startOfWeek = moment().startOf('isoWeek').format('YYYY-MM-DD');
-  const endOfWeek = moment().endOf('isoWeek').format('YYYY-MM-DD');
+  const startOfWeek = moment().startOf("isoWeek").format("YYYY-MM-DD");
+  const endOfWeek = moment().endOf("isoWeek").format("YYYY-MM-DD");
 
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -39,8 +39,8 @@ const fetchTasksForWeek = () => {
               taskCounts[weekDay]++;
             }
             if (diasRepeticao) {
-              let days = diasRepeticao.split(',').map(day => parseInt(day));
-              days.forEach(day => taskCounts[day]++);
+              let days = diasRepeticao.split(",").map((day) => parseInt(day));
+              days.forEach((day) => taskCounts[day]++);
             }
           }
           resolve(taskCounts);
@@ -62,14 +62,14 @@ const fetchEventsForWeek = () => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        `SELECT diaMes FROM Eventos
-         WHERE diaMes BETWEEN ? AND ?;`,
+        `SELECT horaInicio FROM Eventos
+         WHERE horaInicio BETWEEN ? AND ?;`,
         [startOfWeek, endOfWeek],
         (tx, results) => {
           let eventCounts = Array(7).fill(0);
           for (let i = 0; i < results.rows.length; i++) {
-            const { diaMes } = results.rows.item(i);
-            let weekDay = moment(diaMes).day();
+            const { horaInicio } = results.rows.item(i);
+            let weekDay = moment(horaInicio).day();
             eventCounts[weekDay]++;
           }
           resolve(eventCounts);
@@ -91,14 +91,14 @@ const fetchActivitiesForWeek = () => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        `SELECT diaMes FROM Blocos
-         WHERE diaMes BETWEEN ? AND ?;`,
+        `SELECT hora_inicio FROM Blocos
+         WHERE hora_inicio BETWEEN ? AND ?;`,
         [startOfWeek, endOfWeek],
         (tx, results) => {
           let activityCounts = Array(7).fill(0);
           for (let i = 0; i < results.rows.length; i++) {
-            const { diaMes } = results.rows.item(i);
-            let weekDay = moment(diaMes).day();
+            const { hora_inicio } = results.rows.item(i);
+            let weekDay = moment(hora_inicio).day();
             activityCounts[weekDay]++;
           }
           resolve(activityCounts);
@@ -112,38 +112,51 @@ const fetchActivitiesForWeek = () => {
   });
 };
 
-
 const StatisticsTab = () => {
   const [chartData, setChartData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("Tasks");
   const isFocused = useIsFocused();
-  const [selectedCategory, setSelectedCategory] = useState('Tasks');
-
 
   useEffect(() => {
     const fetchData = async () => {
+      const [tasks, activities, events] = await Promise.all([
+        fetchTasksForWeek(),
+        fetchActivitiesForWeek(),
+        fetchEventsForWeek(),
+      ]);
+
       try {
-        const [tasks, activities, events] = await Promise.all([
-          fetchTasksForWeek(),
-          fetchActivitiesForWeek(),
-          fetchEventsForWeek()
-        ]);
-        
+        let data = [];
+        if (selectedCategory === "Tasks") {
+          data = tasks.map((value, index) => ({
+            value,
+            label: moment().day(index).format("dd")[0].toUpperCase(),
+            frontColor: "#177AD5",
+          }));
+        } else if (selectedCategory === "Events") {
+          data = events.map((value, index) => ({
+            value,
+            label: moment().day(index).format("dd")[0].toUpperCase(),
+            frontColor: "#3CB371",
+          }));
+        } else if (selectedCategory === "Activities") {
+          data = activities.map((value, index) => ({
+            value,
+            label: moment().day(index).format("dd")[0].toUpperCase(),
+            frontColor: "#FF9933",
+          }));
+        }
 
-        let data = Array(7).fill(null).map((_, i) => ({
-          label: moment().day(i).format('dd')[0].toUpperCase(),
-          tasks: tasks[i],
-          activities: activities[i],
-          events: events[i]
-        }));
-
+        console.log(data);
         setChartData(data);
+        console.log("Changed data");
       } catch (error) {
         console.error("Error fetching data for chart:", error);
       }
     };
 
     fetchData();
-  }, [isFocused]);
+  }, [isFocused, selectedCategory]);
 
   return (
     <View style={styles.screen}>
@@ -167,21 +180,17 @@ const StatisticsTab = () => {
           </Box>
         </HStack>
         <VStack alignContent={"center"} mb={180}>
-        <VStack alignContent={'center'}>
-          <BarChart
-            horizontal
-            barWidth={22}
-            barBorderRadius={4}
-            frontColor="lightgray"
-            data={chartData.map(item => ({
-              value: item.tasks,
-              label: item.label,
-              frontColor: '#177AD5'
-            }))}
-            yAxisThickness={0}
-            xAxisThickness={0}
-          />
-        </VStack>
+          <VStack alignContent={"center"}>
+            <BarChart
+              horizontal
+              barWidth={22}
+              barBorderRadius={4}
+              frontColor="lightgray"
+              data={chartData}
+              yAxisThickness={0}
+              xAxisThickness={0}
+            />
+          </VStack>
         </VStack>
 
         <VStack space={2}>
@@ -191,8 +200,12 @@ const StatisticsTab = () => {
             Configure your start and end hour
           </Text>
           <HStack space={3}>
-            <Button colorScheme={'blue'} borderRadius={25}>Set waking up hour</Button>
-            <Button colorScheme={'blue'} borderRadius={25}>Set go to sleep hour</Button>
+            <Button colorScheme={"blue"} borderRadius={25}>
+              Set waking up hour
+            </Button>
+            <Button colorScheme={"blue"} borderRadius={25}>
+              Set go to sleep hour
+            </Button>
           </HStack>
         </VStack>
       </ScrollView>

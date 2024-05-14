@@ -103,23 +103,7 @@ const App = () => {
             (_, error) => console.log("Erro ao efetuar alterações", error)
           );
 
-          tx.executeSql(
-            // funçao para executar queries ocasionais
-            "DELETE from eventos;",
-            [],
-            (_, result) =>
-              console.log("Eventos: ", result.rows),
-            (_, error) => console.log("Erro ao efetuar alterações", error)
-          );
 
-          tx.executeSql(
-            // funçao para executar queries ocasionais
-            "DELETE From blocos;",
-            [],
-            (_, result) =>
-              console.log("Blocos: ", result.rows),
-            (_, error) => console.log("Erro ao efetuar alterações", error)
-          );
         });
 
         // Espera artificial, ajuste conforme necessário
