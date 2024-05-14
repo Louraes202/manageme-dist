@@ -105,7 +105,7 @@ const App = () => {
 
           tx.executeSql(
             // funçao para executar queries ocasionais
-            "SELECT * From eventos;",
+            "DELETE from eventos;",
             [],
             (_, result) =>
               console.log("Eventos: ", result.rows),
@@ -114,7 +114,7 @@ const App = () => {
 
           tx.executeSql(
             // funçao para executar queries ocasionais
-            "SELECT * From blocos;",
+            "DELETE From blocos;",
             [],
             (_, result) =>
               console.log("Blocos: ", result.rows),
