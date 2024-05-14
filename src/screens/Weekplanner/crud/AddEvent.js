@@ -4,7 +4,7 @@ import { Button, VStack, FormControl, Input, IconButton, Icon, HStack } from "na
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { format } from "date-fns";
 import * as SQLite from "expo-sqlite";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useGlobalContext } from "../../../context/GlobalProvider";
 import styles from "../../../styles/styles";
 
@@ -80,14 +80,14 @@ const AddEvent = ({ navigation }) => {
         </FormControl>
         <Button
           onPress={() => showDatePicker("inicio")}
-          leftIcon={<Icon as={Ionicons} name="clock" size="sm" />}
+          leftIcon={<Icon as={FontAwesome6} name="clock" size="sm" />}
         >
           Start Time
         </Button>
         <Text>{format(horaInicio, "yyyy-MM-dd HH:mm:ss")}</Text>
         <Button
           onPress={() => showDatePicker("fim")}
-          leftIcon={<Icon as={Ionicons} name="clock" size="sm" />}
+          leftIcon={<Icon as={FontAwesome6} name="clock" size="sm" />}
         >
           End Time
         </Button>

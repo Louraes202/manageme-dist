@@ -31,7 +31,6 @@ export const CustomTabBarButton = ({ children, onPress }) => (
         height: 60,
         borderRadius: 30,
         backgroundColor: Colors.navblue,
-        // Estilize seu FAB aqui
       }}
     >
       {children}
@@ -77,11 +76,11 @@ const Tasks = ({ navigation }) => {
         }}
       />
       <Tab.Screen
-        name="FAB"
+        name="AddButton"
         component={View} 
         options={{
           tabBarIcon: ({ focused }) => (
-            <FontAwesome name="microphone" color={"white"} size={24} />
+            <FontAwesome6 name="plus" color={"white"} size={24} />
           ),
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
           

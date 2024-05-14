@@ -6,6 +6,8 @@ import { VStack, FormControl, Input, IconButton, Button, HStack, Icon } from "na
 import { Ionicons } from "@expo/vector-icons";
 import { useGlobalContext } from "../../../context/GlobalProvider";
 import styles from "../../../styles/styles";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+
 
 const db = SQLite.openDatabase("manageme");
 
@@ -66,14 +68,14 @@ const EventDetail = ({ route, navigation }) => {
         </FormControl>
         <Button
           onPress={showDatePicker}
-          leftIcon={<Icon as={Ionicons} name="clock" size="sm" />}
+          leftIcon={<Icon as={FontAwesome6} name="clock" size="sm" />}
         >
           Change Start Time
         </Button>
         <Text>Start Time: {event.horaInicio}</Text>
         <Button
           onPress={showDatePicker}
-          leftIcon={<Icon as={Ionicons} name="clock" size="sm" />}
+          leftIcon={<Icon as={FontAwesome6} name="clock" size="sm" />}
         >
           Change End Time
         </Button>

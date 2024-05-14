@@ -24,7 +24,7 @@ import {
   Pressable,
   Radio,
 } from "native-base";
-import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Entypo, FontAwesome, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import Colors from "../../../../assets/utils/pallete.json";
 import Task from "../components/Task";
 import { ScrollView } from "react-native-gesture-handler";
@@ -38,7 +38,6 @@ import AddTask from "../crud/AddTask";
 import TaskDetails from "../crud/TaskDetail";
 import RadioGroup from "../components/RadioGroup";
 import { useGlobalContext } from "../../../context/GlobalProvider";
-
 
 const { width, height } = Dimensions.get("window");
 
@@ -182,7 +181,7 @@ export const AddButton = ({ color, onPress, paddingX, paddingY }) => {
               borderWidth="1"
               borderColor="coolGray.300"
             >
-              <Entypo name="plus" size="30" color="white" />
+              <FontAwesome6 name="plus" size="30" color="white" />
               <Text style={{ color: "white" }}>New</Text>
             </Box>
           );

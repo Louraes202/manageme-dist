@@ -5,6 +5,7 @@ import createNativeStackNavigator from "@react-navigation/native-stack/src/navig
 import Colors from "../../../assets/utils/pallete.json";
 import { Ionicons } from "@expo/vector-icons";
 import StatisticsTab from "./Tabs/StatisticsTab";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -43,7 +44,7 @@ const MainTabNavigator = () => (
       component={StatisticsTab}
       options={{
         tabBarIcon: ({ color, size }) => (
-          <Ionicons name="bullseye" color={"white"} size={24} />
+          <Ionicons name="analytics-outline" color={"white"} size={24} />
         ),
       }}
     />
@@ -52,7 +53,7 @@ const MainTabNavigator = () => (
       component={View}
       options={{
         tabBarIcon: ({ color, size }) => (
-          <Ionicons name="repeat-outline" color={"white"} size={30} />
+          <MaterialCommunityIcons name="robot-excited" color={"white"} size={30} />
         ),
       }}
     />

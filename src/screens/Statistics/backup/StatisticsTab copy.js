@@ -127,8 +127,6 @@ const StatisticsTab = () => {
           fetchActivitiesForWeek(),
           fetchEventsForWeek()
         ]);
-
-        console.log(tasks, activities, events);
         
 
         let data = Array(7).fill(null).map((_, i) => ({

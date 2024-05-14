@@ -16,14 +16,14 @@ import "react-native-gesture-handler";
 import * as SQLite from "expo-sqlite";
 import { databaseSchema } from "./services/SQLite/databaseSchema";
 import Colors from "../assets/utils/pallete.json";
-import { NativeBaseProvider, extendTheme, IconButton } from "native-base";
+import { NativeBaseProvider, extendTheme, IconButton, Center, Modal, Button } from "native-base";
 import createTablesQuery from "./services/SQLite/createQuery";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LogBox } from "react-native";
 import HabitsScreen from "./screens/Habits/HabitsScreen";
 import { Ionicons } from "@expo/vector-icons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import StatisticsScreen from "./screens/Statistics/StatisticsScreen";
-
 
 const theme = extendTheme({
   colors: {
@@ -62,13 +62,14 @@ const db = SQLite.openDatabase("manageme");
 
 const App = () => {
   const [appIsReady, setAppIsReady] = useState(false);
+  const [showVoiceModal, setShowVoiceModal] = useState(false);
 
   const [fontsLoaded] = useFonts({
-    'Kode Mono': require("../assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"),
-    "Roboto": require("../assets/fonts/Roboto/Roboto-Light.ttf"),
-    'Poppins': require("../assets/fonts/Poppins/Poppins-Light.ttf"),
-    'Poppins_Bold': require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
-    'Poppins_Medium': require("../assets/fonts/Poppins/Poppins-Medium.ttf"),
+    "Kode Mono": require("../assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"),
+    Roboto: require("../assets/fonts/Roboto/Roboto-Light.ttf"),
+    Poppins: require("../assets/fonts/Poppins/Poppins-Light.ttf"),
+    Poppins_Bold: require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
+    Poppins_Medium: require("../assets/fonts/Poppins/Poppins-Medium.ttf"),
   });
 
   useEffect(() => {
@@ -98,7 +99,25 @@ const App = () => {
             "",
             [],
             (_, result) =>
-              console.log("Alterações feitas com sucesso.", result),
+              console.log("Alterações: ", result),
+            (_, error) => console.log("Erro ao efetuar alterações", error)
+          );
+
+          tx.executeSql(
+            // funçao para executar queries ocasionais
+            "SELECT * From eventos;",
+            [],
+            (_, result) =>
+              console.log("Eventos: ", result.rows),
+            (_, error) => console.log("Erro ao efetuar alterações", error)
+          );
+
+          tx.executeSql(
+            // funçao para executar queries ocasionais
+            "SELECT * From blocos;",
+            [],
+            (_, result) =>
+              console.log("Blocos: ", result.rows),
             (_, error) => console.log("Erro ao efetuar alterações", error)
           );
         });
@@ -124,9 +143,55 @@ const App = () => {
     return <LoadingScreen styles={styles} />;
   }
 
-
   const Stack = createNativeStackNavigator();
   const Drawer = createDrawerNavigator();
+
+  const VoiceModal = () => {
+    return (
+    <Center>
+      <Modal
+        isOpen={showVoiceModal}
+        onClose={() => setShowVoiceModal(false)}
+        _backdrop={{
+          _dark: {
+            bg: "coolGray.800",
+          },
+          bg: "warmGray.50",
+        }}
+      >
+        <Modal.Content alignItems={'center'} alignContent={'center'}>
+          <Modal.CloseButton />
+          <Modal.Header>Voice Commands</Modal.Header>
+          <Modal.Body>
+            To do a voice command, press the microphone button and say your command
+            in the following order: "'Operation' 'element' 'Name' 'AditionalData'".
+            Example: "Add Task Homework Group School ConclusionDate Tomorrow"
+          </Modal.Body>
+          <Modal.Footer>
+            <Button.Group space={2}>
+              <Button
+                variant="ghost"
+                colorScheme="blueGray"
+                onPress={() => {
+                  setShowVoiceModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onPress={() => {
+                  setShowVoiceModal(false);
+                }}
+              >
+                Ok
+              </Button>
+            </Button.Group>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+    </Center>
+    );
+  };
 
   return (
     <GlobalProvider>
@@ -137,6 +202,7 @@ const App = () => {
             component={AuthScreen}
             options={{ headerShown: false, drawerItemStyle: { height: 0 } }}
           />
+          {showVoiceModal && <VoiceModal />}
           <Drawer.Navigator
             style={{ backgroundColor: Colors.mainbg }}
             initialRouteName="Auth"
@@ -146,7 +212,6 @@ const App = () => {
               headerStyle: {
                 backgroundColor: Colors.navblue,
                 borderBottomColor: "transparent",
-                
               },
               headerTintColor: "#fff",
               drawerStyle: { backgroundColor: Colors.navblue },
@@ -160,12 +225,11 @@ const App = () => {
                       name="mic"
                       color={"white"}
                       size={24}
-                      style={{margin: 3}}
-
+                      style={{ margin: 3 }}
                     />
                   }
                   onPress={() => {
-                    console.log("E");
+                    setShowVoiceModal(true)
                   }}
                 />
               ),
@@ -267,6 +331,23 @@ const App = () => {
                     size={size}
                   />
                 ),
+              }}
+            />
+
+            <Drawer.Screen
+              name="Logout"
+              component={View}
+              options={{
+                drawerLabel: "Logout",
+                drawerIcon: ({ focused, color, size }) => (
+                  <Icon
+                    name={focused ? "log-out-outline" : "log-out-outline"}
+                    style={{ marginRight: -20 }}
+                    color={color}
+                    size={size}
+                  />
+                ),
+                drawerItemStyle: { marginTop: 400 },
               }}
             />
           </Drawer.Navigator>
