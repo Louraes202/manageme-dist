@@ -31,6 +31,7 @@ import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import StatisticsScreen from "./screens/Statistics/StatisticsScreen";
 import { firebase, firestore, auth } from "./services/firebaseConfig";
+import Settings from "./screens/Settings/Settings";
 
 const theme = extendTheme({
   colors: {
@@ -338,7 +339,7 @@ const App = () => {
             />
             <Drawer.Screen
               name="Settings"
-              component={View}
+              component={Settings}
               options={{
                 drawerLabel: "Settings",
                 headerTitle: "Settings",

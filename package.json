@@ -25,6 +25,7 @@
     "@react-navigation/native-stack": "^6.9.20",
     "@rneui/base": "^4.0.0-rc.7",
     "@rneui/themed": "^4.0.0-rc.8",
+    "axios": "^1.6.8",
     "date-fns": "^3.6.0",
     "draggable": "^4.2.0",
     "expo": "^51.0.2",

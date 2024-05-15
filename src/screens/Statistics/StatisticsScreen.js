@@ -6,6 +6,7 @@ import Colors from "../../../assets/utils/pallete.json";
 import { Ionicons } from "@expo/vector-icons";
 import StatisticsTab from "./Tabs/StatisticsTab";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import AITab from "./Tabs/AITab";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -49,8 +50,8 @@ const MainTabNavigator = () => (
       }}
     />
     <Tab.Screen
-      name="IATab"
-      component={View}
+      name="AITab"
+      component={AITab}
       options={{
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="robot-excited" color={"white"} size={30} />

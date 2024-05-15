@@ -3,10 +3,15 @@ import { fetchAllDataFromSQLite, uploadDataToFirebase, downloadDataFromFirebase 
 import moment from "moment";
 import firebase from 'firebase/compat/app';
 import NetInfo from "@react-native-community/netinfo";
+import * as SQLite from "expo-sqlite";
+
+const db = SQLite.openDatabase("manageme");
 
 const GlobalContext = createContext();
 
 export const useGlobalContext = () => useContext(GlobalContext);
+
+
 
 export const GlobalProvider = ({ children }) => {
   const [isOnline, setIsOnline] = useState(true);
@@ -18,6 +23,8 @@ export const GlobalProvider = ({ children }) => {
   const [updateActivities, setUpdateActivities] = useState(false);
   const [updateBlocks, setUpdateBlocks] = useState(false);
   const [updateHabits, setUpdateHabits] = useState(false);
+  const [theme, setTheme] = useState("light");
+  const [idUtilizador, setIdUtilizador] = useState();
 
   const syncDataToFirebase = async () => {
     if (!isOnline) return;
@@ -28,6 +35,36 @@ export const GlobalProvider = ({ children }) => {
   const syncDataFromFirebase = async () => {
     if (!isOnline) return;
     await downloadDataFromFirebase();
+  };
+
+  useEffect(() => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT tema FROM Configuracoes WHERE idUtilizador = ?',
+        [idUtilizador], 
+        (_, { rows }) => {
+          if (rows.length > 0) {
+            setTheme(rows.item(0).tema);
+          }
+        }
+      );
+    });
+  }, []);
+
+  const toggleTheme = (newTheme) => {
+    setTheme(newTheme);
+    db.transaction(tx => {
+      tx.executeSql(
+        'UPDATE Configuracoes SET tema = ? WHERE idUtilizador = ?',
+        [newTheme, idUtilizador], 
+        () => {
+          console.log("Tema atualizado com sucesso.");
+        },
+        (tx, error) => {
+          console.error("Erro ao atualizar o tema: ", error);
+        }
+      );
+    });
   };
 
   useEffect(() => {
@@ -48,6 +85,7 @@ export const GlobalProvider = ({ children }) => {
       unsubscribeNetInfo();
     };
   }, []);
+  
 
   useEffect(() => {
     syncDataToFirebase();
@@ -67,7 +105,10 @@ export const GlobalProvider = ({ children }) => {
     updateBlocks,
     setUpdateBlocks,
     updateHabits,
-    setUpdateHabits
+    setUpdateHabits,
+    theme,
+    toggleTheme,
+    idUtilizador,
   };
 
   return (

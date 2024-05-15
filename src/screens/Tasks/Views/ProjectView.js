@@ -50,14 +50,14 @@ const ProjectView = ({ route, navigation }) => {
     <View style={styles.screen}>
       <VStack space={3}>
         <Box alignSelf={"center"} marginTop={-150} borderBottomRadius={10}>
-          <Image
+          { imageUri && <Image
             source={{ uri: imageUri }}
             width={500}
             height={200}
             px={230}
             alt="project-image"
             borderBottomRadius={0}
-          />
+          />}
         </Box>
         <ScrollView>
           <VStack space={5}>

@@ -229,6 +229,21 @@ CREATE TABLE IF NOT EXISTS HabitCompletion (
     FOREIGN KEY (habitId) REFERENCES HABITOS(idHabito)
   );
 
+CREATE TABLE IF NOT EXISTS UserSettings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    wakeUpTime TEXT,
+    sleepTime TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Configuracoes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    idUtilizador INTEGER,
+    notificacoes BOOLEAN,
+    tema NVARCHAR(20),
+    fusoHorario NVARCHAR(20),
+    FOREIGN KEY (idUtilizador) REFERENCES Utilizadores(idUtilizador)
+);
+
 `;
 
 
