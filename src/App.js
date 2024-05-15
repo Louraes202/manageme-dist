@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useEffect, useCallback } from "react";
 import { GlobalProvider } from "./context/GlobalProvider";
-
 import { useFonts } from "expo-font";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
