@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { fetchAllDataFromSQLite, uploadDataToFirebase, downloadDataFromFirebase } from './dataSyncFunction';
 import moment from "moment";
 import firebase from 'firebase/compat/app';
+import NetInfo from "@react-native-community/netinfo";
 
 const GlobalContext = createContext();
 
@@ -36,6 +37,16 @@ export const GlobalProvider = ({ children }) => {
       }
     });
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeNetInfo = NetInfo.addEventListener(state => {
+      setIsOnline(state.isConnected);
+    });
+
+    return () => {
+      unsubscribeNetInfo();
+    };
   }, []);
 
   useEffect(() => {

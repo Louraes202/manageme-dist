@@ -94,15 +94,6 @@ const MainTabNavigator = ({ navigation }) => {
           ),
         }}
       />
-      <Tab.Screen
-        name="Calendar"
-        component={View}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="calendar" color={"white"} size={24} />
-          ),
-        }}
-      />
     </Tab.Navigator>
   );
 };

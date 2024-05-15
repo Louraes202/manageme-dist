@@ -70,6 +70,7 @@ const ProjectDetail = ({ route, navigation, setUpdateProjects }) => {
                 Alert.alert("Sucesso", "Projeto excluído com sucesso!");
                 setUpdateProjects(true);
                 navigation.goBack();
+                navigation.goBack();
               },
               (error) => {
                 console.error("Erro ao excluir o projeto:", error);

@@ -15,7 +15,14 @@ import "react-native-gesture-handler";
 import * as SQLite from "expo-sqlite";
 import { databaseSchema } from "./services/SQLite/databaseSchema";
 import Colors from "../assets/utils/pallete.json";
-import { NativeBaseProvider, extendTheme, IconButton, Center, Modal, Button } from "native-base";
+import {
+  NativeBaseProvider,
+  extendTheme,
+  IconButton,
+  Center,
+  Modal,
+  Button,
+} from "native-base";
 import createTablesQuery from "./services/SQLite/createQuery";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LogBox } from "react-native";
@@ -23,6 +30,7 @@ import HabitsScreen from "./screens/Habits/HabitsScreen";
 import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import StatisticsScreen from "./screens/Statistics/StatisticsScreen";
+import { firebase, firestore, auth } from "./services/firebaseConfig";
 
 const theme = extendTheme({
   colors: {
@@ -49,6 +57,36 @@ const theme = extendTheme({
     initialColorMode: "white",
   },
 });
+
+const handleLogout = () => {
+  firebase
+    .auth()
+    .signOut()
+    .then(() => {
+      // Limpar dados do SQLite
+      db.transaction(
+        (tx) => {
+          tx.executeSql("DELETE FROM Tarefas");
+          tx.executeSql("DELETE FROM Eventos");
+          tx.executeSql("DELETE FROM Atividades");
+          tx.executeSql("DELETE FROM Blocos");
+          tx.executeSql("DELETE FROM Projetos");
+          tx.executeSql("DELETE FROM Grupos");
+          tx.executeSql("DELETE FROM Habitos");
+        },
+        (error) => {
+          console.error("Erro ao limpar dados do SQLite: ", error);
+        },
+        () => {
+          // Redirecionar para a tela de login
+          navigation.navigate("Auth");
+        }
+      );
+    })
+    .catch((error) => {
+      console.error("Erro ao fazer logout: ", error);
+    });
+};
 
 const LoadingScreen = ({ styles }) => (
   <View style={styles.container_loading}>
@@ -97,12 +135,9 @@ const App = () => {
             // funçao para executar queries ocasionais
             "",
             [],
-            (_, result) =>
-              console.log("Alterações: ", result),
+            (_, result) => console.log("Alterações: ", result),
             (_, error) => console.log("Erro ao efetuar alterações", error)
           );
-
-
         });
 
         // Espera artificial, ajuste conforme necessário
@@ -131,48 +166,49 @@ const App = () => {
 
   const VoiceModal = () => {
     return (
-    <Center>
-      <Modal
-        isOpen={showVoiceModal}
-        onClose={() => setShowVoiceModal(false)}
-        _backdrop={{
-          _dark: {
-            bg: "coolGray.800",
-          },
-          bg: "warmGray.50",
-        }}
-      >
-        <Modal.Content alignItems={'center'} alignContent={'center'}>
-          <Modal.CloseButton />
-          <Modal.Header>Voice Commands</Modal.Header>
-          <Modal.Body>
-            To do a voice command, press the microphone button and say your command
-            in the following order: "'Operation' 'element' 'Name' 'AditionalData'".
-            Example: "Add Task Homework Group School ConclusionDate Tomorrow"
-          </Modal.Body>
-          <Modal.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="ghost"
-                colorScheme="blueGray"
-                onPress={() => {
-                  setShowVoiceModal(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onPress={() => {
-                  setShowVoiceModal(false);
-                }}
-              >
-                Ok
-              </Button>
-            </Button.Group>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
-    </Center>
+      <Center>
+        <Modal
+          isOpen={showVoiceModal}
+          onClose={() => setShowVoiceModal(false)}
+          _backdrop={{
+            _dark: {
+              bg: "coolGray.800",
+            },
+            bg: "warmGray.50",
+          }}
+        >
+          <Modal.Content alignItems={"center"} alignContent={"center"}>
+            <Modal.CloseButton />
+            <Modal.Header>Voice Commands</Modal.Header>
+            <Modal.Body>
+              To do a voice command, press the microphone button and say your
+              command in the following order: "'Operation' 'element' 'Name'
+              'AditionalData'". Example: "Add Task Homework Group School
+              ConclusionDate Tomorrow"
+            </Modal.Body>
+            <Modal.Footer>
+              <Button.Group space={2}>
+                <Button
+                  variant="ghost"
+                  colorScheme="blueGray"
+                  onPress={() => {
+                    setShowVoiceModal(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onPress={() => {
+                    setShowVoiceModal(false);
+                  }}
+                >
+                  Ok
+                </Button>
+              </Button.Group>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+      </Center>
     );
   };
 
@@ -212,7 +248,7 @@ const App = () => {
                     />
                   }
                   onPress={() => {
-                    setShowVoiceModal(true)
+                    setShowVoiceModal(true);
                   }}
                 />
               ),
@@ -319,7 +355,7 @@ const App = () => {
 
             <Drawer.Screen
               name="Logout"
-              component={View}
+              component={() => null}
               options={{
                 drawerLabel: "Logout",
                 drawerIcon: ({ focused, color, size }) => (
@@ -332,6 +368,11 @@ const App = () => {
                 ),
                 drawerItemStyle: { marginTop: 400 },
               }}
+              listeners={({ navigation }) => ({
+                focus: () => {
+                  handleLogout(navigation);
+                },
+              })}
             />
           </Drawer.Navigator>
         </NavigationContainer>

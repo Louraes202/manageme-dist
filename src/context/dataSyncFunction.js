@@ -1,185 +1,144 @@
-// dataSyncFunctions.js
-import { db } from "../services/firebaseConfig";
-import * as SQLite from "expo-sqlite";
-import firebase from 'firebase/compat/app';
+import * as SQLite from 'expo-sqlite';
+import { firestore, auth } from '../services/firebaseConfig';
 
-const sqliteDb = SQLite.openDatabase("manageme");
+const db = SQLite.openDatabase("manageme");
 
-const fetchAllDataFromSQLite = () => {
-  return new Promise((resolve, reject) => {
-    const data = {};
-    sqliteDb.transaction(
-      (tx) => {
-        // Fetch Tarefas
-        tx.executeSql(
-          "SELECT * FROM Tarefas",
-          [],
-          (_, { rows: { _array } }) => {
-            data.tarefas = _array;
-          }
-        );
-        // Fetch Eventos
-        tx.executeSql(
-          "SELECT * FROM Eventos",
-          [],
-          (_, { rows: { _array } }) => {
-            data.eventos = _array;
-          }
-        );
-        // Fetch Atividades
-        tx.executeSql(
-          "SELECT * FROM Atividades",
-          [],
-          (_, { rows: { _array } }) => {
-            data.atividades = _array;
-          }
-        );
-        // Fetch Blocos
-        tx.executeSql("SELECT * FROM Blocos", [], (_, { rows: { _array } }) => {
-          data.blocos = _array;
-        });
-        // Fetch Projetos
-        tx.executeSql(
-          "SELECT * FROM Projetos",
-          [],
-          (_, { rows: { _array } }) => {
-            data.projetos = _array;
-          }
-        );
-        // Fetch Grupos
-        tx.executeSql("SELECT * FROM Grupos", [], (_, { rows: { _array } }) => {
-          data.grupos = _array;
-        });
-      },
-      (error) => {
-        reject(error);
-      },
-      () => {
-        resolve(data);
-      }
-    );
+export const fetchAllDataFromSQLite = async () => {
+  const data = {
+    tasks: [],
+    events: [],
+    activities: [],
+    blocks: [],
+    projects: [],
+    groups: [],
+    habits: []
+  };
+
+  // Fetch data from each table
+  await new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM Tarefas', [], (tx, results) => {
+        for (let i = 0; i < results.rows.length; i++) {
+          data.tasks.push(results.rows.item(i));
+        }
+      });
+
+      tx.executeSql('SELECT * FROM Eventos', [], (tx, results) => {
+        for (let i = 0; i < results.rows.length; i++) {
+          data.events.push(results.rows.item(i));
+        }
+      });
+
+      tx.executeSql('SELECT * FROM Atividades', [], (tx, results) => {
+        for (let i = 0; i < results.rows.length; i++) {
+          data.activities.push(results.rows.item(i));
+        }
+      });
+
+      tx.executeSql('SELECT * FROM Blocos', [], (tx, results) => {
+        for (let i = 0; i < results.rows.length; i++) {
+          data.blocks.push(results.rows.item(i));
+        }
+      });
+
+      tx.executeSql('SELECT * FROM Projetos', [], (tx, results) => {
+        for (let i = 0; i < results.rows.length; i++) {
+          data.projects.push(results.rows.item(i));
+        }
+      });
+
+      tx.executeSql('SELECT * FROM Grupos', [], (tx, results) => {
+        for (let i = 0; i < results.rows.length; i++) {
+          data.groups.push(results.rows.item(i));
+        }
+      });
+
+      tx.executeSql('SELECT * FROM Habitos', [], (tx, results) => {
+        for (let i = 0; i < results.rows.length; i++) {
+          data.habits.push(results.rows.item(i));
+        }
+      });
+
+      resolve();
+    }, reject);
   });
+
+  return data;
 };
 
-const uploadDataToFirebase = async (data) => {
-  const user = firebase.auth().currentUser;
+export const uploadDataToFirebase = async (data) => {
+  const user = auth.currentUser;
   if (!user) return;
 
-  const userId = user.uid;
-  const userDoc = db.collection("users").doc(userId);
+  const userRef = firestore.collection('users').doc(user.uid);
 
-  await userDoc.set({
-    tarefas: data.tarefas,
-    eventos: data.eventos,
-    atividades: data.atividades,
-    blocos: data.blocos,
-    projetos: data.projetos,
-    grupos: data.grupos,
-  });
+  await userRef.set(data, { merge: true });
+};
 
-  const saveDataToSQLite = (data) => {
-    return new Promise((resolve, reject) => {
-      sqliteDb.transaction(
-        (tx) => {
-          // Clear existing data
-          tx.executeSql("DELETE FROM Tarefas");
-          tx.executeSql("DELETE FROM Eventos");
-          tx.executeSql("DELETE FROM Atividades");
-          tx.executeSql("DELETE FROM Blocos");
-          tx.executeSql("DELETE FROM Projetos");
-          tx.executeSql("DELETE FROM Grupos");
+export const downloadDataFromFirebase = async () => {
+  const user = auth.currentUser;
+  if (!user) return;
 
-          // Insert new data
-          data.tarefas.forEach((tarefa) => {
-            tx.executeSql(
-              "INSERT INTO Tarefas (idTarefa, dataConclusao, diasRepeticao, idPerfil) VALUES (?, ?, ?, ?)",
-              [
-                tarefa.idTarefa,
-                tarefa.dataConclusao,
-                tarefa.diasRepeticao,
-                tarefa.idPerfil,
-              ]
-            );
-          });
-          data.eventos.forEach((evento) => {
-            tx.executeSql(
-              "INSERT INTO Eventos (idEvento, nome, descricao, horaInicio, horaFim, diaMes, idPerfil) VALUES (?, ?, ?, ?, ?, ?, ?)",
-              [
-                evento.idEvento,
-                evento.nome,
-                evento.descricao,
-                evento.horaInicio,
-                evento.horaFim,
-                evento.diaMes,
-                evento.idPerfil,
-              ]
-            );
-          });
-          data.atividades.forEach((atividade) => {
-            tx.executeSql(
-              "INSERT INTO Atividades (idAtividade, nome, descricao, cor, idPerfil) VALUES (?, ?, ?, ?, ?)",
-              [
-                atividade.idAtividade,
-                atividade.nome,
-                atividade.descricao,
-                atividade.cor,
-                atividade.idPerfil,
-              ]
-            );
-          });
-          data.blocos.forEach((bloco) => {
-            tx.executeSql(
-              "INSERT INTO Blocos (idBloco, hora_inicio, hora_fim, idAtividade, diaMes, idPerfil) VALUES (?, ?, ?, ?, ?, ?)",
-              [
-                bloco.idBloco,
-                bloco.hora_inicio,
-                bloco.hora_fim,
-                bloco.idAtividade,
-                bloco.diaMes,
-                bloco.idPerfil,
-              ]
-            );
-          });
-          data.projetos.forEach((projeto) => {
-            tx.executeSql(
-              "INSERT INTO Projetos (idProjeto, nome, descricao, imageUri) VALUES (?, ?, ?, ?)",
-              [
-                projeto.idProjeto,
-                projeto.nome,
-                projeto.descricao,
-                projeto.imageUri,
-              ]
-            );
-          });
-          data.grupos.forEach((grupo) => {
-            tx.executeSql(
-              "INSERT INTO Grupos (idGrupo, nome, descricao) VALUES (?, ?, ?)",
-              [grupo.idGrupo, grupo.nome, grupo.descricao]
-            );
-          });
-        },
-        (error) => {
-          reject(error);
-        },
-        () => {
-          resolve();
-        }
-      );
+  const userRef = firestore.collection('users').doc(user.uid);
+  const doc = await userRef.get();
+
+  if (doc.exists) {
+    const data = doc.data();
+
+    // Clear current SQLite tables
+    await new Promise((resolve, reject) => {
+      db.transaction(tx => {
+        tx.executeSql('DELETE FROM Tarefas');
+        tx.executeSql('DELETE FROM Eventos');
+        tx.executeSql('DELETE FROM Atividades');
+        tx.executeSql('DELETE FROM Blocos');
+        tx.executeSql('DELETE FROM Projetos');
+        tx.executeSql('DELETE FROM Grupos');
+        tx.executeSql('DELETE FROM Habitos');
+        resolve();
+      }, reject);
     });
-  };
 
-  const downloadDataFromFirebase = async () => {
-    const user = firebase.auth().currentUser;
-    if (!user) return;
+    // Insert data into SQLite tables
+    await new Promise((resolve, reject) => {
+      db.transaction(tx => {
+        data.tasks.forEach(task => {
+          tx.executeSql('INSERT INTO Tarefas (idTarefa, dataConclusao, diasRepeticao) VALUES (?, ?, ?)', 
+          [task.idTarefa, task.dataConclusao, task.diasRepeticao]);
+        });
 
-    const userId = user.uid;
-    const userDoc = await db.collection("users").doc(userId).get();
+        data.events.forEach(event => {
+          tx.executeSql('INSERT INTO Eventos (idEvento, nome, descricao, horaInicio, horaFim, diaMes, idPerfil) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+          [event.idEvento, event.nome, event.descricao, event.horaInicio, event.horaFim, event.diaMes, event.idPerfil]);
+        });
 
-    if (!userDoc.exists) {
-      return null;
-    }
+        data.activities.forEach(activity => {
+          tx.executeSql('INSERT INTO Atividades (idAtividade, nome, descricao, idPerfil) VALUES (?, ?, ?, ?)', 
+          [activity.idAtividade, activity.nome, activity.descricao, activity.idPerfil]);
+        });
 
-    const data = userDoc.data();
-    await saveDataToSQLite(data);
-  };
+        data.blocks.forEach(block => {
+          tx.executeSql('INSERT INTO Blocos (idBloco, hora_inicio, hora_fim, idAtividade, diaMes, idPerfil) VALUES (?, ?, ?, ?, ?, ?)', 
+          [block.idBloco, block.hora_inicio, block.hora_fim, block.idAtividade, block.diaMes, block.idPerfil]);
+        });
+
+        data.projects.forEach(project => {
+          tx.executeSql('INSERT INTO Projetos (idProjeto, nome, descricao, imageUri) VALUES (?, ?, ?, ?)', 
+          [project.idProjeto, project.nome, project.descricao, project.imageUri]);
+        });
+
+        data.groups.forEach(group => {
+          tx.executeSql('INSERT INTO Grupos (idGrupo, nome) VALUES (?, ?)', 
+          [group.idGrupo, group.nome]);
+        });
+
+        data.habits.forEach(habit => {
+          tx.executeSql('INSERT INTO Habitos (idHabito, nome, descricao, diasRepeticao, idPerfil) VALUES (?, ?, ?, ?, ?)', 
+          [habit.idHabito, habit.nome, habit.descricao, habit.diasRepeticao, habit.idPerfil]);
+        });
+
+        resolve();
+      }, reject);
+    });
+  }
 };

@@ -76,17 +76,6 @@ const Tasks = ({ navigation }) => {
         
       />
       <Tab.Screen
-        name="AddButton"
-        component={View} 
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <FontAwesome6 name="plus" color={"white"} size={24} />
-          ),
-          tabBarButton: (props) => <CustomTabBarButton {...props} />,
-          
-        }}
-      />
-      <Tab.Screen
         name="Groups"
         component={GroupsTab}
         options={{
