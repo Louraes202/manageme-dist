@@ -10,14 +10,47 @@ import {
   Spacer,
   VStack,
   Button,
+  Modal,
+  Input,
 } from "native-base";
 import { BarChart } from "react-native-gifted-charts";
 import moment from "moment";
 import * as SQLite from "expo-sqlite";
 import styles from "../../../styles/styles";
 import { useIsFocused } from "@react-navigation/native";
+import { useGlobalContext } from "../../../context/GlobalProvider";
 
 const db = SQLite.openDatabase("manageme");
+
+const fetchUserSettings = () => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT wakeUpTime, sleepTime FROM UserSettings WHERE id = 1;",
+        [],
+        (_, results) => {
+          if (results.rows.length > 0) {
+            resolve(results.rows.item(0));
+          } else {
+            resolve({ wakeUpTime: null, sleepTime: null });
+          }
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+const updateUserSettings = (wakeUpTime, sleepTime) => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "INSERT OR REPLACE INTO UserSettings (id, wakeUpTime, sleepTime) VALUES (1, ?, ?);",
+      [wakeUpTime, sleepTime]
+    );
+  });
+};
 
 // Função para buscar tarefas
 const fetchTasksForWeek = () => {
@@ -69,16 +102,15 @@ const fetchEventsForWeek = () => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        `SELECT diaMes FROM Eventos
-         WHERE diaMes BETWEEN ? AND ?;`,
+        `SELECT horaInicio FROM Eventos
+         WHERE horaInicio BETWEEN ? AND ?;`,
         [startOfWeek, endOfWeek],
         (tx, results) => {
           let eventCounts = Array(7).fill(0);
           for (let i = 0; i < results.rows.length; i++) {
-            let weekDay = moment(dataConclusao).day();
-            if (typeof weekDay === "number" && weekDay >= 0 && weekDay <= 6) {
-              eventCounts[weekDay] = (taskCounts[weekDay] || 0) + 1;
-            }
+            const { horaInicio } = results.rows.item(i);
+            let weekDay = moment(horaInicio).day();
+            eventCounts[weekDay]++;
           }
           resolve(eventCounts);
         },
@@ -91,7 +123,6 @@ const fetchEventsForWeek = () => {
   });
 };
 
-// Função para buscar blocos de atividades
 const fetchActivitiesForWeek = () => {
   const startOfWeek = moment().startOf("isoWeek").format("YYYY-MM-DD");
   const endOfWeek = moment().endOf("isoWeek").format("YYYY-MM-DD");
@@ -99,14 +130,14 @@ const fetchActivitiesForWeek = () => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        `SELECT diaMes FROM Blocos
-         WHERE diaMes BETWEEN ? AND ?;`,
+        `SELECT hora_inicio FROM Blocos
+         WHERE hora_inicio BETWEEN ? AND ?;`,
         [startOfWeek, endOfWeek],
         (tx, results) => {
           let activityCounts = Array(7).fill(0);
           for (let i = 0; i < results.rows.length; i++) {
-            const { diaMes } = results.rows.item(i);
-            let weekDay = moment(diaMes).day();
+            const { hora_inicio } = results.rows.item(i);
+            let weekDay = moment(hora_inicio).day();
             activityCounts[weekDay]++;
           }
           resolve(activityCounts);
@@ -119,20 +150,123 @@ const fetchActivitiesForWeek = () => {
     });
   });
 };
+// Função para buscar blocos de atividades
+const fetchActivitiesForWeekWeight = () => {
+  const startOfWeek = moment().startOf("isoWeek").format("YYYY-MM-DD");
+  const endOfWeek = moment().endOf("isoWeek").format("YYYY-MM-DD");
+
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `SELECT hora_inicio, hora_fim, idAtividade FROM Blocos
+         WHERE hora_inicio BETWEEN ? AND ?;`,
+        [startOfWeek, endOfWeek],
+        (tx, results) => {
+          let activityCounts = [];
+          for (let i = 0; i < results.rows.length; i++) {
+            const { hora_inicio, hora_fim, idAtividade } = results.rows.item(i);
+            activityCounts.push({ hora_inicio, hora_fim, idAtividade });
+          }
+          resolve(activityCounts);
+        },
+        (error) => {
+          console.error("Error fetching activities data.", error);
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+const fetchActivityNames = () => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `SELECT idAtividade, nomeAtividade FROM Atividades;`,
+        [],
+        (tx, results) => {
+          let activityNames = {};
+          for (let i = 0; i < results.rows.length; i++) {
+            const { idAtividade, nomeAtividade } = results.rows.item(i);
+            activityNames[idAtividade] = nomeAtividade;
+          }
+          resolve(activityNames);
+        },
+        (error) => {
+          console.error("Error fetching activity names.", error);
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+const calculateOccupiedTime = (wakeUpTime, sleepTime, activities, events) => {
+  const wakeUpMoment = moment(wakeUpTime, "HH:mm");
+  const sleepMoment = moment(sleepTime, "HH:mm");
+  const totalMinutesInDay = sleepMoment.diff(wakeUpMoment, "minutes");
+
+  let occupiedMinutes = 0;
+
+  activities.forEach((activity) => {
+    const start = moment(activity.hora_inicio, "YYYY-MM-DD HH:mm:ss");
+    const end = moment(activity.hora_fim, "YYYY-MM-DD HH:mm:ss");
+    if (
+      start.isBetween(wakeUpMoment, sleepMoment) ||
+      end.isBetween(wakeUpMoment, sleepMoment)
+    ) {
+      occupiedMinutes += end.diff(start, "minutes");
+    }
+  });
+
+  events.forEach((event) => {
+    const start = moment(event.horaInicio, "YYYY-MM-DD HH:mm:ss");
+    const end = moment(event.horaFim, "YYYY-MM-DD HH:mm:ss");
+    if (
+      start.isBetween(wakeUpMoment, sleepMoment) ||
+      end.isBetween(wakeUpMoment, sleepMoment)
+    ) {
+      occupiedMinutes += end.diff(start, "minutes");
+    }
+  });
+
+  const freeMinutes = totalMinutesInDay - occupiedMinutes;
+  return freeMinutes / 60; // Return in hours
+};
 
 const StatisticsTab = () => {
   const [chartData, setChartData] = useState([]);
   const isFocused = useIsFocused();
   const [selectedCategory, setSelectedCategory] = useState("Tasks");
 
+  const [wakeUpTime, setWakeUpTime] = useState(null);
+  const [sleepTime, setSleepTime] = useState(null);
+  const [freeTimePerDay, setFreeTimePerDay] = useState(0);
+  const [heaviestActivity, setHeaviestActivity] = useState(null);
+
+  const [showWakeUpModal, setShowWakeUpModal] = useState(false);
+  const [showSleepModal, setShowSleepModal] = useState(false);
+  const [wakeUpTimeInput, setWakeUpTimeInput] = useState("");
+  const [sleepTimeInput, setSleepTimeInput] = useState("");
+
+  useEffect(() => {
+    fetchUserSettings().then((settings) => {
+      setWakeUpTime(settings.wakeUpTime);
+      setSleepTime(settings.sleepTime);
+    });
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [tasks, activities, events] = await Promise.all([
-          fetchTasksForWeek(),
-          fetchActivitiesForWeek(),
-          fetchEventsForWeek(),
-        ]);
+        const [tasks, activities, activitiesWeight, events, activityNames] =
+          await Promise.all([
+            fetchTasksForWeek(),
+            fetchActivitiesForWeek(),
+            fetchActivitiesForWeekWeight(),
+            fetchEventsForWeek(),
+            fetchActivityNames(),
+          ]);
 
         let data = Array(7)
           .fill(null)
@@ -145,36 +279,85 @@ const StatisticsTab = () => {
 
         console.log(tasks, activities, events);
         setChartData(data);
+
+        if (wakeUpTime && sleepTime) {
+          let totalFreeTime = 0;
+          let activityTimeMap = {};
+
+          activitiesWeight.forEach((activity) => {
+            const day = moment(activity.hora_inicio).day();
+            const duration = moment(activity.hora_fim).diff(
+              moment(activity.hora_inicio),
+              "minutes"
+            );
+            activityTimeMap[activity.idAtividade] =
+              (activityTimeMap[activity.idAtividade] || 0) + duration;
+          });
+
+          for (let i = 0; i < 7; i++) {
+            const dayActivities = activitiesWeight.filter(
+              (activity) => moment(activity.hora_inicio).day() === i
+            );
+            const dayEvents = events.filter(
+              (event) => moment(event.horaInicio).day() === i
+            );
+
+            totalFreeTime += calculateOccupiedTime(
+              wakeUpTime,
+              sleepTime,
+              dayActivities,
+              dayEvents
+            );
+          }
+
+          const heaviestActivityId = Object.keys(activityTimeMap).reduce(
+            (a, b) => (activityTimeMap[a] > activityTimeMap[b] ? a : b),
+            null
+          );
+          const heaviestActivity =
+            activityNames[heaviestActivityId] || "No activities set yet";
+
+          setFreeTimePerDay(totalFreeTime / 7);
+          setHeaviestActivity(heaviestActivity);
+        }
       } catch (error) {
         console.error("Error fetching data for chart:", error);
       }
     };
 
     fetchData();
-  }, [isFocused]);
+  }, [isFocused, wakeUpTime, sleepTime]);
 
-  useEffect(() => {
-    const updatedChartData = chartData.map((item) => {
-      const taskValue = item.tasks ?? 0;
-      const activityValue = item.activities ?? 0;
-      const eventValue = item.events ?? 0;
+  const handleSetWakeUpTime = () => {
+    setWakeUpTime(wakeUpTimeInput);
+    updateUserSettings(wakeUpTimeInput, sleepTime);
+    setShowWakeUpModal(false);
+  };
 
-      return {
-        value:
-          selectedCategory === "Tasks"
-            ? taskValue
-            : selectedCategory === "Activities"
-            ? activityValue
-            : selectedCategory === "Events"
-            ? eventValue
-            : 0,
-        label: item.label,
-        frontColor: "#177AD5",
-      };
-    });
+  const handleSetSleepTime = () => {
+    setSleepTime(sleepTimeInput);
+    updateUserSettings(wakeUpTime, sleepTimeInput);
+    setShowSleepModal(false);
+  };
 
-    setChartData(updatedChartData);
-  }, [selectedCategory]);
+  const updatedChartData = chartData.map((item) => {
+    const taskValue = item.tasks ?? 0;
+    const activityValue = item.activities ?? 0;
+    const eventValue = item.events ?? 0;
+
+    return {
+      value:
+        selectedCategory === "Tasks"
+          ? taskValue
+          : selectedCategory === "Activities"
+          ? activityValue
+          : selectedCategory === "Events"
+          ? eventValue
+          : 0,
+      label: item.label,
+      frontColor: "#177AD5",
+    };
+  });
 
   return (
     <View style={styles.screen}>
@@ -223,7 +406,7 @@ const StatisticsTab = () => {
                 data={chartData.map((item) => ({
                   value: item.activities,
                   label: item.label,
-                  frontColor: "#177AD5",
+                  frontColor: "#fde047",
                 }))}
                 yAxisThickness={0}
                 xAxisThickness={0}
@@ -236,7 +419,7 @@ const StatisticsTab = () => {
                 data={chartData.map((item) => ({
                   value: item.events,
                   label: item.label,
-                  frontColor: "#177AD5",
+                  frontColor: "#34d399",
                 }))}
                 yAxisThickness={0}
                 xAxisThickness={0}
@@ -245,6 +428,36 @@ const StatisticsTab = () => {
           </VStack>
         </VStack>
 
+        <HStack alignItems={"center"} space={4} mt={-10} mb={10}>
+          <HStack alignItems={"center"} space={2}>
+            <Box
+              width={2}
+              height={2}
+              borderRadius={50}
+              bgColor={"#177AD5"}
+            ></Box>
+            <Text>Tasks</Text>
+          </HStack>
+          <HStack alignItems={"center"} space={2}>
+            <Box
+              width={2}
+              height={2}
+              borderRadius={50}
+              bgColor={"#fde047"}
+            ></Box>
+            <Text>Activities</Text>
+          </HStack>
+          <HStack alignItems={"center"} space={2}>
+            <Box
+              width={2}
+              height={2}
+              borderRadius={50}
+              bgColor={"#34d399"}
+            ></Box>
+            <Text>Events</Text>
+          </HStack>
+        </HStack>
+
         <VStack space={2}>
           <Text
             style={{ fontFamily: "Poppins", fontSize: 20, fontWeight: 300 }}
@@ -252,13 +465,77 @@ const StatisticsTab = () => {
             Configure your start and end hour
           </Text>
           <HStack space={3}>
-            <Button colorScheme={"blue"} borderRadius={25}>
+            <Button
+              colorScheme={"blue"}
+              borderRadius={25}
+              onPress={() => setShowWakeUpModal(true)}
+            >
               Set waking up hour
             </Button>
-            <Button colorScheme={"blue"} borderRadius={25}>
+            <Button
+              colorScheme={"blue"}
+              borderRadius={25}
+              onPress={() => setShowSleepModal(true)}
+            >
               Set go to sleep hour
             </Button>
           </HStack>
+
+          <Modal
+            isOpen={showWakeUpModal}
+            onClose={() => setShowWakeUpModal(false)}
+          >
+            <Modal.Content maxWidth="400px">
+              <Modal.CloseButton />
+              <Modal.Header>Set Waking Up Hour</Modal.Header>
+              <Modal.Body>
+                <Input
+                  placeholder="HH:MM"
+                  value={wakeUpTimeInput}
+                  onChangeText={setWakeUpTimeInput}
+                />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button.Group space={2}>
+                  <Button
+                    variant="ghost"
+                    onPress={() => setShowWakeUpModal(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onPress={handleSetWakeUpTime}>Save</Button>
+                </Button.Group>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+
+          <Modal
+            isOpen={showSleepModal}
+            onClose={() => setShowSleepModal(false)}
+          >
+            <Modal.Content maxWidth="400px">
+              <Modal.CloseButton />
+              <Modal.Header>Set Go to Sleep Hour</Modal.Header>
+              <Modal.Body>
+                <Input
+                  placeholder="HH:MM"
+                  value={sleepTimeInput}
+                  onChangeText={setSleepTimeInput}
+                />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button.Group space={2}>
+                  <Button
+                    variant="ghost"
+                    onPress={() => setShowSleepModal(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onPress={handleSetSleepTime}>Save</Button>
+                </Button.Group>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
 
           <VStack>
             <Text style={styles.title_textscreen}>Metrics</Text>
@@ -272,7 +549,7 @@ const StatisticsTab = () => {
               <Text
                 style={{ fontFamily: "Poppins", fontSize: 15, fontWeight: 500 }}
               >
-                1h
+                {freeTimePerDay.toFixed(2)} h
               </Text>
             </HStack>
             <HStack alignItems={"center"}>
@@ -285,7 +562,7 @@ const StatisticsTab = () => {
               <Text
                 style={{ fontFamily: "Poppins", fontSize: 15, fontWeight: 500 }}
               >
-                Aulas
+                {heaviestActivity}
               </Text>
             </HStack>
           </VStack>
