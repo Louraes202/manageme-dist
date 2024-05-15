@@ -36,11 +36,17 @@ const fetchTasksForWeek = () => {
             const { dataConclusao, diasRepeticao } = results.rows.item(i);
             if (dataConclusao) {
               let weekDay = moment(dataConclusao).day();
-              taskCounts[weekDay]++;
+              if (weekDay >= 0 && weekDay <= 6) {
+                taskCounts[weekDay] = (taskCounts[weekDay] || 0) + 1;
+              }
             }
             if (diasRepeticao) {
               let days = diasRepeticao.split(",").map((day) => parseInt(day));
-              days.forEach((day) => taskCounts[day]++);
+              if (days.every((day) => day >= 0 && day <= 6)) {
+                days.forEach((day) => taskCounts[day]++);
+              } else {
+                console.error("Invalid day indices found:", days);
+              }
             }
           }
           resolve(taskCounts);
@@ -62,15 +68,16 @@ const fetchEventsForWeek = () => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        `SELECT horaInicio FROM Eventos
-         WHERE horaInicio BETWEEN ? AND ?;`,
+        `SELECT diaMes FROM Eventos
+         WHERE diaMes BETWEEN ? AND ?;`,
         [startOfWeek, endOfWeek],
         (tx, results) => {
           let eventCounts = Array(7).fill(0);
           for (let i = 0; i < results.rows.length; i++) {
-            const { horaInicio } = results.rows.item(i);
-            let weekDay = moment(horaInicio).day();
-            eventCounts[weekDay]++;
+            let weekDay = moment(dataConclusao).day();
+            if (typeof weekDay === 'number' && weekDay >= 0 && weekDay <= 6) {
+              eventCounts[weekDay] = (taskCounts[weekDay] || 0) + 1;
+            }
           }
           resolve(eventCounts);
         },
@@ -91,14 +98,14 @@ const fetchActivitiesForWeek = () => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        `SELECT hora_inicio FROM Blocos
-         WHERE hora_inicio BETWEEN ? AND ?;`,
+        `SELECT diaMes FROM Blocos
+         WHERE diaMes BETWEEN ? AND ?;`,
         [startOfWeek, endOfWeek],
         (tx, results) => {
           let activityCounts = Array(7).fill(0);
           for (let i = 0; i < results.rows.length; i++) {
-            const { hora_inicio } = results.rows.item(i);
-            let weekDay = moment(hora_inicio).day();
+            const { diaMes } = results.rows.item(i);
+            let weekDay = moment(diaMes).day();
             activityCounts[weekDay]++;
           }
           resolve(activityCounts);
@@ -114,49 +121,59 @@ const fetchActivitiesForWeek = () => {
 
 const StatisticsTab = () => {
   const [chartData, setChartData] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("Tasks");
   const isFocused = useIsFocused();
+  const [selectedCategory, setSelectedCategory] = useState("Events");
 
   useEffect(() => {
     const fetchData = async () => {
-      const [tasks, activities, events] = await Promise.all([
-        fetchTasksForWeek(),
-        fetchActivitiesForWeek(),
-        fetchEventsForWeek(),
-      ]);
-
       try {
-        let data = [];
-        if (selectedCategory === "Tasks") {
-          data = tasks.map((value, index) => ({
-            value,
-            label: moment().day(index).format("dd")[0].toUpperCase(),
-            frontColor: "#177AD5",
-          }));
-        } else if (selectedCategory === "Events") {
-          data = events.map((value, index) => ({
-            value,
-            label: moment().day(index).format("dd")[0].toUpperCase(),
-            frontColor: "#3CB371",
-          }));
-        } else if (selectedCategory === "Activities") {
-          data = activities.map((value, index) => ({
-            value,
-            label: moment().day(index).format("dd")[0].toUpperCase(),
-            frontColor: "#FF9933",
-          }));
-        }
+        const [tasks, activities, events] = await Promise.all([
+          fetchTasksForWeek(),
+          fetchActivitiesForWeek(),
+          fetchEventsForWeek(),
+        ]);
 
-        console.log(data);
+        let data = Array(7)
+          .fill(null)
+          .map((_, i) => ({
+            label: moment().day(i).format("dd")[0].toUpperCase(),
+            tasks: Number.isFinite(tasks[i]) ? tasks[i] : 0,
+            activities: Number.isFinite(activities[i]) ? activities[i] : 0,
+            events: Number.isFinite(events[i]) ? events[i] : 0,
+          }));
+          
+        console.log(tasks, activities, events);
         setChartData(data);
-        console.log("Changed data");
       } catch (error) {
         console.error("Error fetching data for chart:", error);
       }
     };
 
     fetchData();
-  }, [isFocused, selectedCategory]);
+  }, [isFocused]);
+
+  useEffect(() => {
+    const updatedChartData = chartData.map((item) => {
+      const taskValue = item.tasks ?? 0;
+      const activityValue = item.activities ?? 0;
+      const eventValue = item.events ?? 0;
+
+      return {
+        value:
+          selectedCategory === "Tasks"
+            ? taskValue
+            : selectedCategory === "Activities"
+            ? activityValue
+            : selectedCategory === "Events"
+            ? eventValue
+            : 0,
+        label: item.label,
+        frontColor: "#177AD5",
+      };
+    });
+
+    setChartData(updatedChartData);
+  }, [selectedCategory]);
 
   return (
     <View style={styles.screen}>
@@ -179,14 +196,25 @@ const StatisticsTab = () => {
             </Select>
           </Box>
         </HStack>
-        <VStack alignContent={"center"} mb={180}>
+        <VStack alignContent={"center"} mb={180} mt={0}>
           <VStack alignContent={"center"}>
             <BarChart
               horizontal
               barWidth={22}
               barBorderRadius={4}
               frontColor="lightgray"
-              data={chartData}
+              data={chartData.map((item) => ({
+                value:
+                  selectedCategory === "Tasks"
+                    ? item.tasks
+                    : selectedCategory === "Activities"
+                    ? item.activities
+                    : selectedCategory === "Events"
+                    ? item.events
+                    : null,
+                label: item.label,
+                frontColor: "#177AD5",
+              }))}
               yAxisThickness={0}
               xAxisThickness={0}
             />

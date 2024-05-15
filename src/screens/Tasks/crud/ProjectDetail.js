@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -30,15 +30,24 @@ const ProjectDetail = ({ route, navigation, setUpdateProjects }) => {
   const [description, setDescription] = useState(project.descricao);
   const [imageUri, setImageUri] = useState(project.imageUri);
 
+
+
   const updateProject = () => {
     db.transaction((tx) => {
       tx.executeSql(
         "UPDATE Projetos SET nome = ?, descricao = ?, imageUri = ? WHERE idProjeto = ?;",
         [name, description, imageUri, project.idProjeto],
-        () => {
+        (tx, results) => {
           Alert.alert("Sucesso", "Projeto atualizado com sucesso!");
           setUpdateProjects(true);
-          navigation.goBack();
+          const updatedProject = {
+            ...project,
+            nome: name,
+            descricao: description,
+            imageUri: imageUri
+          };
+          console.log(updatedProject);
+          navigation.navigate("Project View", { project: updatedProject });
         },
         (error) => {
           console.error("Erro ao atualizar o projeto:", error);
@@ -47,7 +56,6 @@ const ProjectDetail = ({ route, navigation, setUpdateProjects }) => {
       );
     });
   };
-
   const deleteProject = () => {
     Alert.alert("Confirmar", "Deseja realmente excluir este projeto?", [
       { text: "Cancelar", style: "cancel" },
@@ -97,7 +105,7 @@ const ProjectDetail = ({ route, navigation, setUpdateProjects }) => {
           _pressed={{ backgroundColor: "green.100" }}
           onPress={() => navigation.goBack()}
         ></IconButton>
-        <Text style={styles.title_text}>View project</Text>
+        <Text style={styles.title_text}>Edit project</Text>
       </HStack>
       <FormControl style={styles_add.formControl}>
         <FormControl.Label>Nome</FormControl.Label>

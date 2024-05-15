@@ -71,9 +71,9 @@ const Tasks = ({ navigation }) => {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="check" color={"white"} size={24} />
           ),
-   
   
         }}
+        
       />
       <Tab.Screen
         name="AddButton"

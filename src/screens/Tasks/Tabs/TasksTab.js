@@ -38,6 +38,7 @@ import AddTask from "../crud/AddTask";
 import TaskDetails from "../crud/TaskDetail";
 import RadioGroup from "../components/RadioGroup";
 import { useGlobalContext } from "../../../context/GlobalProvider";
+import ProjectView from "../Views/ProjectView";
 
 const { width, height } = Dimensions.get("window");
 
@@ -244,6 +245,7 @@ const SeeTasks = ({
     fetchProjectsFromDatabase().then(setProjects);
     fetchTasksFromDatabase().then(setTasks);
   }, []);
+  
 
   const filteredProjects = projects.filter(project =>
     project.nome.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -274,7 +276,7 @@ const SeeTasks = ({
           <VStack my={2}>
             <ScrollView style={{ paddingBottom: 20 }} horizontal={true}>
             {filteredProjects.map((project) => (
-              <Pressable key={project.id} onPress={() => navigation.navigate("Project Detail", { project })}>
+              <Pressable key={project.id} onPress={() => navigation.navigate("Project View", { project })}>
                 <ProjectCard project={project} />
               </Pressable>
             ))}
@@ -369,6 +371,11 @@ const TasksTab = ({ navigation }) => {
       <TasksStack.Screen name="Project Detail">
         {(props) => (
           <ProjectDetail {...props} setUpdateProjects={setUpdateProjects} />
+        )}
+      </TasksStack.Screen>
+      <TasksStack.Screen name="Project View">
+        {(props) => (
+          <ProjectView {...props} setUpdateProjects={setUpdateProjects} />
         )}
       </TasksStack.Screen>
       <TasksStack.Screen name="Add Task">

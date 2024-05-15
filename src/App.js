@@ -239,8 +239,8 @@ const App = () => {
               name="Tasks Screen"
               component={TasksScreen}
               options={{
-                drawerLabel: "Tasks",
-                headerTitle: "Tasks",
+                drawerLabel: "Tasks & Projects",
+                headerTitle: "Tasks & Projects",
                 drawerIcon: ({ focused, color, size }) => (
                   <Icon
                     name={
@@ -289,8 +289,8 @@ const App = () => {
               name="Stats"
               component={StatisticsScreen}
               options={{
-                drawerLabel: "Statistics",
-                headerTitle: "Statistics",
+                drawerLabel: "Statistics & AI",
+                headerTitle: "Statistics & AI",
                 drawerIcon: ({ focused, color, size }) => (
                   <Icon
                     name={focused ? "bar-chart" : "bar-chart-outline"}
