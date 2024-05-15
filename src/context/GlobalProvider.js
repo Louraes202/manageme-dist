@@ -10,7 +10,6 @@ const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
 
 const db = SQLite.openDatabase("manageme");
-import * as SQLite from "expo-sqlite";
 
 export const GlobalProvider = ({ children }) => {
   const [isOnline, setIsOnline] = useState(true);

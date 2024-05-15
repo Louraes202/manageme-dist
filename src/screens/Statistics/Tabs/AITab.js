@@ -3,7 +3,6 @@ import { View, TextInput, ScrollView, StyleSheet, Text } from "react-native";
 import { VStack, IconButton, Icon, Box, Button, HStack } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
-import { OPENAI_API_KEY } from "@env";
 
 const AITab = () => {
   const [messages, setMessages] = useState([]);
