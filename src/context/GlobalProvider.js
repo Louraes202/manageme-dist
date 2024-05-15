@@ -5,13 +5,12 @@ import firebase from 'firebase/compat/app';
 import NetInfo from "@react-native-community/netinfo";
 import * as SQLite from "expo-sqlite";
 
-const db = SQLite.openDatabase("manageme");
-
 const GlobalContext = createContext();
 
 export const useGlobalContext = () => useContext(GlobalContext);
 
-
+const db = SQLite.openDatabase("manageme");
+import * as SQLite from "expo-sqlite";
 
 export const GlobalProvider = ({ children }) => {
   const [isOnline, setIsOnline] = useState(true);
@@ -30,11 +29,6 @@ export const GlobalProvider = ({ children }) => {
     if (!isOnline) return;
     const data = await fetchAllDataFromSQLite();
     await uploadDataToFirebase(data);
-  };
-
-  const syncDataFromFirebase = async () => {
-    if (!isOnline) return;
-    await downloadDataFromFirebase();
   };
 
   useEffect(() => {
@@ -85,6 +79,7 @@ export const GlobalProvider = ({ children }) => {
       unsubscribeNetInfo();
     };
   }, []);
+  
   
 
   useEffect(() => {
