@@ -14,7 +14,9 @@ import { Dimensions } from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import * as SQLite from 'expo-sqlite';
 
+const db = SQLite.openDatabase("manageme");
 
 const { width, height } = Dimensions.get("window");
 
@@ -67,6 +69,78 @@ const NavBox = ({
 };
 
 const Home = ({ navigation }) => {
+  const [tasksCount, setTasksCount] = useState(0);
+  const [habitsCount, setHabitsCount] = useState(0);
+  const [activitiesCount, setActivitiesCount] = useState(0);
+  const [projectsCount, setProjectsCount] = useState(0);
+
+  useEffect(() => {
+    fetchTasksCount();
+    fetchHabitsCount();
+    fetchActivitiesCount();
+    fetchProjectsCount();
+  }, []);
+
+  const fetchTasksCount = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT COUNT(*) as count FROM Tarefas',
+        [],
+        (_, { rows }) => {
+          setTasksCount(rows.item(0).count);
+        },
+        (txObj, error) => {
+          console.log('Error fetching tasks count', error);
+        }
+      );
+    });
+  };
+
+  const fetchHabitsCount = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT COUNT(*) as count FROM Habitos',
+        [],
+        (_, { rows }) => {
+          setHabitsCount(rows.item(0).count);
+        },
+        (txObj, error) => {
+          console.log('Error fetching habits count', error);
+        }
+      );
+    });
+  };
+
+  const fetchActivitiesCount = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT COUNT(*) as count FROM Atividades',
+        [],
+        (_, { rows }) => {
+          setActivitiesCount(rows.item(0).count);
+        },
+        (txObj, error) => {
+          console.log('Error fetching activities count', error);
+        }
+      );
+    });
+  };
+
+  const fetchProjectsCount = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT COUNT(*) as count FROM Projetos',
+        [],
+        (_, { rows }) => {
+          setProjectsCount(rows.item(0).count);
+        },
+        (txObj, error) => {
+          console.log('Error fetching projects count', error);
+        }
+      );
+    });
+  };
+
   return (
     <ScrollView style={styles.screen}>
       <Text
@@ -86,10 +160,10 @@ const Home = ({ navigation }) => {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <DataBox title="0" subtitle="Tasks" description="To conclude today" />
-        <DataBox title="0" subtitle="Habits" description="To fulfill today" />
-        <DataBox title="0" subtitle="Activities" description="Going on today" />
-        <DataBox title="0" subtitle="Projects" description="In progress" />
+        <DataBox title={tasksCount.toString()} subtitle="Tasks" description="To conclude today" />
+        <DataBox title={habitsCount.toString()} subtitle="Habits" description="To fulfill today" />
+        <DataBox title={activitiesCount.toString()} subtitle="Activities" description="Going on today" />
+        <DataBox title={projectsCount.toString()} subtitle="Projects" description="In progress" />
       </Flex>
 
       <Text style={[styles.title_textscreen, { marginLeft: 10 }]}>
