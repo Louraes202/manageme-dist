@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { Text } from "react-native";
 import {
+  View,
   Select,
   Box,
   CheckIcon,
@@ -75,7 +76,7 @@ const fetchEventsForWeek = () => {
           let eventCounts = Array(7).fill(0);
           for (let i = 0; i < results.rows.length; i++) {
             let weekDay = moment(dataConclusao).day();
-            if (typeof weekDay === 'number' && weekDay >= 0 && weekDay <= 6) {
+            if (typeof weekDay === "number" && weekDay >= 0 && weekDay <= 6) {
               eventCounts[weekDay] = (taskCounts[weekDay] || 0) + 1;
             }
           }
@@ -122,7 +123,7 @@ const fetchActivitiesForWeek = () => {
 const StatisticsTab = () => {
   const [chartData, setChartData] = useState([]);
   const isFocused = useIsFocused();
-  const [selectedCategory, setSelectedCategory] = useState("Events");
+  const [selectedCategory, setSelectedCategory] = useState("Tasks");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -141,7 +142,7 @@ const StatisticsTab = () => {
             activities: Number.isFinite(activities[i]) ? activities[i] : 0,
             events: Number.isFinite(events[i]) ? events[i] : 0,
           }));
-          
+
         console.log(tasks, activities, events);
         setChartData(data);
       } catch (error) {
@@ -179,9 +180,10 @@ const StatisticsTab = () => {
     <View style={styles.screen}>
       <ScrollView>
         <HStack space={3} alignItems="center">
-          <Text style={styles.title_textscreen}>This week stats</Text>
+          <Text style={styles.title_textscreen}>This week task stats</Text>
           <Spacer />
           <Box width="1/3" maxWidth="300px">
+            {/*}
             <Select
               selectedValue={selectedCategory}
               minWidth="100"
@@ -194,30 +196,52 @@ const StatisticsTab = () => {
               <Select.Item label="Activities" value="Activities" />
               <Select.Item label="Events" value="Events" />
             </Select>
+            {*/}
           </Box>
         </HStack>
-        <VStack alignContent={"center"} mb={180} mt={0}>
-          <VStack alignContent={"center"}>
-            <BarChart
-              horizontal
-              barWidth={22}
-              barBorderRadius={4}
-              frontColor="lightgray"
-              data={chartData.map((item) => ({
-                value:
-                  selectedCategory === "Tasks"
-                    ? item.tasks
-                    : selectedCategory === "Activities"
-                    ? item.activities
-                    : selectedCategory === "Events"
-                    ? item.events
-                    : null,
-                label: item.label,
-                frontColor: "#177AD5",
-              }))}
-              yAxisThickness={0}
-              xAxisThickness={0}
-            />
+        <VStack alignContent={"center"} mb={50} mt={0}>
+          <VStack>
+            <ScrollView horizontal height={350}>
+              <BarChart
+                horizontal
+                barWidth={22}
+                barBorderRadius={4}
+                frontColor="lightgray"
+                data={chartData.map((item) => ({
+                  value: item.tasks,
+                  label: item.label,
+                  frontColor: "#177AD5",
+                }))}
+                yAxisThickness={0}
+                xAxisThickness={0}
+              />
+              <BarChart
+                horizontal
+                barWidth={22}
+                barBorderRadius={4}
+                frontColor="lightgray"
+                data={chartData.map((item) => ({
+                  value: item.activities,
+                  label: item.label,
+                  frontColor: "#177AD5",
+                }))}
+                yAxisThickness={0}
+                xAxisThickness={0}
+              />
+              <BarChart
+                horizontal
+                barWidth={22}
+                barBorderRadius={4}
+                frontColor="lightgray"
+                data={chartData.map((item) => ({
+                  value: item.events,
+                  label: item.label,
+                  frontColor: "#177AD5",
+                }))}
+                yAxisThickness={0}
+                xAxisThickness={0}
+              />
+            </ScrollView>
           </VStack>
         </VStack>
 
@@ -235,6 +259,36 @@ const StatisticsTab = () => {
               Set go to sleep hour
             </Button>
           </HStack>
+
+          <VStack>
+            <Text style={styles.title_textscreen}>Metrics</Text>
+            <HStack alignItems={"center"}>
+              <Text
+                style={{ fontFamily: "Poppins", fontSize: 15, fontWeight: 300 }}
+              >
+                Free time per day (in a week)
+              </Text>
+              <Spacer />
+              <Text
+                style={{ fontFamily: "Poppins", fontSize: 15, fontWeight: 500 }}
+              >
+                1h
+              </Text>
+            </HStack>
+            <HStack alignItems={"center"}>
+              <Text
+                style={{ fontFamily: "Poppins", fontSize: 15, fontWeight: 300 }}
+              >
+                Heaviest activity
+              </Text>
+              <Spacer />
+              <Text
+                style={{ fontFamily: "Poppins", fontSize: 15, fontWeight: 500 }}
+              >
+                Aulas
+              </Text>
+            </HStack>
+          </VStack>
         </VStack>
       </ScrollView>
     </View>
