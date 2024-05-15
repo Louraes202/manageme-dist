@@ -249,6 +249,8 @@ const StatisticsTab = () => {
   const [wakeUpTimeInput, setWakeUpTimeInput] = useState("");
   const [sleepTimeInput, setSleepTimeInput] = useState("");
 
+  const { updateTasks, updateActivities, updateEvents } = useGlobalContext();
+
   useEffect(() => {
     fetchUserSettings().then((settings) => {
       setWakeUpTime(settings.wakeUpTime);
@@ -326,7 +328,7 @@ const StatisticsTab = () => {
     };
 
     fetchData();
-  }, [isFocused, wakeUpTime, sleepTime]);
+  }, [isFocused, wakeUpTime, sleepTime, updateTasks, updateActivities, updateEvents]);
 
   const handleSetWakeUpTime = () => {
     setWakeUpTime(wakeUpTimeInput);
